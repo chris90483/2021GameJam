@@ -1,0 +1,142 @@
+from random import randint, shuffle
+from enum import Enum
+
+class CellType(Enum):
+    EMPTY = 0
+    BUILDING = 1,
+    ROAD = 2,
+    NATURE = 3
+    DOOMINOS = 4
+
+
+class Cell:
+    type = None
+    id = None
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+
+class Grid:
+    def __init__(self, width, height):
+        # Create empty grid
+        self.width = width
+        self.height = height
+        self.grid = []
+        for x in range(width):
+            column = []
+            for y in range(height):
+                column.append(Cell(x, y))
+            self.grid.append(column)
+
+        self.generate()
+
+    def get_grid_cells(self):
+        cells = []
+        for x in range(0, self.width, 2):
+            for y in range(0, self.height, 2):
+                cells.append(self.grid[x][y])
+        return cells
+
+    def is_in_grid(self, x, y):
+        return 0 <= x < self.width and 0 <= y < self.height
+
+    def is_connected_to(self, x, y, type):
+        return self.grid[x + 1][y].type == type or \
+            self.grid[x - 1][y].type == type or \
+            self.grid[x][y + 1].type == type or \
+            self.grid[x][y - 1].type == type
+
+    def generate(self):
+        self.generate_roads()
+        self.generate_doominoes()
+        self.generate_buildings_and_nature()
+
+    def generate_roads(self):
+        cells = self.get_grid_cells()
+        shuffle(cells)
+
+        area_min = 3  # Minimum size of the area
+        area_max = 10  # Maximum size of the long side of the area
+        for area_id in range(len(cells)):
+            cell = cells[area_id]
+            if cell.type is None:
+                direction = randint(0, 1)
+                area_width = randint(area_min, area_max if direction else area_min)
+                area_height = randint(area_min, area_min if direction else area_max)
+
+                for i in range(0, area_width, 2):
+                    for j in range(0, area_height, 2):
+                        if self.is_in_grid(cell.x + i + 1, cell.y + j + 1):
+                            self.grid[cell.x + i][cell.y + j].id = area_id
+                            self.grid[cell.x + i][cell.y + j].type = CellType.EMPTY
+
+                            self.grid[cell.x + i + 1][cell.y + j].id = area_id
+                            self.grid[cell.x + i + 1][cell.y + j].type = CellType.EMPTY
+
+                            self.grid[cell.x + i][cell.y + j + 1].id = area_id
+                            self.grid[cell.x + i][cell.y + j + 1].type = CellType.EMPTY
+
+                            self.grid[cell.x + i + 1][cell.y + j + 1].id = area_id
+                            self.grid[cell.x + i + 1][cell.y + j + 1].type = CellType.EMPTY
+
+        # Draw roads
+        for x in range(self.width):
+            for y in range(self.height):
+                if self.is_in_grid(x + 1, y) and self.grid[x + 1][y].id != self.grid[x][y].id:
+                    self.grid[x][y].type = CellType.ROAD
+                if self.is_in_grid(x, y + 1) and self.grid[x][y + 1].id != self.grid[x][y].id:
+                    self.grid[x][y].type = CellType.ROAD
+
+    def generate_doominoes(self):
+        doominoes_x = self.width // 2 + 1
+        doominoes_y = self.height // 2 + 1
+        self.grid[doominoes_x][doominoes_y].type = CellType.DOOMINOS
+
+        if not self.is_connected_to(doominoes_x, doominoes_y, CellType.ROAD):
+            direction = randint(0, 3)
+            if 0 <= direction <= 1:
+                # Connect via vertical road
+                delta = -1 if direction == 0 else 1
+                y = doominoes_y + delta
+                while self.grid[doominoes_x][y].type != CellType.ROAD:
+                    self.grid[doominoes_x][y].type = CellType.ROAD
+                    y += delta
+            else:
+                # Connect via horizontal road
+                delta = -1 if direction == 2 else 1
+                x = doominoes_x + delta
+                while self.grid[x][doominoes_y].type != CellType.ROAD:
+                    self.grid[x][doominoes_y].type = CellType.ROAD
+                    x += delta
+
+    def generate_buildings_and_nature(self):
+        for x in range(self.width):
+            for y in range(self.height):
+                if self.grid[x][y].type == CellType.EMPTY:
+                    cell_type = CellType.NATURE
+                    if self.is_connected_to(x, y, CellType.ROAD):
+                        # Connected to road, choose between building and nature
+                        if randint(0, 1):
+                            cell_type = CellType.BUILDING
+                    self.grid[x][y].type = cell_type
+
+    def print_grid(self):
+        for y in range(self.height):
+            for x in range(self.width):
+                item = self.grid[x][y]
+                if item.type == CellType.DOOMINOS:
+                    print('🍕', end='')
+                elif item.type == CellType.BUILDING:
+                    print('🏡', end='')
+                elif item.type == CellType.ROAD:
+                    print('░░', end='')
+                elif item.type == CellType.NATURE:
+                    print('🌴', end='')
+                else:
+                    print('  ', end='')
+            print('')
+
+
+Grid(51, 51).print_grid()
