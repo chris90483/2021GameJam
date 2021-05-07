@@ -2,7 +2,7 @@ import pygame
 import sys
 import time
 
-from main.player import Player
+from main.game import Game
 
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
@@ -15,7 +15,7 @@ window = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
 pygame.font.init()
 font = pygame.font.SysFont("Arial", 20)
 msg_surface = None
-player = Player(300, 300)
+game = Game()
 
 # Do all necessary setup
 def setup():
@@ -35,7 +35,7 @@ def handle_key_press(event_key):
 # Handle all pygame events
 def handle_events():
         for event in pygame.event.get():
-            player.handle_input(event)
+            game.handle_input(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
@@ -47,7 +47,7 @@ def handle_events():
 def update_state():
     global offset, window
     window.fill((0, 0, 0))
-    player.step()
+    game.step()
 
     object_width = msg_surface.get_width()
     o1 = (offset + 1) % SCREEN_WIDTH
@@ -58,7 +58,7 @@ def update_state():
         window.blit(msg_surface, (o2 - object_width, 0))
 
     window.blit(msg_surface, (offset, 0))
-    player.draw(window)
+    game.draw(window)
 
 
 if __name__ == '__main__':
