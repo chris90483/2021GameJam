@@ -5,6 +5,7 @@ from pygame.surface import Surface
 
 from entities.player import Player
 
+import pygame
 
 class Game(object):
     def __init__(self):

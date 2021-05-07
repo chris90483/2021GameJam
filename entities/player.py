@@ -17,9 +17,13 @@ class Player(object):
         self.texture = self.gen_texture()
 
     def gen_texture(self):
-        texture = pygame.Surface((40, 40))
-        texture.fill((246, 1, 1), rect=(10, 10, 20, 20))
-        return texture
+        player_sprite = pygame.image.load('./resources/png/player_standing.png')
+        player_sprite = pygame.transform.rotate(player_sprite, 90)
+        player_sprite = pygame.transform.scale(player_sprite, (50, 50))
+        return player_sprite
+        # texture = pygame.Surface((40, 40))
+        # texture.fill((246, 1, 1), rect=(10, 10, 20, 20))
+        # return texture
 
     def handle_input(self, event: EventType):
         """

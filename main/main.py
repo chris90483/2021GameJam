@@ -58,6 +58,8 @@ def update_state():
         window.blit(msg_surface, (o2 - object_width, 0))
 
     window.blit(msg_surface, (offset, 0))
+
+    # call to the game controller drawing method
     game.draw(window)
 
 
