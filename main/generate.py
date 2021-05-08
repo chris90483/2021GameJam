@@ -4,8 +4,8 @@ from enum import Enum
 
 class CellType(Enum):
     EMPTY = 0
-    BUILDING = 1,
-    ROAD = 2,
+    BUILDING = 1
+    ROAD = 2
     NATURE = 3
     DOOMINOS = 4
 
