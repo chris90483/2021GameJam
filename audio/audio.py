@@ -47,7 +47,8 @@ class AudioManagement:
     MUSIC_PATH = "./resources/audio/music/"
     SFX_PATH = "./resources/audio/sfx/"
 
-    audio_level = 0.1
+    music_audio_level = 0.1
+    sfw_audio_level = 0.1
 
     def play_song(self, song):
 
@@ -68,5 +69,21 @@ class AudioManagement:
         # song_obj = pygame.mixer.Sound(self.MUSIC_PATH + song_str)
         # song_obj.play(loops=2)
         pygame.mixer.music.load(self.MUSIC_PATH + song_str)
-        pygame.mixer.music.play(loops=2)
-        pygame.mixer.music.set_volume(self.audio_level)
+        pygame.mixer.music.play(loops=-1)
+        pygame.mixer.music.set_volume(self.music_audio_level)
+
+    def update_music_audio_level(self, direction):
+        if direction == 'left':
+            self.music_audio_level -= 0.1
+        elif direction == 'right':
+            self.music_audio_level += 0.1
+        else:
+            print("Update music audio level requires a valid direction. wtf even is " + str(direction) + "???")
+        if self.music_audio_level < 0:
+            self.music_audio_level = 0
+        elif self.music_audio_level > 1:
+            self.music_audio_level = 1
+        pygame.mixer.music.set_volume(self.music_audio_level)
+
+
+
