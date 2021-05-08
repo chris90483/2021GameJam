@@ -15,7 +15,7 @@ window = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
 pygame.font.init()
 font = pygame.font.SysFont("Arial", 20)
 msg_surface = None
-game = Game()
+game = Game(12, 12)
 
 # Do all necessary setup
 def setup():
