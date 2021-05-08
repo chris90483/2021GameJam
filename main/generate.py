@@ -134,20 +134,41 @@ class Grid:
 
         if not self.is_connected_to(doominoes_x, doominoes_y, CellType.ROAD):
             direction = randint(0, 3)
-            if 0 <= direction <= 1:
-                # Connect via vertical road
-                delta = -1 if direction == 0 else 1
-                y = doominoes_y + delta
-                while self.grid[doominoes_x][y].type != CellType.ROAD:
-                    self.grid[doominoes_x][y].type = CellType.ROAD
-                    y += delta
-            else:
-                # Connect via horizontal road
-                delta = -1 if direction == 2 else 1
-                x = doominoes_x + delta
-                while self.grid[x][doominoes_y].type != CellType.ROAD:
-                    self.grid[x][doominoes_y].type = CellType.ROAD
-                    x += delta
+            connected = False
+            while not connected:
+                x_delta = 0
+                if direction == 0:
+                    x_delta = -1
+                elif direction == 1:
+                    x_delta = 1
+                x = doominoes_x + x_delta
+
+                y_delta = 0
+                if direction == 2:
+                    y_delta = -1
+                elif direction == 3:
+                    y_delta = 1
+                y = doominoes_y + y_delta
+
+                # Check if there is a road in this direction
+                while self.is_in_grid(x, y):
+                    if self.is_connected_to(x, y, CellType.ROAD):
+                        connected = True
+                        break
+                    x += x_delta
+                    y += y_delta
+
+                if not connected:
+                    # Try a different direction
+                    direction = (direction + 1) % 4
+                    continue
+
+                x = doominoes_x + x_delta
+                y = doominoes_y + y_delta
+                while not self.is_connected_to(x, y, CellType.ROAD):
+                    self.grid[x][y].type = CellType.ROAD
+                    x += x_delta
+                    y += y_delta
 
     def generate_buildings_and_nature(self):
         """
@@ -184,4 +205,4 @@ class Grid:
             print('')
 
 
-Grid(50, 50).print_grid()
+Grid(10, 10).print_grid()
