@@ -51,16 +51,16 @@ class Player(object):
 
             if not self.inventory.flamethrower.empty:
                 player_sprite = self.inventory.flamethrower.keyframes_fire_spitting[
-                    self.inventory.flamethrower.keyframes_fire_spitting_counter]
+                    self.inventory.flamethrower.keyframes_fire_spitting_counter // 5]
                 self.inventory.flamethrower.keyframes_fire_spitting_counter = \
                     (self.inventory.flamethrower.keyframes_fire_spitting_counter + 1) \
-                    % len(self.inventory.flamethrower.keyframes_fire_spitting)
+                    % (5 * len(self.inventory.flamethrower.keyframes_fire_spitting))
             else:
                 player_sprite = self.inventory.flamethrower.keyframes_empty[
-                    self.inventory.flamethrower.keyframes_empty_counter]
+                    self.inventory.flamethrower.keyframes_empty_counter // 5]
                 self.inventory.flamethrower.keyframes_empty_counter = \
                     (self.inventory.flamethrower.keyframes_empty_counter + 1) \
-                    % len(self.inventory.flamethrower.keyframes_empty)
+                    % (5 * len(self.inventory.flamethrower.keyframes_empty))
             player_sprite = pygame.transform.rotate(player_sprite, 90)
             player_sprite = pygame.transform.scale(player_sprite, (400, 100))
         else:
