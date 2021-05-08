@@ -27,10 +27,14 @@ class World(object):
         self.player.handle_input(event)
 
     def step(self):
+        self.emitter_handler.step()
         self.player.step()
         self.destination.step()
+        self.zombie_handler.step()
 
     def draw(self, screen: Surface, camera: Camera):
         self.grid.draw(screen, camera)
+        self.emitter_handler.draw(screen, camera)
         self.player.draw(screen, camera)
         self.compass.draw(screen)
+        self.zombie_handler.draw(screen, camera)

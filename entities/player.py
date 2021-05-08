@@ -57,20 +57,25 @@ class Player(object):
         # Get mouse position
         mouse_x, mouse_y = pygame.mouse.get_pos()
         self.angle = atan2(- (Constant.SCREEN_HEIGHT // 2 - mouse_y), Constant.SCREEN_WIDTH // 2 - mouse_x)
+        moving = False
 
         # Silly Python has no switch case statement >:-(
         if self.held_keys[pygame.K_w] or self.held_keys[pygame.K_UP]:
             self.y -= 10
+            moving = True
         if self.held_keys[pygame.K_s] or self.held_keys[pygame.K_DOWN]:
             self.y += 10
+            moving = True
         if self.held_keys[pygame.K_a] or self.held_keys[pygame.K_LEFT]:
             self.x -= 10
+            moving = True
         if self.held_keys[pygame.K_d] or self.held_keys[pygame.K_RIGHT]:
             self.x += 10
+            moving = True
 
         self.step_no += 1
 
-        if self.step_no % 100 == 0:
+        if self.step_no % 15 == 0 and moving:
             self.world.emitter_handler.add_emitter(Footstep(self.x, self.y))
 
     def draw(self, screen: pygame.Surface, camera):

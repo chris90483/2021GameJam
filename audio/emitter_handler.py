@@ -1,5 +1,5 @@
 import time
-from asyncio import PriorityQueue, Queue
+from queue import PriorityQueue, Queue
 from threading import Thread
 
 from audio.audio import SoundEmitter
@@ -13,27 +13,33 @@ class EmitterHandler(object):
         self.active_emitters = PriorityQueue()
         self.new_emitters = PriorityQueue()
         self.running = True
-        self.thread = Thread(target=self.handler_thread)
-        self.thread.start()
         self.current_emitter = None
         self.zombie_handler = zombie_handler
+        self.thread = Thread(target=self.handler_thread)
+        self.thread.start()
 
     def add_emitter(self, emitter: SoundEmitter):
-        self.new_emitters.put((time.time(), emitter))
+        self.current_emitter = emitter
 
     def handler_thread(self):
         while self.running:
-            while not self.new_emitters.empty():
-                t, emitter = self.new_emitters.get()
-                self.current_emitter = emitter
-                # self.active_emitters.put((t, emitter)) TODO: Add emitter removal before enabling this
-
             zombies = self.zombie_handler.get_zombies()
 
-            for zombie in zombies:
-                zombie.hear(self.current_emitter)
+            if self.current_emitter is not None:
+                for zombie in zombies:
+                    zombie.hear(self.current_emitter)
 
             time.sleep(0.1)
+
+    def step(self):
+        if self.current_emitter is not None:
+            delete_emitter = self.current_emitter.step()
+            if delete_emitter:
+                self.current_emitter = None
+
+    def draw(self, screen, camera):
+        if self.current_emitter is not None:
+            self.current_emitter.draw(screen, camera)
 
     def __del__(self):
         # Stop thread on delete
