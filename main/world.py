@@ -4,7 +4,7 @@ from main.camera import Camera
 from main.grid import CellType, Cell, Grid
 from entities.player import Player
 from main.camera import Camera
-from main.generate import Grid
+from main.grid import Grid
 from main.constants import Constant
 
 
