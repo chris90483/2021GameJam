@@ -16,11 +16,11 @@ class Inventory(object):
     SLOT_WIDTH = 50
     SLOT_HEIGHT = 50
     SLOT_MARGIN = 20
+    SELECT_THICKNESS = 3
 
     def __init__(self, world):
         self.world = world
         self.N_slots = 5
-        # self.flamethrower = Flamethrower(self.world.player)
 
         self.current_item = 0
 
@@ -34,16 +34,24 @@ class Inventory(object):
                 item.step()
 
     def draw(self, window: pygame.Surface, camera):
-        pygame.draw.rect(window, (123, 123, 123), pygame.Rect(Constant.SCREEN_WIDTH / 2 - self.SLOT_WIDTH / 2 - int(self.N_slots / 2) * (self.SLOT_WIDTH + self.SLOT_MARGIN) - 10,
+        pygame.draw.rect(window, (123, 123, 123), pygame.Rect(Constant.SCREEN_WIDTH / 2 - self.SLOT_WIDTH / 2 - int(self.N_slots / 2) * (self.SLOT_WIDTH + self.SLOT_MARGIN) - self.SLOT_MARGIN,
                                                               Constant.SCREEN_HEIGHT - 70,
-                                                              (self.SLOT_WIDTH + self.SLOT_MARGIN) * self.N_slots,
+                                                              (self.SLOT_WIDTH + self.SLOT_MARGIN) * self.N_slots + self.SLOT_MARGIN,
                                                               self.SLOT_HEIGHT + 100))
         current_item_to_draw = 0
         for i in range(0 - int(self.N_slots / 2), self.N_slots - int(self.N_slots / 2)):
+            if current_item_to_draw == self.current_item:
+                left_offset = Constant.SCREEN_WIDTH / 2 - self.SLOT_WIDTH / 2 + i * (self.SLOT_WIDTH + self.SLOT_MARGIN)
+                pygame.draw.rect(window, (255, 255, 0), pygame.Rect(left_offset - self.SELECT_THICKNESS,
+                                                                    Constant.SCREEN_HEIGHT - 60 - self.SELECT_THICKNESS,
+                                                                    self.SLOT_WIDTH + self.SELECT_THICKNESS * 2,
+                                                                    self.SLOT_HEIGHT + self.SELECT_THICKNESS * 2))
+
             left_offset = Constant.SCREEN_WIDTH / 2 - self.SLOT_WIDTH / 2 + i * (self.SLOT_WIDTH + self.SLOT_MARGIN)
             pygame.draw.rect(window, (233, 233, 233), pygame.Rect(left_offset,
                                                                   Constant.SCREEN_HEIGHT - 60,
                                                                   self.SLOT_WIDTH, self.SLOT_HEIGHT))
+
 
             item_to_draw = self.items[current_item_to_draw]
             if item_to_draw:
@@ -63,4 +71,9 @@ class Inventory(object):
                                                  inventory_icon_file_name="pizza_inventory_icon.png")
                     return True
 
+    def change_current_selected_item(self, direction):
+        if direction == "left":
+            self.current_item = (self.current_item - 1) % self.N_slots
+        else:
+            self.current_item = (self.current_item + 1) % self.N_slots
 

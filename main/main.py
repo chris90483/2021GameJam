@@ -93,6 +93,14 @@ class Main:
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
                 print(pos)
+            if event.type == pygame.MOUSEWHEEL:
+                if not self.paused:
+                    if event.y == -1:
+                        self.game.world.inventory.change_current_selected_item("right")
+                    elif event.y == 1:
+                        self.game.world.inventory.change_current_selected_item("left")
+                    else:
+                        print("What the frick kinda mousewheel action was that")
 
     # Do all updates to the game state in this function
     def update_state(self):

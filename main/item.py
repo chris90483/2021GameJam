@@ -16,5 +16,5 @@ class Item:
 
     def draw_inventory_slot(self, window: Surface, camera, x, y):
         item_texture = pygame.image.load(self.IMAGE_FOLDER_LOCATION + self.inventory_icon_file_name)
-        camera.blit_surface_to_screen(window, item_texture, x, y)
+        window.blit(item_texture, (x, y))
 
