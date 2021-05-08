@@ -131,3 +131,4 @@ dmypy.json
 # DIT ZIJN ONZE GITIGNORES
 *.json
 
+.idea
