@@ -28,7 +28,7 @@ class Main:
         pygame.font.init()
         self.font = pygame.font.SysFont("Arial", 20)
         self.audio_manager = AudioManager()
-        self.game = Game(Constant.GRID_WIDTH, Constant.GRID_HEIGHT, self.audio_manager)
+        self.game = Game('Wilco', Constant.GRID_WIDTH, Constant.GRID_HEIGHT, self.audio_manager)
 
         self.paused = False
 
@@ -46,6 +46,10 @@ class Main:
             self.paused = not self.paused
             self.current_setting_index = 0
             pass
+
+        if self.game.is_game_over():
+            if event_key == pygame.K_RETURN:
+                self.game.reset()
 
         if self.paused:
             if event_key == pygame.K_DOWN or event_key == pygame.K_s:
@@ -105,7 +109,9 @@ class Main:
             # handle pygame events from the queue
             self.handle_events()
             # update the state of the game
-            if not self.paused:
+            if self.game.is_game_over():
+                self.render_game_over_screen()
+            elif not self.paused:
                 self.update_state()
             else:
                 self.render_pause_screen()
@@ -116,6 +122,36 @@ class Main:
                 time.sleep((1 / Constant.FRAME_RATE) - running_time)
 
             pygame.display.update()
+
+    def render_game_over_screen(self):
+        pygame.draw.rect(self.window, (255, 255, 255), pygame.Rect(Constant.SCREEN_WIDTH / 2 - 400 / 2, Constant.SCREEN_HEIGHT / 4, 400, 250))
+
+        total_top_offset = 40
+
+        game_over_font = pygame.font.SysFont("Arial", 50)
+        textsurface = game_over_font.render('Game Over', False, (0, 0, 0))
+        self.window.blit(textsurface,
+                         (Constant.SCREEN_WIDTH / 2 - textsurface.get_width() / 2, Constant.SCREEN_HEIGHT / 4 + total_top_offset))
+
+        total_top_offset += textsurface.get_height()
+
+        score_font = pygame.font.SysFont("Arial", 24)
+        score_textsurface = score_font.render('Final score: {}'.format(self.game.score.get_score()), False, (0, 0, 0))
+
+        total_top_offset += score_textsurface.get_height()
+
+        self.window.blit(score_textsurface,
+                         (Constant.SCREEN_WIDTH / 2 - score_textsurface.get_width() / 2,
+                          Constant.SCREEN_HEIGHT / 4 + total_top_offset))
+
+        restart_font = pygame.font.SysFont("Arial", 24)
+        restart_textsurface = restart_font.render('Press enter to restart', False, (0, 0, 0))
+
+        total_top_offset += restart_textsurface.get_height() + 15
+
+        self.window.blit(restart_textsurface,
+                         (Constant.SCREEN_WIDTH / 2 - restart_textsurface.get_width() / 2,
+                          Constant.SCREEN_HEIGHT / 4 + total_top_offset))
 
     def render_pause_screen(self):
         default_gray = (123, 123, 123)

@@ -44,3 +44,7 @@ class World(object):
         self.delivery_status.draw(screen)
 
         self.zombie_handler.draw(screen, camera)
+
+    def reset(self):
+        self.player.reset()
+        self.destination.reset()
