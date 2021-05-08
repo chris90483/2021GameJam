@@ -9,3 +9,6 @@ class Constant:
     GRID_HEIGHT = 32
 
     DELIVERY_TIME = 5
+
+    PLAYER_SPEED = 6
+    PLAYER_SPEED_GRASS_MULTIPLIER = 0.6

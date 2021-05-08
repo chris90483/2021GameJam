@@ -1,17 +1,15 @@
+
 from pygame.surface import Surface
 
 from audio.emitter_handler import EmitterHandler
-from entities.zombie_handler import ZombieHandler
-from entities.destination_flag import DestinationFlag
-from main.camera import Camera
-from main.grid import CellType, Cell, Grid
-from entities.player import Player
 from entities.compass import Compass
 from entities.delivery_status import DeliveryStatus
+from entities.destination_flag import DestinationFlag
+from entities.player import Player
+from entities.zombie_handler import ZombieHandler
 from main.camera import Camera
-from main.grid import Grid
-from main.constants import Constant
 from main.destination import Destination
+from main.grid import Grid
 
 
 class World(object):
@@ -19,7 +17,7 @@ class World(object):
         self.amount_tiles_x = amount_tiles_x
         self.amount_tiles_y = amount_tiles_y
         self.grid = Grid(self.amount_tiles_x, self.amount_tiles_y)
-        self.player = Player(Constant.TILE_SIZE * self.grid.doominos_location[0], Constant.TILE_SIZE * self.grid.doominos_location[1], self)
+        self.player = Player(self.grid, self)
         self.zombie_handler = ZombieHandler()
         self.emitter_handler = EmitterHandler(self.zombie_handler)
         self.destination = Destination(self.grid, self.player)
