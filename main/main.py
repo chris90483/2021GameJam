@@ -23,7 +23,7 @@ audio_management = AudioManagement()
 
 # Do all necessary setup
 def setup():
-    audio_management.play_song(song=Songs.ENERGIEK)
+    audio_management.play_song(song=Songs.PIZZATHEMELOOP)
 
 
 # handle a pressed key event in the context of the game root
