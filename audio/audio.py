@@ -12,9 +12,8 @@ class Songs(Enum):
 
 
 class SFX(Enum):
-    WALK = None,
-    RUN = None,
-    SNEAK = None,
+    SLOW_WALK = "walk_slow.wav",
+    FAST_WALK = "walk_fast.wav"
 
 
 class SoundEmitter(ABC):
@@ -43,7 +42,7 @@ class SoundEmitter(ABC):
             pygame.draw.circle(screen, (246, 1, 1), (screen_x, screen_y), self.step_v * 2 + 1, 1)
 
 
-class AudioManagement:
+class AudioManager:
     MUSIC_PATH = "./resources/audio/music/"
     SFX_PATH = "./resources/audio/sfx/"
 
@@ -51,7 +50,6 @@ class AudioManagement:
     sfx_audio_level = 0.1
 
     def play_song(self, song):
-
         if song == Songs.ENERGIEK:
             thread = Thread(target=self.load_song, args=("energiek.wav",))
             thread.start()
@@ -62,8 +60,11 @@ class AudioManagement:
             thread = Thread(target=self.load_song, args=("pizzathemeloopver.wav",))
             thread.start()
 
-    def play_sfx(self, ):
-        pass
+    def play_sfx(self, sfx):
+        if sfx == SFX.FAST_WALK:
+            return self.load_sfx("walk_fast.wav")
+        if sfx == SFX.SLOW_WALK:
+            return self.load_sfx("walk_slow.wav")
 
     def load_song(self, song_str):
         # song_obj = pygame.mixer.Sound(self.MUSIC_PATH + song_str)
@@ -71,6 +72,15 @@ class AudioManagement:
         pygame.mixer.music.load(self.MUSIC_PATH + song_str)
         pygame.mixer.music.play(loops=-1)
         pygame.mixer.music.set_volume(self.music_audio_level)
+
+    def load_sfx(self, sfx_str):
+        sound = pygame.mixer.Sound(self.SFX_PATH + sfx_str)
+        sound.set_volume(self.sfx_audio_level)
+        sound.play(-1)
+        return sound
+
+    def unload_sfx(self, sound):
+        sound.stop()
 
     def update_music_audio_level(self, direction):
         if direction == 'left':
