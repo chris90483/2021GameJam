@@ -32,8 +32,8 @@ class Camera(object):
         :param y: world y coordinate
         """
         screen_x, screen_y = self.compute_screen_position(x, y)
-        left_x, right_x = screen_x - surface.get_size()[0], screen_x + surface.get_size()[0]
-        top_y, bottom_y = screen_y - surface.get_size()[1], screen_y + surface.get_size()[1]
+        left_x, right_x = screen_x - surface.get_size()[0]//2, screen_x + surface.get_size()[0]//2
+        top_y, bottom_y = screen_y - surface.get_size()[1]//2, screen_y + surface.get_size()[1]//2
 
         # Check if it is visible and draw if it is
         if bottom_y > 0 and top_y < self.SCREEN_HEIGHT and right_x > 0 and left_x < self.SCREEN_WIDTH:

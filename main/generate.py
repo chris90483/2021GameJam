@@ -3,6 +3,8 @@ from enum import Enum
 
 import pygame
 
+from main.camera import Camera
+
 
 class CellType(Enum):
     EMPTY = 0
@@ -209,8 +211,8 @@ class Grid:
                     print('  ', end='')
             print('')
 
-    def draw(self, screen: pygame.Surface):
+    def draw(self, screen: pygame.Surface, camera: Camera):
         for x in range(0, self.width):
             for y in range(0, self.height):
                 current_cell = self.grid[x][y]
-                screen.blit(current_cell.surface, (256 * x, 256 * y))
+                camera.blit_surface_to_screen(screen, current_cell.surface, 256 * x, 256 * y)
