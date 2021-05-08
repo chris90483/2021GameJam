@@ -1,6 +1,7 @@
 from random import randint, shuffle
 from enum import Enum
 
+
 class CellType(Enum):
     EMPTY = 0
     BUILDING = 1,
@@ -14,12 +15,22 @@ class Cell:
     id = None
 
     def __init__(self, x, y):
+        """
+        Initialize a grid cell
+        :param x: x coordinate of the grid cell
+        :param y: y coordinate of the grid cell
+        """
         self.x = x
         self.y = y
 
 
 class Grid:
     def __init__(self, width, height):
+        """
+        Initialize the grid
+        :param width: width of the grid
+        :param height: height of the grid
+        """
         # Create empty grid
         self.width = width
         self.height = height
@@ -33,6 +44,9 @@ class Grid:
         self.generate()
 
     def get_grid_cells(self):
+        """
+        Get a list of all the even grid cells
+        """
         cells = []
         for x in range(0, self.width, 2):
             for y in range(0, self.height, 2):
@@ -40,25 +54,46 @@ class Grid:
         return cells
 
     def is_in_grid(self, x, y):
+        """
+        Checks if the specified coordinate is a valid coordinate
+        :param x: x coordinate of the grid cell
+        :param y: y coordinate of the grid cell
+        :return: true if a grid cell exists with the specified coordinates, false otherwise
+        """
         return 0 <= x < self.width and 0 <= y < self.height
 
     def is_connected_to(self, x, y, type):
+        """
+        Check if a grid cell is connected to a specific type of cell
+        :param x: x coordinate of the grid cell
+        :param y: y coordinate of the grid cell
+        :param type: type of the adjacent grid cell to use for
+        :return: true if an adjacent cell with the specified type was found, false otherwise
+        """
         return (x + 1 < self.width and self.grid[x + 1][y].type == type) or \
                (x - 1 >= 0 and self.grid[x - 1][y].type == type) or \
                (y + 1 < self.height and self.grid[x][y + 1].type == type) or \
                (y - 1 >= 0 and self.grid[x][y - 1].type == type)
 
     def generate(self):
+        """
+        Generate a map
+        """
         self.generate_roads()
         self.generate_doominoes()
         self.generate_buildings_and_nature()
 
     def generate_roads(self):
+        """
+        Generate the roads and areas on the map
+        """
         cells = self.get_grid_cells()
         shuffle(cells)
 
         area_min = 3  # Minimum size of the area
         area_max = 10  # Maximum size of the long side of the area
+
+        # For each cell in the map, generate an area of a random size if it is not in an area yet
         for area_id in range(len(cells)):
             cell = cells[area_id]
             if cell.type is None:
@@ -81,7 +116,7 @@ class Grid:
                             self.grid[cell.x + i + 1][cell.y + j + 1].id = area_id
                             self.grid[cell.x + i + 1][cell.y + j + 1].type = CellType.EMPTY
 
-        # Draw roads
+        # For each cell that is on the border between two areas, change the cell type to road
         for x in range(self.width):
             for y in range(self.height):
                 if self.is_in_grid(x + 1, y) and self.grid[x + 1][y].id != self.grid[x][y].id:
@@ -90,6 +125,9 @@ class Grid:
                     self.grid[x][y].type = CellType.ROAD
 
     def generate_doominoes(self):
+        """
+        Generate Doominos
+        """
         doominoes_x = self.width // 2 + 1
         doominoes_y = self.height // 2 + 1
         self.grid[doominoes_x][doominoes_y].type = CellType.DOOMINOS
@@ -112,6 +150,9 @@ class Grid:
                     x += delta
 
     def generate_buildings_and_nature(self):
+        """
+        Generate buildings and nature in the empty spaces
+        """
         for x in range(self.width):
             for y in range(self.height):
                 if self.grid[x][y].type == CellType.EMPTY:
@@ -123,6 +164,10 @@ class Grid:
                     self.grid[x][y].type = cell_type
 
     def print_grid(self):
+        """
+        Print the grid to standard out
+        :return:
+        """
         for y in range(self.height):
             for x in range(self.width):
                 item = self.grid[x][y]
