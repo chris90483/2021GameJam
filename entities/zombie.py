@@ -16,6 +16,7 @@ zombie_texture = pygame.transform.rotate(zombie_texture, -90)
 class Zombie(object):
     VISION_RANGE = 100.0
     SPEED = 0.8
+
     def __init__(self, x, y):
         self.x = x
         self.y = y
