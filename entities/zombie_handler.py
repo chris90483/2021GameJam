@@ -20,7 +20,7 @@ class ZombieHandler(object):
                         world_x, world_y = grid_x * Constant.TILE_SIZE, grid_y * Constant.TILE_SIZE
                         world_x += int(random.random() * Constant.TILE_SIZE)
                         world_y += int(random.random() * Constant.TILE_SIZE)
-                        self.add_zombie(Zombie(world_x, world_y))
+                        self.add_zombie(Zombie(world_x, world_y, world))
 
         print("N zombies: ", len(self.zombies))
 
