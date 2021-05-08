@@ -5,12 +5,14 @@ from pygame.surface import Surface
 
 from main.camera import Camera
 from main.world import World
+from main.score import Score
 
 
 class Game(object):
     def __init__(self, amount_tiles_x, amount_tiles_y, audio_manager):
         self.audio_manager = audio_manager
-        self.world = World(amount_tiles_x, amount_tiles_y, audio_manager)
+        self.score = Score()
+        self.world = World(amount_tiles_x, amount_tiles_y, audio_manager, self.score)
         self.camera = Camera(self.world.player)
 
     def handle_input(self, event):
