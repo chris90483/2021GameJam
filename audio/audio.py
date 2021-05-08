@@ -76,7 +76,7 @@ class AudioManager:
     def load_sfx(self, sfx_str):
         sound = pygame.mixer.Sound(self.SFX_PATH + sfx_str)
         sound.set_volume(self.sfx_audio_level)
-        sound.play()
+        sound.play(-1)
         return sound
 
     def unload_sfx(self, sound):
