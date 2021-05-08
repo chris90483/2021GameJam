@@ -20,7 +20,7 @@ class World(object):
         self.amount_tiles_y = amount_tiles_y
         self.grid = Grid(self.amount_tiles_x, self.amount_tiles_y)
         self.player = Player(Constant.TILE_SIZE * self.grid.doominos_location[0], Constant.TILE_SIZE * self.grid.doominos_location[1], self)
-        self.zombie_handler = ZombieHandler()
+        self.zombie_handler = ZombieHandler(self)
         self.emitter_handler = EmitterHandler(self.zombie_handler)
         self.destination = Destination(self.grid, self.player)
         self.destination_flag = DestinationFlag(self.destination, self.player)

@@ -28,7 +28,7 @@ class Zombie(object):
             return
 
         if distance((self.x, self.y), self.target_pos) < self.VISION_RANGE:
-            self.angle += random.random() * 0.1 - 0.05
+            self.angle = atan2(self.target_pos[1] - self.y, self.target_pos[0] - self.x) + ((random.random()-0.5) * 0.05)
             self.speed = 0
         else:
             self.angle = atan2(self.target_pos[1] - self.y, self.target_pos[0] - self.x) + ((random.random()-0.5) * 0.05)
