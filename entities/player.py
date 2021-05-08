@@ -3,13 +3,15 @@
 """
 from collections import defaultdict
 from math import atan2, pi
+
+from audio.sound_emitter import Footstep
 from main.constants import Constant
 import pygame
 from pygame.event import EventType
 
 
 class Player(object):
-    def __init__(self, x, y):
+    def __init__(self, x, y, world):
         self.x = x
         self.y = y
         self.angle = 0
@@ -20,9 +22,13 @@ class Player(object):
             self.keyframes_walking.append(
                 pygame.image.load('./resources/png/animations/player/player_walking_' + str(x) + '.png'))
 
+        self.world = world
+        self.step_no = 0
+
     def gen_texture(self):
         player_sprite = None
-        if self.held_keys[pygame.K_w] or self.held_keys[pygame.K_s] or self.held_keys[pygame.K_a] or self.held_keys[pygame.K_d]:
+        if self.held_keys[pygame.K_w] or self.held_keys[pygame.K_s] or self.held_keys[pygame.K_a] or self.held_keys[
+            pygame.K_d]:
             player_sprite = self.keyframes_walking[self.keyframes_walking_animation_counter // 5]
             self.keyframes_walking_animation_counter = \
                 (self.keyframes_walking_animation_counter + 1) % (5 * len(self.keyframes_walking))
@@ -50,7 +56,7 @@ class Player(object):
     def step(self):
         # Get mouse position
         mouse_x, mouse_y = pygame.mouse.get_pos()
-        self.angle = atan2(- (Constant.SCREEN_HEIGHT//2 - mouse_y), Constant.SCREEN_WIDTH//2 - mouse_x)
+        self.angle = atan2(- (Constant.SCREEN_HEIGHT // 2 - mouse_y), Constant.SCREEN_WIDTH // 2 - mouse_x)
 
         # Silly Python has no switch case statement >:-(
         if self.held_keys[pygame.K_w]:
@@ -62,6 +68,11 @@ class Player(object):
         if self.held_keys[pygame.K_d]:
             self.x += 10
 
+        self.step_no += 1
+
+        if self.step_no % 100 == 0:
+            self.world.emitter_handler.add_emitter(Footstep(self.x, self.y))
+
     def draw(self, screen: pygame.Surface, camera):
-        rotated = pygame.transform.rotate(self.gen_texture(), self.angle * (180.0/pi))
+        rotated = pygame.transform.rotate(self.gen_texture(), self.angle * (180.0 / pi))
         camera.blit_surface_to_screen(screen, rotated, self.x, self.y)
