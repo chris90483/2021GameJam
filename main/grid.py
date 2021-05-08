@@ -141,6 +141,7 @@ class Grid:
         self.generate_buildings_and_nature()
 
         self.align_roads()
+        self.align_tiles()
 
     def generate_roads(self):
         """
@@ -302,6 +303,23 @@ class Grid:
                                 # =R=  STRAIGHT
                                 # ===
                                 self.grid[x][y].surface = pygame.transform.rotate(CellType.surface_of_road("STRAIGHT"), 90)
+
+    def align_tiles(self):
+        for x in range(self.width):
+            for y in range(self.height):
+                if self.grid[x][y].type == CellType.DOOMINOS or self.grid[x][y].type == CellType.BUILDING:
+                    if self.is_in_grid(x, y - 1) and self.grid[x][y - 1].type == CellType.ROAD:
+                        # Rotate to TOP
+                        self.grid[x][y].surface = pygame.transform.rotate(self.grid[x][y].surface, 180)
+                    elif self.is_in_grid(x + 1, y) and self.grid[x + 1][y].type == CellType.ROAD:
+                        # Rotate to RIGHT
+                        self.grid[x][y].surface = pygame.transform.rotate(self.grid[x][y].surface, 90)
+                    elif self.is_in_grid(x, y + 1) and self.grid[x][y + 1].type == CellType.ROAD:
+                        # Rotate to BOTTOM (which means do nothing)
+                        pass
+                    elif self.is_in_grid(x - 1, y) and self.grid[x - 1][y].type == CellType.ROAD:
+                        # Rotate to LEFT
+                        self.grid[x][y].surface = pygame.transform.rotate(self.grid[x][y].surface, -90)
 
     def generate_doominoes(self):
         """
