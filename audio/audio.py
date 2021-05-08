@@ -40,7 +40,7 @@ class AudioManagement:
     def play_song(self, song):
 
         if song == Songs.ENERGIEK:
-            thread = Thread(target=self.load_song, args=("energiek.mp3",))
+            thread = Thread(target=self.load_song, args=("energiek.ogg",))
             thread.start()
 
     def play_sfx(self,):
