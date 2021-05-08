@@ -71,6 +71,9 @@ class Player(object):
         if self.grid.grid[player_pos[0]][player_pos[1]].type == CellType.NATURE:
             speed *= Constant.PLAYER_SPEED_GRASS_MULTIPLIER
 
+        if self.held_keys[pygame.K_LSHIFT]:
+            speed *=  Constant.PLAYER_SPEED_SLOW_WALKING_MULTIPLIER
+
         # Silly Python has no switch case statement >:-(
         delta_x = 0
         delta_y = 0
