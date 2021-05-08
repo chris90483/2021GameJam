@@ -35,8 +35,6 @@ class Main:
         self.settings = [self.Setting.MusicVolume, self.Setting.SfxVolume, self.Setting.ReturnToGame, self.Setting.QuitGame]
         self.current_setting_index = 0
 
-    # Do all necessary setup
-    def setup(self):
         self.audio_manager.play_song(song=Songs.ENERGIEK)
 
     # handle a pressed key event in the context of the game root
