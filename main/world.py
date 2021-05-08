@@ -10,6 +10,7 @@ from entities.dog_handler import DogHandler
 from main.camera import Camera
 from main.destination import Destination
 from main.grid import Grid
+from main.inventory import Inventory
 
 
 class World(object):
@@ -26,6 +27,7 @@ class World(object):
         self.destination_flag = DestinationFlag(self.destination, self.player)
         self.compass = Compass(self.destination, self.player, self.destination_flag)
         self.delivery_status = DeliveryStatus(self.destination, score)
+        self.inventory = Inventory(self)
 
     def handle_input(self, event):
         self.player.handle_input(event)
@@ -47,3 +49,5 @@ class World(object):
 
         self.zombie_handler.draw(screen, camera)
         self.dog_handler.draw(screen, camera)
+
+        self.inventory.draw(screen, camera)
