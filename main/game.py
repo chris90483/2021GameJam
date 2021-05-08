@@ -8,8 +8,9 @@ from main.world import World
 
 
 class Game(object):
-    def __init__(self, amount_tiles_x, amount_tiles_y):
-        self.world = World(amount_tiles_x, amount_tiles_y)
+    def __init__(self, amount_tiles_x, amount_tiles_y, audio_manager):
+        self.audio_manager = audio_manager
+        self.world = World(amount_tiles_x, amount_tiles_y, audio_manager)
         self.camera = Camera(self.world.player)
 
     def handle_input(self, event):

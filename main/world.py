@@ -15,11 +15,13 @@ from main.destination import Destination
 
 
 class World(object):
-    def __init__(self, amount_tiles_x, amount_tiles_y):
+    def __init__(self, amount_tiles_x, amount_tiles_y, audio_manager):
+        self.audio_manager = audio_manager
         self.amount_tiles_x = amount_tiles_x
         self.amount_tiles_y = amount_tiles_y
         self.grid = Grid(self.amount_tiles_x, self.amount_tiles_y)
-        self.player = Player(Constant.TILE_SIZE * self.grid.doominos_location[0], Constant.TILE_SIZE * self.grid.doominos_location[1], self)
+        self.player = Player(Constant.TILE_SIZE * self.grid.doominos_location[0],
+                             Constant.TILE_SIZE * self.grid.doominos_location[1], self, audio_manager)
         self.zombie_handler = ZombieHandler()
         self.emitter_handler = EmitterHandler(self.zombie_handler)
         self.destination = Destination(self.grid, self.player)

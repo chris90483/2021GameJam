@@ -11,7 +11,8 @@ from pygame.event import EventType
 
 
 class Player(object):
-    def __init__(self, x, y, world):
+    def __init__(self, x, y, world, audio_manager):
+        self.audio_manager = audio_manager
         self.x = x
         self.y = y
         self.angle = 0
@@ -24,6 +25,8 @@ class Player(object):
 
         self.world = world
         self.step_no = 0
+
+        self.moving = False
 
     def gen_texture(self):
         player_sprite = None
@@ -58,25 +61,26 @@ class Player(object):
         # Get mouse position
         mouse_x, mouse_y = pygame.mouse.get_pos()
         self.angle = atan2(- (Constant.SCREEN_HEIGHT // 2 - mouse_y), Constant.SCREEN_WIDTH // 2 - mouse_x)
-        moving = False
+
+        old_moving = self.moving
 
         # Silly Python has no switch case statement >:-(
         if self.held_keys[pygame.K_w] or self.held_keys[pygame.K_UP]:
             self.y -= 10
-            moving = True
+            self.moving = True
         if self.held_keys[pygame.K_s] or self.held_keys[pygame.K_DOWN]:
             self.y += 10
-            moving = True
+            self.moving = True
         if self.held_keys[pygame.K_a] or self.held_keys[pygame.K_LEFT]:
             self.x -= 10
-            moving = True
+            self.moving = True
         if self.held_keys[pygame.K_d] or self.held_keys[pygame.K_RIGHT]:
             self.x += 10
-            moving = True
+            self.moving = True
 
         self.step_no += 1
 
-        if self.step_no % 15 == 0 and moving:
+        if self.step_no % 15 == 0 and self.moving:
             self.world.emitter_handler.add_emitter(Footstep(self.x, self.y))
 
     def draw(self, screen: pygame.Surface, camera):

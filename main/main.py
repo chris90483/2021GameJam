@@ -4,7 +4,7 @@ import pygame
 import sys
 import time
 
-from audio.audio import AudioManagement, Songs
+from audio.audio import AudioManagement, Songs, SFX
 
 from main.game import Game
 from main.constants import Constant
@@ -27,9 +27,9 @@ class Main:
         self.window = pygame.display.set_mode((Constant.SCREEN_WIDTH, Constant.SCREEN_HEIGHT), 0, 32)
         pygame.font.init()
         self.font = pygame.font.SysFont("Arial", 20)
-        self.game = Game(Constant.GRID_WIDTH, Constant.GRID_HEIGHT)
-
         self.audio_management = AudioManagement()
+        self.game = Game(Constant.GRID_WIDTH, Constant.GRID_HEIGHT, audio_management)
+
 
         self.paused = False
 
@@ -102,7 +102,6 @@ class Main:
         self.game.draw(self.window)
 
     def run(self):
-        self.setup()
         while True:
             start_time = time.time()
 
@@ -189,8 +188,6 @@ class Main:
         self.window.blit(exit_textsurface,
                          (Constant.SCREEN_WIDTH / 2 - exit_textsurface.get_width() / 2,
                           Constant.SCREEN_HEIGHT / 4 + total_top_offset))
-
-
 
 
 if __name__ == '__main__':
