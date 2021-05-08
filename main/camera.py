@@ -13,12 +13,19 @@ class Camera(object):
         Computes screen position given a world position using player's position
         :param x: World x coordinate
         :param y: World y coordinate
-        :return: (screen_x, screen_y) and lots of love <3
+        :return: (screen_x, screen_y) and lots of love <3 Thanks Gerben love you too
         """
         screen_left_x = self.player.x - Constant.SCREEN_WIDTH // 2
         screen_top_y = self.player.y - Constant.SCREEN_HEIGHT // 2
 
         return x - screen_left_x, y - screen_top_y
+
+    def is_in_screen(self, surface: Surface, x, y):
+        screen_x, screen_y = self.compute_screen_position(x, y)
+        left_x, right_x = screen_x - surface.get_size()[0]//2, screen_x + surface.get_size()[0]//2
+        top_y, bottom_y = screen_y - surface.get_size()[1]//2, screen_y + surface.get_size()[1]//2
+
+        return bottom_y > 0 and top_y < Constant.SCREEN_HEIGHT and right_x > 0 and left_x < Constant.SCREEN_WIDTH, left_x, top_y
 
     def blit_surface_to_screen(self, screen: Surface, surface: Surface, x, y):
         """
@@ -29,10 +36,6 @@ class Camera(object):
         :param x: world x coordinate
         :param y: world y coordinate
         """
-        screen_x, screen_y = self.compute_screen_position(x, y)
-        left_x, right_x = screen_x - surface.get_size()[0]//2, screen_x + surface.get_size()[0]//2
-        top_y, bottom_y = screen_y - surface.get_size()[1]//2, screen_y + surface.get_size()[1]//2
-
-        # Check if it is visible and draw if it is
-        if bottom_y > 0 and top_y < Constant.SCREEN_HEIGHT and right_x > 0 and left_x < Constant.SCREEN_WIDTH:
+        in_screen, left_x, top_y = self.is_in_screen(surface, x, y)
+        if in_screen:
             screen.blit(surface, (left_x, top_y))
