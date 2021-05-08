@@ -2,14 +2,16 @@
     Defines all code for the player object
 """
 from collections import defaultdict
-from math import atan2, pi
+from math import atan2, pi, sqrt
 from main.constants import Constant
 import pygame
 from pygame.event import EventType
+from main.grid import CellType
 
 
 class Player(object):
-    def __init__(self, x, y):
+    def __init__(self, grid, x, y):
+        self.grid = grid
         self.x = x
         self.y = y
         self.angle = 0
@@ -53,15 +55,29 @@ class Player(object):
         mouse_x, mouse_y = pygame.mouse.get_pos()
         self.angle = atan2(- (Constant.SCREEN_HEIGHT//2 - mouse_y), Constant.SCREEN_WIDTH//2 - mouse_x)
 
+        speed = Constant.PLAYER_SPEED
+        player_pos = self.get_grid_position()
+        if self.grid.grid[player_pos[0]][player_pos[1]].type == CellType.NATURE:
+            speed *= Constant.PLAYER_SPEED_GRASS_MULTIPLIER
+
         # Silly Python has no switch case statement >:-(
+        delta_x = 0
+        delta_y = 0
         if self.held_keys[pygame.K_w] or self.held_keys[pygame.K_UP]:
-            self.y -= 10
+            delta_y -= speed
         if self.held_keys[pygame.K_s] or self.held_keys[pygame.K_DOWN]:
-            self.y += 10
+            delta_y += speed
         if self.held_keys[pygame.K_a] or self.held_keys[pygame.K_LEFT]:
-            self.x -= 10
+            delta_x -= speed
         if self.held_keys[pygame.K_d] or self.held_keys[pygame.K_RIGHT]:
-            self.x += 10
+            delta_x += speed
+
+        if delta_x != 0 and delta_y != 0:
+            delta_x /= sqrt(2)
+            delta_y /= sqrt(2)
+
+        self.x += delta_x
+        self.y += delta_y
 
     def draw(self, screen: pygame.Surface, camera):
         rotated = pygame.transform.rotate(self.gen_texture(), self.angle * (180.0/pi))
@@ -75,8 +91,8 @@ class Player(object):
         """
         if as_int:
             return (
-                (self.x + Constant.TILE_SIZE // 2) // Constant.TILE_SIZE,
-                (self.y + Constant.TILE_SIZE // 2) // Constant.TILE_SIZE,
+                int((self.x + Constant.TILE_SIZE // 2) // Constant.TILE_SIZE),
+                int((self.y + Constant.TILE_SIZE // 2) // Constant.TILE_SIZE),
             )
         else:
             return (
