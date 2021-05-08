@@ -1,6 +1,6 @@
 from random import choice
 from math import hypot
-from main.generate import CellType
+from main.grid import CellType
 
 class Destination:
     destination = None
