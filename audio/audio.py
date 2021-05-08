@@ -8,7 +8,7 @@ import pygame
 class Songs(Enum):
     ENERGIEK = "energiek.ogg",
     PIZZATHEME = "pizzatheme.ogg",
-    PIZZATHEMELOOP = "pizzathemeloopver.ogg",
+    PIZZATHEMELOOP = "pizzathemeloopver.wav",
 
 
 class SFX(Enum):
@@ -48,7 +48,7 @@ class AudioManagement:
             thread = Thread(target=self.load_song, args=("pizzatheme.ogg",))
             thread.start()
         if song == Songs.PIZZATHEMELOOP:
-            thread = Thread(target=self.load_song, args=("pizzathemeloopver.ogg",))
+            thread = Thread(target=self.load_song, args=("pizzathemeloopver.wav",))
             thread.start()
 
     def play_sfx(self,):
