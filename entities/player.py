@@ -17,6 +17,7 @@ class Player(object):
         self.held_keys = defaultdict(lambda: False)
         self.keyframes_walking = []
         self.keyframes_walking_animation_counter = 0
+        self.moving = False
         for x in range(1, 6):
             self.keyframes_walking.append(
                 pygame.image.load('./resources/png/animations/player/player_walking_' + str(x) + '.png'))
@@ -32,10 +33,7 @@ class Player(object):
         self.step_no = 0
 
     def gen_texture(self):
-        player_sprite = None
-        if self.held_keys[pygame.K_w] or self.held_keys[pygame.K_s] or self.held_keys[pygame.K_a] or self.held_keys[
-            pygame.K_d] or self.held_keys[pygame.K_UP] \
-                or self.held_keys[pygame.K_DOWN] or self.held_keys[pygame.K_LEFT] or self.held_keys[pygame.K_RIGHT]:
+        if self.moving:
             player_sprite = self.keyframes_walking[self.keyframes_walking_animation_counter // 5]
             self.keyframes_walking_animation_counter = \
                 (self.keyframes_walking_animation_counter + 1) % (5 * len(self.keyframes_walking))
@@ -71,6 +69,9 @@ class Player(object):
         if self.grid.grid[player_pos[0]][player_pos[1]].type == CellType.NATURE:
             speed *= Constant.PLAYER_SPEED_GRASS_MULTIPLIER
 
+        if self.held_keys[pygame.K_LSHIFT]:
+            speed *=  Constant.PLAYER_SPEED_SLOW_WALKING_MULTIPLIER
+
         # Silly Python has no switch case statement >:-(
         delta_x = 0
         delta_y = 0
@@ -89,16 +90,18 @@ class Player(object):
 
         new_grid_x = (self.x + delta_x + Constant.TILE_SIZE * 0.5) // Constant.TILE_SIZE
         new_grid_y = (self.y + delta_y + Constant.TILE_SIZE * 0.5) // Constant.TILE_SIZE
-        if self.grid.grid[int(new_grid_x)][int(new_grid_y)].type not in [CellType.BUILDING, CellType.DOOMINOS]:
+        if (delta_x != 0 or delta_y != 0) and \
+                self.grid.grid[int(new_grid_x)][int(new_grid_y)].type not in [CellType.BUILDING, CellType.DOOMINOS] and \
+                new_grid_x >= 0 and new_grid_y >= 0 and new_grid_x <= Constant.GRID_WIDTH and new_grid_y <= Constant.GRID_HEIGHT:
             self.x += delta_x
             self.y += delta_y
+            self.moving = True
+        else:
+            self.moving = False
 
         self.step_no += 1
 
-        if delta_x != 0 or delta_y != 0:
-            moving = True
-
-        if self.step_no % 15 == 0 and moving:
+        if self.step_no % 15 == 0 and self.moving:
             self.world.emitter_handler.add_emitter(Footstep(self.x, self.y))
 
     def draw(self, screen: pygame.Surface, camera):
