@@ -3,13 +3,15 @@
 """
 from collections import defaultdict
 from math import atan2, pi
+
+from audio.sound_emitter import Footstep
 from main.constants import Constant
 import pygame
 from pygame.event import EventType
 
 
 class Player(object):
-    def __init__(self, x, y):
+    def __init__(self, x, y, world):
         self.x = x
         self.y = y
         self.angle = 0
@@ -20,9 +22,13 @@ class Player(object):
             self.keyframes_walking.append(
                 pygame.image.load('./resources/png/animations/player/player_walking_' + str(x) + '.png'))
 
+        self.world = world
+        self.step_no = 0
+
     def gen_texture(self):
         player_sprite = None
-        if self.held_keys[pygame.K_w] or self.held_keys[pygame.K_s] or self.held_keys[pygame.K_a] or self.held_keys[pygame.K_d] or self.held_keys[pygame.K_UP] \
+        if self.held_keys[pygame.K_w] or self.held_keys[pygame.K_s] or self.held_keys[pygame.K_a] or self.held_keys[
+            pygame.K_d] or self.held_keys[pygame.K_UP] \
                 or self.held_keys[pygame.K_DOWN] or self.held_keys[pygame.K_LEFT] or self.held_keys[pygame.K_RIGHT]:
             player_sprite = self.keyframes_walking[self.keyframes_walking_animation_counter // 5]
             self.keyframes_walking_animation_counter = \
@@ -51,20 +57,30 @@ class Player(object):
     def step(self):
         # Get mouse position
         mouse_x, mouse_y = pygame.mouse.get_pos()
-        self.angle = atan2(- (Constant.SCREEN_HEIGHT//2 - mouse_y), Constant.SCREEN_WIDTH//2 - mouse_x)
+        self.angle = atan2(- (Constant.SCREEN_HEIGHT // 2 - mouse_y), Constant.SCREEN_WIDTH // 2 - mouse_x)
+        moving = False
 
         # Silly Python has no switch case statement >:-(
         if self.held_keys[pygame.K_w] or self.held_keys[pygame.K_UP]:
             self.y -= 10
+            moving = True
         if self.held_keys[pygame.K_s] or self.held_keys[pygame.K_DOWN]:
             self.y += 10
+            moving = True
         if self.held_keys[pygame.K_a] or self.held_keys[pygame.K_LEFT]:
             self.x -= 10
+            moving = True
         if self.held_keys[pygame.K_d] or self.held_keys[pygame.K_RIGHT]:
             self.x += 10
+            moving = True
+
+        self.step_no += 1
+
+        if self.step_no % 15 == 0 and moving:
+            self.world.emitter_handler.add_emitter(Footstep(self.x, self.y))
 
     def draw(self, screen: pygame.Surface, camera):
-        rotated = pygame.transform.rotate(self.gen_texture(), self.angle * (180.0/pi))
+        rotated = pygame.transform.rotate(self.gen_texture(), self.angle * (180.0 / pi))
         camera.blit_surface_to_screen(screen, rotated, self.x, self.y)
 
     def get_grid_position(self, as_int=True):
