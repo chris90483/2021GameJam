@@ -36,6 +36,14 @@ class Dog(object):
     def step(self):
         self.target_pos = (self.player.x, self.player.y)
 
+        # TODO: Bark every 2-6 seconds?
+        if self.following_player:
+            self.bark_delay_counter += 1
+            if self.bark_delay_counter % self.current_bark_delay == 0:
+                self.world.emitter_handler.add_emitter(DogBark(self.x, self.y))
+                self.current_bark_delay = random.randint(200, 300)
+                print("Emit bark")
+
         if distance((self.x, self.y), self.target_pos) < self.FOLLOW_RANGE:
             return
 
@@ -47,15 +55,6 @@ class Dog(object):
 
             self.x += cos(self.angle) * self.speed
             self.y += sin(self.angle) * self.speed
-
-        # TODO: Bark every 2-6 seconds?
-
-        if self.following_player:
-            self.bark_delay_counter += 1
-            if self.bark_delay_counter % self.current_bark_delay == 0:
-                self.world.emitter_handler.add_emitter(DogBark(self.x, self.y))
-                self.current_bark_delay = random.randint(200, 300)
-                print("Emit bark")
 
     def draw(self, screen: Surface, camera: Camera):
         rotated = pygame.transform.rotate(dog_texture, -self.angle * (180.0 / pi))
