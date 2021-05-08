@@ -4,6 +4,7 @@ import pygame
 
 from entities.flamethrower import Flamethrower
 from main.constants import Constant
+from main.item import Pizza
 
 
 class InventoryItem(Enum):
@@ -27,6 +28,7 @@ class Inventory(object):
         self.items = [None] * self.N_slots
 
         self.add_item(InventoryItem.FLAMETHROWER)
+        self.add_item(InventoryItem.PIZZA)
 
     def step(self):
         for item in self.items:
@@ -52,7 +54,6 @@ class Inventory(object):
                                                                   Constant.SCREEN_HEIGHT - 60,
                                                                   self.SLOT_WIDTH, self.SLOT_HEIGHT))
 
-
             item_to_draw = self.items[current_item_to_draw]
             if item_to_draw:
                 self.items[current_item_to_draw].draw_inventory_slot(window, camera, left_offset, Constant.SCREEN_HEIGHT - 60)
@@ -63,14 +64,22 @@ class Inventory(object):
             print("Inventory full! Unlucky bro")
             return False
 
-        if item == InventoryItem.FLAMETHROWER:
-            for i in range(len(self.items)):
-                if self.items[i] is None:
+        for i in range(len(self.items)):
+            if self.items[i] is None:
+                if item == InventoryItem.FLAMETHROWER:
                     self.items[i] = Flamethrower(self.world.player,
                                                  item_type=InventoryItem.FLAMETHROWER,
-                                                 # TODO: Change to flamethrower icon
-                                                 inventory_icon_file_name="pizza_inventory_icon.png")
+                                                 inventory_icon_file_name="flamethrower_inventory_icon.png")
                     return True
+                if item == InventoryItem.PIZZA:
+                    self.items[i] = Pizza(InventoryItem.PIZZA, inventory_icon_file_name="pizza_inventory_icon.png")
+                    return True
+
+    def remove_item(self, to_remove_item: InventoryItem):
+        for i in range(len(self.items)):
+            if self.items[i]:
+                if self.items[i].item_type == to_remove_item:
+                    self.items[i] = None
 
     def change_current_selected_item(self, direction):
         if direction == "left":

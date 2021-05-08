@@ -23,7 +23,7 @@ class World(object):
         self.zombie_handler = ZombieHandler(self)
         self.dog_handler = DogHandler(self.player, self)
         self.emitter_handler = EmitterHandler(self.zombie_handler)
-        self.destination = Destination(self.grid, self.player, score)
+        self.destination = Destination(self.grid, self.player, score, self)
         self.destination_flag = DestinationFlag(self.destination, self.player)
         self.compass = Compass(self.destination, self.player, self.destination_flag)
         self.delivery_status = DeliveryStatus(self.destination, score)
