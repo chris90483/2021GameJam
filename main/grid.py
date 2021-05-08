@@ -429,4 +429,4 @@ class Grid:
         for x in range(0, self.width):
             for y in range(0, self.height):
                 current_cell = self.grid[x][y]
-                camera.blit_surface_to_screen(screen, current_cell.surface, Constant.TILE_SIZE * x, Constant.TILE_SIZE * y)
+                camera.blit_surface_to_screen(screen, current_cell.surface, Constant.TILE_SIZE * x, Constant.TILE_SIZE * y, centered=False)

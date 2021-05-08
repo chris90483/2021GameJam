@@ -4,6 +4,8 @@ from threading import Thread
 
 import pygame
 
+from main.util import distance
+
 
 class Songs(Enum):
     ENERGIEK = "energiek.wav",
@@ -31,15 +33,24 @@ class SoundEmitter(ABC):
     def get_soundfile(self):
         pass
 
+    def get_loudness_at_position(self, x, y):
+        dist = distance((x, y), (self.x, self.y))
+        if dist == 0:
+            return self.get_loudness()
+        return (self.get_loudness())/dist
+
     def step(self):
         self.step_v += 1
-
+        # The emitter will be removed after 100 steps
         return self.step_v > 100
 
     def draw(self, screen, camera):
-        if self.step_v < 30:
+        # Circles for debug:
+        if 2 < self.step_v < 30:
             screen_x, screen_y = camera.compute_screen_position(self.x, self.y)
-            pygame.draw.circle(screen, (246, 1, 1), (screen_x, screen_y), self.step_v * 2 + 1, 1)
+            pygame.draw.circle(screen, (255, 255, 255, int(30 * ((15 - abs(15 - self.step_v))/30.0))),
+                               (int(screen_x), int(screen_y)),
+                               int(self.get_loudness()), 0)
 
 
 class AudioManager:

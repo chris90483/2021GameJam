@@ -20,22 +20,27 @@ class Camera(object):
 
         return x - screen_left_x, y - screen_top_y
 
-    def is_in_screen(self, surface: Surface, x, y):
+    def is_in_screen(self, surface: Surface, x, y, centered=True):
         screen_x, screen_y = self.compute_screen_position(x, y)
-        left_x, right_x = screen_x - surface.get_size()[0]//2, screen_x + surface.get_size()[0]//2
-        top_y, bottom_y = screen_y - surface.get_size()[1]//2, screen_y + surface.get_size()[1]//2
+        if centered:
+            left_x, right_x = screen_x - surface.get_size()[0]//2, screen_x + surface.get_size()[0]//2
+            top_y, bottom_y = screen_y - surface.get_size()[1]//2, screen_y + surface.get_size()[1]//2
+        else:
+            left_x, right_x = screen_x, screen_x + surface.get_size()[0]
+            top_y, bottom_y = screen_y, screen_y + surface.get_size()[1]
 
         return bottom_y > 0 and top_y < Constant.SCREEN_HEIGHT and right_x > 0 and left_x < Constant.SCREEN_WIDTH, left_x, top_y
 
-    def blit_surface_to_screen(self, screen: Surface, surface: Surface, x, y):
+    def blit_surface_to_screen(self, screen: Surface, surface: Surface, x, y, centered=True):
         """
         Blits (draws) surface to the screen (if visible).
             The surface will be drawn such that its world coordinates are at the center of the surface
+        :param centered: Whether the Surface is centered on the x,y or whether x,y is the top left (used for tiles)
         :param screen: The screen Surface
         :param surface: The surface to draw
         :param x: world x coordinate
         :param y: world y coordinate
         """
-        in_screen, left_x, top_y = self.is_in_screen(surface, x, y)
+        in_screen, left_x, top_y = self.is_in_screen(surface, x, y, centered)
         if in_screen:
             screen.blit(surface, (left_x, top_y))

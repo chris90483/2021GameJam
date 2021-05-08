@@ -10,6 +10,8 @@ from main.constants import Constant
 import pygame
 from pygame.event import EventType
 from main.grid import CellType
+from main.util import distance
+from main.inventory import Inventory
 
 
 class Player(object):
@@ -28,6 +30,7 @@ class Player(object):
         self.set_start_location()
         self.world = world
         self.step_no = 0
+        self.inventory = Inventory(self)
 
     def reset(self):
         self.angle = 0
@@ -41,20 +44,40 @@ class Player(object):
             x = self.grid.doominos_location[0] + delta_x
             y = self.grid.doominos_location[1] + delta_y
             if self.grid.grid[x][y].type == CellType.ROAD:
-                self.x = x * Constant.TILE_SIZE
-                self.y = y * Constant.TILE_SIZE
+                self.x = x * Constant.TILE_SIZE + Constant.TILE_SIZE//2
+                self.y = y * Constant.TILE_SIZE + Constant.TILE_SIZE//2
                 break
 
     def gen_texture(self):
-        if self.moving:
+        if self.moving and not self.inventory.flamethrower.activated:
             player_sprite = self.keyframes_walking[self.keyframes_walking_animation_counter // 5]
             self.keyframes_walking_animation_counter = \
                 (self.keyframes_walking_animation_counter + 1) % (5 * len(self.keyframes_walking))
+
+            player_sprite = pygame.transform.rotate(player_sprite, 90)
+            player_sprite = pygame.transform.scale(player_sprite, (50, 50))
+        elif self.inventory.flamethrower.activated:
+
+            if not self.inventory.flamethrower.empty:
+                player_sprite = self.inventory.flamethrower.keyframes_fire_spitting[
+                    self.inventory.flamethrower.keyframes_fire_spitting_counter // 5]
+                self.inventory.flamethrower.keyframes_fire_spitting_counter = \
+                    (self.inventory.flamethrower.keyframes_fire_spitting_counter + 1) \
+                    % (5 * len(self.inventory.flamethrower.keyframes_fire_spitting))
+            else:
+                player_sprite = self.inventory.flamethrower.keyframes_empty[
+                    self.inventory.flamethrower.keyframes_empty_counter // 5]
+                self.inventory.flamethrower.keyframes_empty_counter = \
+                    (self.inventory.flamethrower.keyframes_empty_counter + 1) \
+                    % (5 * len(self.inventory.flamethrower.keyframes_empty))
+            player_sprite = pygame.transform.rotate(player_sprite, 90)
+            player_sprite = pygame.transform.scale(player_sprite, (400, 100))
         else:
             player_sprite = pygame.image.load('./resources/png/player_standing.png')
 
-        player_sprite = pygame.transform.rotate(player_sprite, 90)
-        player_sprite = pygame.transform.scale(player_sprite, (50, 50))
+            player_sprite = pygame.transform.rotate(player_sprite, 90)
+            player_sprite = pygame.transform.scale(player_sprite, (50, 50))
+
         return player_sprite
         # texture = pygame.Surface((40, 40))
         # texture.fill((246, 1, 1), rect=(10, 10, 20, 20))
@@ -66,7 +89,10 @@ class Player(object):
         :param event: pygame event
         """
         if event.type == pygame.KEYDOWN:
-            self.held_keys[event.key] = True
+            if event.key == pygame.K_f:
+                self.inventory.flamethrower.toggle()
+            else:
+                self.held_keys[event.key] = True
 
         elif event.type == pygame.KEYUP:
             self.held_keys[event.key] = False
@@ -100,10 +126,11 @@ class Player(object):
             delta_x /= sqrt(2)
             delta_y /= sqrt(2)
 
-        new_grid_x = (self.x + delta_x + Constant.TILE_SIZE * 0.5) // Constant.TILE_SIZE
-        new_grid_y = (self.y + delta_y + Constant.TILE_SIZE * 0.5) // Constant.TILE_SIZE
+        new_grid_x = (self.x + delta_x) // Constant.TILE_SIZE
+        new_grid_y = (self.y + delta_y) // Constant.TILE_SIZE
 
         old_moving = self.moving
+
 
         if (delta_x != 0 or delta_y != 0) and \
                 new_grid_x >= 0 and new_grid_y >= 0 and new_grid_x < Constant.GRID_WIDTH and new_grid_y < Constant.GRID_HEIGHT:
@@ -130,11 +157,14 @@ class Player(object):
         self.step_no += 1
 
         if self.step_no % 15 == 0 and self.moving:
-            self.world.emitter_handler.add_emitter(Footstep(self.x, self.y))
+            self.world.emitter_handler.add_emitter(Footstep(self.x, self.y, distance((0, 0), (delta_x, delta_y))))
+
+        self.inventory.step()
 
     def draw(self, screen: pygame.Surface, camera):
         rotated = pygame.transform.rotate(self.gen_texture(), self.angle * (180.0 / pi))
         camera.blit_surface_to_screen(screen, rotated, self.x, self.y)
+        self.inventory.draw(screen, camera)
 
     def get_grid_position(self, as_int=True):
         """
@@ -144,11 +174,11 @@ class Player(object):
         """
         if as_int:
             return (
-                int((self.x + Constant.TILE_SIZE // 2) // Constant.TILE_SIZE),
-                int((self.y + Constant.TILE_SIZE // 2) // Constant.TILE_SIZE),
+                int(self.x // Constant.TILE_SIZE),
+                int(self.y // Constant.TILE_SIZE),
             )
         else:
             return (
-                (self.x + Constant.TILE_SIZE / 2) / Constant.TILE_SIZE,
-                (self.y + Constant.TILE_SIZE / 2) / Constant.TILE_SIZE,
+                self.x / Constant.TILE_SIZE,
+                self.y / Constant.TILE_SIZE,
             )
