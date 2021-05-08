@@ -4,6 +4,7 @@ from main.camera import Camera
 from main.grid import CellType, Cell, Grid
 from entities.player import Player
 from entities.compass import Compass
+from entities.delivery_status import DeliveryStatus
 from main.camera import Camera
 from main.grid import Grid
 from main.constants import Constant
@@ -18,6 +19,7 @@ class World(object):
         self.player = Player(Constant.TILE_SIZE * self.grid.doominos_location[0], Constant.TILE_SIZE * self.grid.doominos_location[1])
         self.destination = Destination(self.grid, self.player)
         self.compass = Compass(self.destination, self.player)
+        self.delivery_status = DeliveryStatus(self.destination)
 
     def handle_input(self, event):
         self.player.handle_input(event)
@@ -30,3 +32,4 @@ class World(object):
         self.grid.draw(screen, camera)
         self.player.draw(screen, camera)
         self.compass.draw(screen)
+        self.delivery_status.draw(screen)
