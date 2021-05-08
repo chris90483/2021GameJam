@@ -80,7 +80,7 @@ class Player(object):
         """
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_f:
-                self.inventory.flamethrower.toggle()
+                self.world.inventory.items[0].toggle()
             else:
                 self.held_keys[event.key] = True
 
