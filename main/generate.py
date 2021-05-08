@@ -43,6 +43,8 @@ class Cell:
 
 
 class Grid:
+    doominos_location = None
+
     def __init__(self, width, height):
         """
         Initialize the grid
@@ -156,6 +158,7 @@ class Grid:
         doominoes_y = self.height // 2 + 1
         self.grid[doominoes_x][doominoes_y].type = CellType.DOOMINOS
         self.grid[doominoes_x][doominoes_y].surface = CellType.surface_of(CellType.DOOMINOS)
+        self.doominos_location = (doominoes_x, doominoes_y)
 
         if not self.is_connected_to(doominoes_x, doominoes_y, CellType.ROAD):
             direction = randint(0, 3)
