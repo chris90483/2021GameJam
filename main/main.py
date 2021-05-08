@@ -2,14 +2,17 @@ import pygame
 import sys
 import time
 
+from audio.audio import AudioManagement, Songs
+
 from main.game import Game
 
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
-FRAME_RATE = 60
+FRAME_RATE = 60 
 offset = 0
 
 # setup stuff
+pygame.mixer.pre_init(44100, -16, 2, 512)
 pygame.init()
 window = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
 pygame.font.init()
@@ -17,11 +20,15 @@ font = pygame.font.SysFont("Arial", 20)
 msg_surface = None
 game = Game(12, 12)
 
+audio_management = AudioManagement()
+
+
 # Do all necessary setup
 def setup():
     global msg_surface
     msg_surface = font.render("it works!", False, (255, 255, 255))
 
+    audio_management.play_song(song=Songs.ENERGIEK)
 
 
 # handle a pressed key event in the context of the game root
