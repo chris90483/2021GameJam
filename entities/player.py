@@ -3,6 +3,8 @@
 """
 from collections import defaultdict
 from math import atan2, pi, sqrt
+
+from audio.audio import SFX
 from audio.sound_emitter import Footstep
 from main.constants import Constant
 import pygame
@@ -11,13 +13,15 @@ from main.grid import CellType
 
 
 class Player(object):
-    def __init__(self, grid, world):
+    def __init__(self, grid, world, audio_manager):
+        self.audio_manager = audio_manager
         self.grid = grid
         self.angle = 0
         self.held_keys = defaultdict(lambda: False)
         self.keyframes_walking = []
         self.keyframes_walking_animation_counter = 0
         self.moving = False
+        self.moving_sound = None
         for x in range(1, 6):
             self.keyframes_walking.append(
                 pygame.image.load('./resources/png/animations/player/player_walking_' + str(x) + '.png'))
@@ -62,7 +66,6 @@ class Player(object):
         # Get mouse position
         mouse_x, mouse_y = pygame.mouse.get_pos()
         self.angle = atan2(- (Constant.SCREEN_HEIGHT // 2 - mouse_y), Constant.SCREEN_WIDTH // 2 - mouse_x)
-        moving = False
 
         speed = Constant.PLAYER_SPEED
         player_pos = self.get_grid_position()
@@ -90,6 +93,9 @@ class Player(object):
 
         new_grid_x = (self.x + delta_x + Constant.TILE_SIZE * 0.5) // Constant.TILE_SIZE
         new_grid_y = (self.y + delta_y + Constant.TILE_SIZE * 0.5) // Constant.TILE_SIZE
+
+        old_moving = self.moving
+
         if (delta_x != 0 or delta_y != 0) and \
                 self.grid.grid[int(new_grid_x)][int(new_grid_y)].type not in [CellType.BUILDING, CellType.DOOMINOS] and \
                 new_grid_x >= 0 and new_grid_y >= 0 and new_grid_x <= Constant.GRID_WIDTH and new_grid_y <= Constant.GRID_HEIGHT:
@@ -98,6 +104,17 @@ class Player(object):
             self.moving = True
         else:
             self.moving = False
+            if self.moving_sound:
+                self.moving_sound.stop()
+                self.moving_sound = None
+
+        if not old_moving and self.moving:
+            self.moving_sound = self.audio_manager.play_sfx(SFX.FAST_WALK)
+
+        if not self.moving:
+            if self.moving_sound:
+                self.moving_sound.stop()
+                self.moving_sound = None
 
         self.step_no += 1
 
