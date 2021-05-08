@@ -1,22 +1,21 @@
 """
-    This class will hold game entities and will call the draw and step methods of these entities
+    This class will hold the world and all other game features
 """
 from pygame.surface import Surface
 
-from entities.player import Player
+from main.world import World
 
-import pygame
 
 class Game(object):
-    def __init__(self):
-        self.player = Player(400, 400)
+    def __init__(self, amount_tiles_x, amount_tiles_y):
+        self.world = World(amount_tiles_x, amount_tiles_y)
 
     def handle_input(self, event):
-        self.player.handle_input(event)
+        self.world.handle_input(event)
 
     def step(self):
-        self.player.step()
+        self.world.step()
 
     def draw(self, screen: Surface):
-        self.player.draw(screen)
+        self.world.draw(screen)
 
