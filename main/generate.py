@@ -43,10 +43,10 @@ class Grid:
         return 0 <= x < self.width and 0 <= y < self.height
 
     def is_connected_to(self, x, y, type):
-        return self.grid[x + 1][y].type == type or \
-            self.grid[x - 1][y].type == type or \
-            self.grid[x][y + 1].type == type or \
-            self.grid[x][y - 1].type == type
+        return (x + 1 < self.width and self.grid[x + 1][y].type == type) or \
+               (x - 1 >= 0 and self.grid[x - 1][y].type == type) or \
+               (y + 1 < self.height and self.grid[x][y + 1].type == type) or \
+               (y - 1 >= 0 and self.grid[x][y - 1].type == type)
 
     def generate(self):
         self.generate_roads()
@@ -139,4 +139,4 @@ class Grid:
             print('')
 
 
-Grid(51, 51).print_grid()
+Grid(50, 50).print_grid()
