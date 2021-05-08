@@ -57,8 +57,11 @@ class Dog(object):
             self.y += sin(self.angle) * self.speed
 
     def draw(self, screen: Surface, camera: Camera):
-        rotated = pygame.transform.rotate(dog_texture, -self.angle * (180.0 / pi))
-        camera.blit_surface_to_screen(screen, rotated, self.x, self.y)
+        if self.speed > 0.0:
+            pass
+        else:
+            rotated = pygame.transform.rotate(dog_texture, -self.angle * (180.0 / pi))
+            camera.blit_surface_to_screen(screen, rotated, self.x, self.y)
 
     def hear(self, emitter: SoundEmitter):
         # TODO: Make this depend on loudness :)
