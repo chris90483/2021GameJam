@@ -91,8 +91,8 @@ class Player(object):
         new_grid_x = (self.x + delta_x + Constant.TILE_SIZE * 0.5) // Constant.TILE_SIZE
         new_grid_y = (self.y + delta_y + Constant.TILE_SIZE * 0.5) // Constant.TILE_SIZE
         if (delta_x != 0 or delta_y != 0) and \
-                self.grid.grid[int(new_grid_x)][int(new_grid_y)].type not in [CellType.BUILDING, CellType.DOOMINOS] and \
-                new_grid_x >= 0 and new_grid_y >= 0 and new_grid_x <= Constant.GRID_WIDTH and new_grid_y <= Constant.GRID_HEIGHT:
+                new_grid_x >= 0 and new_grid_y >= 0 and new_grid_x < Constant.GRID_WIDTH and new_grid_y < Constant.GRID_HEIGHT and \
+                self.grid.grid[int(new_grid_x)][int(new_grid_y)].type not in [CellType.BUILDING, CellType.DOOMINOS]:
             self.x += delta_x
             self.y += delta_y
             self.moving = True
