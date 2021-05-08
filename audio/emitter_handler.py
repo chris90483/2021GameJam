@@ -1,6 +1,6 @@
 import time
 from queue import PriorityQueue, Queue
-from threading import Thread
+from threading import Thread, Lock
 
 import pygame
 from pygame.surface import Surface
@@ -17,37 +17,47 @@ class EmitterHandler(object):
         self.active_emitters = PriorityQueue()
         self.new_emitters = PriorityQueue()
         self.running = True
-        self.current_emitter = None
+        self.current_emitters = set()
         self.zombie_handler = zombie_handler
+        self.lock = Lock()
         self.emitter_surface = Surface((Constant.SCREEN_WIDTH, Constant.SCREEN_HEIGHT), pygame.SRCALPHA)
         self.thread = Thread(target=self.handler_thread)
         self.thread.start()
 
     def add_emitter(self, emitter: SoundEmitter):
-        self.current_emitter = emitter
+        self.lock.acquire()
+        self.current_emitters.add(emitter)
+        self.lock.release()
 
     def handler_thread(self):
         while self.running:
             zombies = self.zombie_handler.get_zombies()
-
-            if self.current_emitter is not None:
+            self.lock.acquire()
+            for emitter in self.current_emitters:
                 for zombie in zombies:
-                    zombie.hear(self.current_emitter)
+                    zombie.hear(emitter)
+
+            self.lock.release()
 
             time.sleep(0.1)
 
     def step(self):
-        if self.current_emitter is not None:
-            delete_emitter = self.current_emitter.step()
+        self.lock.acquire()
+        to_delete = set()
+        for emitter in self.current_emitters:
+            delete_emitter = emitter.step()
             if delete_emitter:
-                self.current_emitter = None
+                to_delete.add(emitter)
+        self.current_emitters -= to_delete
+        self.lock.release()
 
     def draw(self, screen, camera):
-
-        if self.current_emitter is not None:
+        self.lock.acquire()
+        for emitter in self.current_emitters:
             self.emitter_surface.fill((0, 0, 0, 0))
-            self.current_emitter.draw(self.emitter_surface, camera)
+            emitter.draw(self.emitter_surface, camera)
             screen.blit(self.emitter_surface, (0, 0))
+        self.lock.release()
 
     def __del__(self):
         # Stop thread on delete

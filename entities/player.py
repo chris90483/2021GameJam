@@ -50,13 +50,13 @@ class Player(object):
 
             if not self.world.inventory.items[0].empty:
                 player_sprite = self.world.inventory.items[0].keyframes_fire_spitting[
-                    self.world.inventory.items[0].keyframes_fire_spitting_counter]
+                    self.world.inventory.items[0].keyframes_fire_spitting_counter // 5]
                 self.world.inventory.items[0].keyframes_fire_spitting_counter = \
                     (self.world.inventory.items[0].keyframes_fire_spitting_counter + 1) \
                     % len(self.world.inventory.items[0].keyframes_fire_spitting)
             else:
                 player_sprite = self.world.inventory.items[0].keyframes_empty[
-                    self.world.inventory.items[0].keyframes_empty_counter]
+                    self.world.inventory.items[0].keyframes_empty_counter // 5]
                 self.world.inventory.items[0].keyframes_empty_counter = \
                     (self.world.inventory.items[0].keyframes_empty_counter + 1) \
                     % len(self.world.inventory.items[0].keyframes_empty)
@@ -80,7 +80,7 @@ class Player(object):
         """
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_f:
-                self.world.inventory.items[0].toggle()
+                self.inventory.flamethrower.toggle()
             else:
                 self.held_keys[event.key] = True
 

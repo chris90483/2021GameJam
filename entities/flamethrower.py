@@ -14,12 +14,12 @@ class Flamethrower(Item):
         self.empty = False
         self.keyframes_fire_spitting_counter = 0
         self.keyframes_fire_spitting = []
-        for x in range(1, 2):
+        for x in range(1, 4):
             self.keyframes_fire_spitting.append(pygame.image.load("./resources/png/animations/flamethrower/fire_spitting_" + str(x) + ".png"))
 
         self.keyframes_empty_counter = 0
         self.keyframes_empty = []
-        for x in range(1, 2):
+        for x in range(1, 7):
             self.keyframes_empty.append(pygame.image.load("./resources/png/animations/flamethrower/empty_" + str(x) + ".png"))
 
     def toggle(self):
