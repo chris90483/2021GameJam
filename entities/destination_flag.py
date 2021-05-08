@@ -15,10 +15,6 @@ class DestinationFlag(object):
             self.keyframes.append(pygame.transform.scale(pygame.image.load(
                 "./resources/png/animations/destination/destination_" + str(x) + ".png"), (225, 225)))
 
-    def step(self, destination: Destination):
-        if not self.destination == destination:
-            self.destination = destination
-
     def draw(self, screen: pygame.Surface, camera: Camera):
         camera.blit_surface_to_screen(screen, self.keyframes[self.animation_counter // 10],
                                       self.destination.destination[0] * Constant.TILE_SIZE,
