@@ -3,11 +3,14 @@ from enum import Enum
 
 import pygame
 
+from main.camera import Camera
+from main.constants import Constant
+
 
 class CellType(Enum):
     EMPTY = 0
-    BUILDING = 1,
-    ROAD = 2,
+    BUILDING = 1
+    ROAD = 2
     NATURE = 3
     DOOMINOS = 4
 
@@ -32,6 +35,7 @@ class CellType(Enum):
             return pygame.image.load("./resources/png/tiles/street_corner.png")
         elif road_piece == "STRAIGHT":
             return pygame.image.load("./resources/png/tiles/street_straight.png")
+
 
 class Cell:
     type = None
@@ -263,22 +267,42 @@ class Grid:
 
         if not self.is_connected_to(doominoes_x, doominoes_y, CellType.ROAD):
             direction = randint(0, 3)
-            if 0 <= direction <= 1:
-                # Connect via vertical road
-                delta = -1 if direction == 0 else 1
-                y = doominoes_y + delta
-                while self.grid[doominoes_x][y].type != CellType.ROAD:
-                    self.grid[doominoes_x][y].type = CellType.ROAD
-                    self.grid[doominoes_x][y].surface = CellType.surface_of(CellType.ROAD)
-                    y += delta
-            else:
-                # Connect via horizontal road
-                delta = -1 if direction == 2 else 1
-                x = doominoes_x + delta
-                while self.grid[x][doominoes_y].type != CellType.ROAD:
-                    self.grid[x][doominoes_y].type = CellType.ROAD
-                    self.grid[x][doominoes_y].surface = CellType.surface_of(CellType.ROAD)
-                    x += delta
+            connected = False
+            while not connected:
+                x_delta = 0
+                if direction == 0:
+                    x_delta = -1
+                elif direction == 1:
+                    x_delta = 1
+                x = doominoes_x + x_delta
+
+                y_delta = 0
+                if direction == 2:
+                    y_delta = -1
+                elif direction == 3:
+                    y_delta = 1
+                y = doominoes_y + y_delta
+
+                # Check if there is a road in this direction
+                while self.is_in_grid(x, y):
+                    if self.is_connected_to(x, y, CellType.ROAD):
+                        connected = True
+                        break
+                    x += x_delta
+                    y += y_delta
+
+                if not connected:
+                    # Try a different direction
+                    direction = (direction + 1) % 4
+                    continue
+
+                x = doominoes_x + x_delta
+                y = doominoes_y + y_delta
+                while not self.is_connected_to(x, y, CellType.ROAD):
+                    self.grid[x][y].type = CellType.ROAD
+                    self.grid[x][y].surface = CellType.surface_of(CellType.ROAD)
+                    x += x_delta
+                    y += y_delta
 
     def generate_buildings_and_nature(self):
         """
@@ -315,8 +339,8 @@ class Grid:
                     print('  ', end='')
             print('')
 
-    def draw(self, screen: pygame.Surface):
+    def draw(self, screen: pygame.Surface, camera: Camera):
         for x in range(0, self.width):
             for y in range(0, self.height):
                 current_cell = self.grid[x][y]
-                screen.blit(current_cell.surface, (256 * x, 256 * y))
+                camera.blit_surface_to_screen(screen, current_cell.surface, Constant.TILE_SIZE * x, Constant.TILE_SIZE * y)
