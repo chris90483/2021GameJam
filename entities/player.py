@@ -14,10 +14,21 @@ class Player(object):
         self.y = y
         self.angle = 0
         self.held_keys = defaultdict(lambda: False)
-        self.texture = self.gen_texture()
+        self.keyframes_walking = []
+        self.keyframes_walking_animation_counter = 0
+        for x in range(1, 6):
+            self.keyframes_walking.append(
+                pygame.image.load('./resources/png/animations/player/player_walking_' + str(x) + '.png'))
 
     def gen_texture(self):
-        player_sprite = pygame.image.load('./resources/png/player_standing.png')
+        player_sprite = None
+        if self.held_keys[pygame.K_w] or self.held_keys[pygame.K_s] or self.held_keys[pygame.K_a] or self.held_keys[pygame.K_d]:
+            player_sprite = self.keyframes_walking[self.keyframes_walking_animation_counter // 5]
+            self.keyframes_walking_animation_counter = \
+                (self.keyframes_walking_animation_counter + 1) % (5 * len(self.keyframes_walking))
+        else:
+            player_sprite = pygame.image.load('./resources/png/player_standing.png')
+
         player_sprite = pygame.transform.rotate(player_sprite, 90)
         player_sprite = pygame.transform.scale(player_sprite, (50, 50))
         return player_sprite
@@ -52,6 +63,6 @@ class Player(object):
             self.x += 10
 
     def draw(self, screen: pygame.Surface):
-        rotated = pygame.transform.rotate(self.texture, self.angle * (180.0/pi))
+        rotated = pygame.transform.rotate(self.gen_texture(), self.angle * (180.0/pi))
         surf_w, surf_h = rotated.get_size()
         screen.blit(rotated, (self.x - surf_w//2, self.y - surf_h//2))

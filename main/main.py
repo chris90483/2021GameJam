@@ -34,19 +34,19 @@ def handle_key_press(event_key):
 
 # Handle all pygame events
 def handle_events():
-        for event in pygame.event.get():
-            game.handle_input(event)
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                handle_key_press(event.key)
+    for event in pygame.event.get():
+        game.handle_input(event)
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+        if event.type == pygame.KEYDOWN:
+            handle_key_press(event.key)
 
 
 # Do all updates to the game state in this function
 def update_state():
     global offset, window
-    window.fill((0, 0, 0))
+    window.fill((0, 128, 0))
     game.step()
 
     object_width = msg_surface.get_width()
