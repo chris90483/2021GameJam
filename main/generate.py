@@ -79,6 +79,21 @@ class Grid:
                 cells.append(self.grid[x][y])
         return cells
 
+    def get_grid_cells_of_type(self, type):
+        """
+        Get all grid cells of the specified type
+        :param type: type of the cell
+        :type type: CellType
+        :return: list of cells
+        :rtype: [Cell]
+        """
+        cells = []
+        for x in range(0, self.width):
+            for y in range(0, self.height):
+                if self.grid[x][y].type == type:
+                    cells.append(self.grid[x][y])
+        return cells
+
     def is_in_grid(self, x, y):
         """
         Checks if the specified coordinate is a valid coordinate
