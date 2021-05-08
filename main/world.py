@@ -1,5 +1,5 @@
 from pygame.surface import Surface
-from main.generate import CellType, Cell, Grid
+from main.grid import CellType, Cell, Grid
 from entities.player import Player
 
 class World(object):
