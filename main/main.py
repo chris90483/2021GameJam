@@ -15,7 +15,8 @@ class Main:
     class Setting(Enum):
         MusicVolume = "music_volume",
         SfxVolume = "sfx_volume",
-        Exit = "exit"
+        ReturnToGame = "return_to_game"
+        QuitGame = "quit_game"
 
     def __init__(self):
         self.offset = 0
@@ -32,7 +33,7 @@ class Main:
 
         self.paused = False
 
-        self.settings = [self.Setting.MusicVolume, self.Setting.Exit]
+        self.settings = [self.Setting.MusicVolume, self.Setting.SfxVolume, self.Setting.ReturnToGame, self.Setting.QuitGame]
         self.current_setting_index = 0
 
     # Do all necessary setup
@@ -61,7 +62,17 @@ class Main:
                 elif event_key == pygame.K_RIGHT:
                     self.audio_management.update_music_audio_level('right')
 
-            if self.settings[self.current_setting_index] == self.Setting.Exit:
+            if self.settings[self.current_setting_index] == self.Setting.SfxVolume:
+                if event_key == pygame.K_LEFT:
+                    self.audio_management.update_sfx_audio_level('left')
+                elif event_key == pygame.K_RIGHT:
+                    self.audio_management.update_sfx_audio_level('right')
+
+            if self.settings[self.current_setting_index] == self.Setting.ReturnToGame:
+                if event_key == pygame.K_RETURN:
+                    self.paused = False
+
+            if self.settings[self.current_setting_index] == self.Setting.QuitGame:
                 if event_key == pygame.K_RETURN:
                     pygame.quit()
                     sys.exit()
@@ -111,11 +122,12 @@ class Main:
             pygame.display.update()
 
     def render_pause_screen(self):
+        default_gray = (123, 123, 123)
         default_black = (0, 0, 0)
 
         total_top_offset = 0
 
-        pygame.draw.rect(self.window, (255, 255, 255), pygame.Rect(Constant.SCREEN_WIDTH / 2 - 400 / 2, Constant.SCREEN_HEIGHT / 4, 400, 150))
+        pygame.draw.rect(self.window, (255, 255, 255), pygame.Rect(Constant.SCREEN_WIDTH / 2 - 400 / 2, Constant.SCREEN_HEIGHT / 4, 400, 250))
 
         paused_font = pygame.font.SysFont("Arial", 50)
         textsurface = paused_font.render('Game Paused', False, (0, 0, 0))
@@ -127,11 +139,11 @@ class Main:
         volume_font = pygame.font.SysFont("Arial", 24)
         # print(self.current_setting_index)
         # print(self.settings[self.current_setting_index])
-        volume_text = 'Volume ' + str(int(self.audio_management.music_audio_level * 100)) + "%"
+        volume_text = 'Music Volume ' + str(int(self.audio_management.music_audio_level * 100)) + "%"
         if self.settings[self.current_setting_index] == self.Setting.MusicVolume:
-            vol_textsurface = volume_font.render(volume_text, False, (123, 123, 123))
-        else:
             vol_textsurface = volume_font.render(volume_text, False, default_black)
+        else:
+            vol_textsurface = volume_font.render(volume_text, False, default_gray)
 
         total_top_offset += vol_textsurface.get_height()
 
@@ -139,11 +151,38 @@ class Main:
                          (Constant.SCREEN_WIDTH / 2 - vol_textsurface.get_width() / 2,
                           Constant.SCREEN_HEIGHT / 4 + total_top_offset))
 
-        exit_font = pygame.font.SysFont("Arial", 24)
-        if self.settings[self.current_setting_index] == self.Setting.Exit:
-            exit_textsurface = exit_font.render('Exit', False, (123, 123, 123))
+        sfx_volume_font = pygame.font.SysFont("Arial", 24)
+        # print(self.current_setting_index)
+        # print(self.settings[self.current_setting_index])
+        sfx_volume_text = 'SFX Volume ' + str(int(self.audio_management.sfx_audio_level * 100)) + "%"
+        if self.settings[self.current_setting_index] == self.Setting.SfxVolume:
+            sfx_vol_textsurface = sfx_volume_font.render(sfx_volume_text, False, default_black)
         else:
-            exit_textsurface = exit_font.render('Exit', False, default_black)
+            sfx_vol_textsurface = sfx_volume_font.render(sfx_volume_text, False, default_gray)
+
+        total_top_offset += sfx_vol_textsurface.get_height()
+
+        self.window.blit(sfx_vol_textsurface,
+                         (Constant.SCREEN_WIDTH / 2 - sfx_vol_textsurface.get_width() / 2,
+                          Constant.SCREEN_HEIGHT / 4 + total_top_offset))
+
+        return_font = pygame.font.SysFont("Arial", 24)
+        if self.settings[self.current_setting_index] == self.Setting.ReturnToGame:
+            return_textsurface = return_font.render('Return to Game', False, default_black)
+        else:
+            return_textsurface = return_font.render('Return to Game', False, default_gray)
+
+        total_top_offset += return_textsurface.get_height()
+
+        self.window.blit(return_textsurface,
+                         (Constant.SCREEN_WIDTH / 2 - return_textsurface.get_width() / 2,
+                          Constant.SCREEN_HEIGHT / 4 + total_top_offset))
+
+        exit_font = pygame.font.SysFont("Arial", 24)
+        if self.settings[self.current_setting_index] == self.Setting.QuitGame:
+            exit_textsurface = exit_font.render('Quit Game', False, default_black)
+        else:
+            exit_textsurface = exit_font.render('Quit Game', False, default_gray)
 
         total_top_offset += exit_textsurface.get_height()
 
