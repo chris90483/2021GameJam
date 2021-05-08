@@ -8,6 +8,7 @@ from audio.audio import AudioManager, Songs, SFX
 
 from main.game import Game
 from main.constants import Constant
+from main.inventory import Inventory
 
 
 class Main:
@@ -89,6 +90,9 @@ class Main:
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 self.handle_key_press(event.key)
+            if event.type == pygame.MOUSEBUTTONUP:
+                pos = pygame.mouse.get_pos()
+                print(pos)
 
     # Do all updates to the game state in this function
     def update_state(self):

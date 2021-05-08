@@ -42,7 +42,6 @@ class Dog(object):
             if self.bark_delay_counter % self.current_bark_delay == 0:
                 self.world.emitter_handler.add_emitter(DogBark(self.x, self.y))
                 self.current_bark_delay = random.randint(200, 300)
-                print("Emit bark")
 
         if distance((self.x, self.y), self.target_pos) < self.FOLLOW_RANGE:
             return

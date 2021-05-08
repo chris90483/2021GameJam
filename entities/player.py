@@ -37,30 +37,29 @@ class Player(object):
                 break
         self.world = world
         self.step_no = 0
-        self.inventory = Inventory(self)
 
     def gen_texture(self):
-        if self.moving and not self.inventory.flamethrower.activated:
+        if self.moving and not self.world.inventory.items[0].activated:
             player_sprite = self.keyframes_walking[self.keyframes_walking_animation_counter // 5]
             self.keyframes_walking_animation_counter = \
                 (self.keyframes_walking_animation_counter + 1) % (5 * len(self.keyframes_walking))
 
             player_sprite = pygame.transform.rotate(player_sprite, 90)
             player_sprite = pygame.transform.scale(player_sprite, (50, 50))
-        elif self.inventory.flamethrower.activated:
+        elif self.world.inventory.items[0].activated:
 
-            if not self.inventory.flamethrower.empty:
-                player_sprite = self.inventory.flamethrower.keyframes_fire_spitting[
-                    self.inventory.flamethrower.keyframes_fire_spitting_counter]
-                self.inventory.flamethrower.keyframes_fire_spitting_counter = \
-                    (self.inventory.flamethrower.keyframes_fire_spitting_counter + 1) \
-                    % len(self.inventory.flamethrower.keyframes_fire_spitting)
+            if not self.world.inventory.items[0].empty:
+                player_sprite = self.world.inventory.items[0].keyframes_fire_spitting[
+                    self.world.inventory.items[0].keyframes_fire_spitting_counter]
+                self.world.inventory.items[0].keyframes_fire_spitting_counter = \
+                    (self.world.inventory.items[0].keyframes_fire_spitting_counter + 1) \
+                    % len(self.world.inventory.items[0].keyframes_fire_spitting)
             else:
-                player_sprite = self.inventory.flamethrower.keyframes_empty[
-                    self.inventory.flamethrower.keyframes_empty_counter]
-                self.inventory.flamethrower.keyframes_empty_counter = \
-                    (self.inventory.flamethrower.keyframes_empty_counter + 1) \
-                    % len(self.inventory.flamethrower.keyframes_empty)
+                player_sprite = self.world.inventory.items[0].keyframes_empty[
+                    self.world.inventory.items[0].keyframes_empty_counter]
+                self.world.inventory.items[0].keyframes_empty_counter = \
+                    (self.world.inventory.items[0].keyframes_empty_counter + 1) \
+                    % len(self.world.inventory.items[0].keyframes_empty)
             player_sprite = pygame.transform.rotate(player_sprite, 90)
             player_sprite = pygame.transform.scale(player_sprite, (400, 100))
         else:
@@ -81,12 +80,20 @@ class Player(object):
         """
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_f:
-                self.inventory.flamethrower.toggle()
+                self.world.inventory.items[0].toggle()
             else:
                 self.held_keys[event.key] = True
 
         elif event.type == pygame.KEYUP:
             self.held_keys[event.key] = False
+
+    def throw_pizza(self, location):
+        if self.world.destination.delivery_time is None:
+            print("You don't have a pizza, why tf you trynna throw one?")
+        else:
+            self.world.destination.delivery_time = None
+            self.world.destination = self.grid.doominos_location
+            self.world.destination_doominos = True
 
     def step(self):
         # Get mouse position
@@ -122,7 +129,6 @@ class Player(object):
 
         old_moving = self.moving
 
-
         if (delta_x != 0 or delta_y != 0) and \
                 new_grid_x >= 0 and new_grid_y >= 0 and new_grid_x < Constant.GRID_WIDTH and new_grid_y < Constant.GRID_HEIGHT:
             if self.grid.grid[int(new_grid_x)][self.get_grid_position(True)[1]].type not in [CellType.BUILDING, CellType.DOOMINOS]:
@@ -150,12 +156,12 @@ class Player(object):
         if self.step_no % 15 == 0 and self.moving:
             self.world.emitter_handler.add_emitter(Footstep(self.x, self.y, distance((0, 0), (delta_x, delta_y))))
 
-        self.inventory.step()
+        self.world.inventory.step()
 
     def draw(self, screen: pygame.Surface, camera):
         rotated = pygame.transform.rotate(self.gen_texture(), self.angle * (180.0 / pi))
         camera.blit_surface_to_screen(screen, rotated, self.x, self.y)
-        self.inventory.draw(screen, camera)
+        self.world.inventory.draw(screen, camera)
 
     def get_grid_position(self, as_int=True):
         """

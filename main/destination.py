@@ -3,7 +3,9 @@ from math import hypot
 from main.grid import CellType
 from main.constants import Constant
 
+
 class Destination:
+
     destination = None
     destination_doominos = False  # Is the current destination to the Doomino's
     delivery_time = 0  # Time that the delivery started in general
