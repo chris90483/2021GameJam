@@ -1,9 +1,11 @@
 from pygame.surface import Surface
 
+from main.camera import Camera
+from main.grid import CellType, Cell, Grid
 from entities.player import Player
 from entities.compass import Compass
 from main.camera import Camera
-from main.generate import Grid
+from main.grid import Grid
 from main.constants import Constant
 from main.destination import Destination
 
