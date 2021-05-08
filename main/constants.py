@@ -5,5 +5,5 @@ class Constant:
 
     TILE_SIZE = 256
 
-    GRID_WIDTH = 20
-    GRID_HEIGHT = 20
+    GRID_WIDTH = 100
+    GRID_HEIGHT = 100

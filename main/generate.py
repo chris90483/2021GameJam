@@ -6,6 +6,11 @@ import pygame
 from main.camera import Camera
 from main.constants import Constant
 
+grass_image = pygame.image.load("./resources/png/tiles/grass.png")
+house_image = pygame.image.load("./resources/png/tiles/house_1.png")
+street_intersection_image = pygame.image.load("./resources/png/tiles/street_intersection.png")
+doominos_image = pygame.image.load("./resources/png/tiles/doominos.png")
+
 
 class CellType(Enum):
     EMPTY = 0
@@ -14,17 +19,18 @@ class CellType(Enum):
     NATURE = 3
     DOOMINOS = 4
 
+    @staticmethod
     def surface_of(cell_type):
         if cell_type == CellType.EMPTY:
-            return pygame.image.load("./resources/png/tiles/grass.png")
+            return grass_image
         elif cell_type == CellType.BUILDING:
-            return pygame.image.load("./resources/png/tiles/house_1.png")
+            return house_image
         elif cell_type == CellType.ROAD:
-            return pygame.image.load("./resources/png/tiles/street_intersection.png")
+            return street_intersection_image
         elif cell_type == CellType.NATURE:
-            return pygame.image.load("./resources/png/tiles/grass.png")
+            return grass_image
         elif cell_type == CellType.DOOMINOS:
-            return pygame.image.load("./resources/png/tiles/doominos.png")
+            return doominos_image
 
 
 class Cell:
@@ -110,7 +116,7 @@ class Grid:
         cells = self.get_grid_cells()
         shuffle(cells)
 
-        area_min = 3  # Minimum size of the area
+        area_min = 4  # Minimum size of the area
         area_max = 10  # Maximum size of the long side of the area
 
         # For each cell in the map, generate an area of a random size if it is not in an area yet
