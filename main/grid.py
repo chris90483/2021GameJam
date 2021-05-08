@@ -332,9 +332,13 @@ class Grid:
                 y = doominoes_y + y_delta
 
                 # Check if there is a road in this direction
+                road_until_x = None
+                road_until_y = None
                 while self.is_in_grid(x, y):
                     if self.is_connected_to(x, y, CellType.ROAD):
                         connected = True
+                        road_until_x = x
+                        road_until_y = y
                         break
                     x += x_delta
                     y += y_delta
@@ -346,8 +350,11 @@ class Grid:
 
                 x = doominoes_x + x_delta
                 y = doominoes_y + y_delta
-                while not self.is_connected_to(x, y, CellType.ROAD):
+                while True:
                     self.grid[x][y].type = CellType.ROAD
+                    self.grid[x][y].surface = CellType.surface_of(CellType.ROAD)
+                    if x == road_until_x and y == road_until_y:
+                        break
                     x += x_delta
                     y += y_delta
 
