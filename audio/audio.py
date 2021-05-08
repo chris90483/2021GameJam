@@ -47,9 +47,10 @@ class SoundEmitter(ABC):
 
     def draw(self, screen, camera):
         # Circles for debug:
-        if 2 < self.step_v < 100:
+        if 2 < self.step_v < 30:
             screen_x, screen_y = camera.compute_screen_position(self.x, self.y)
-            pygame.draw.circle(screen, (246, 1, 1, 20), (int(screen_x), int(screen_y)),
+            pygame.draw.circle(screen, (255, 255, 255, int(30 * ((15 - abs(15 - self.step_v))/30.0))),
+                               (int(screen_x), int(screen_y)),
                                int(self.get_loudness()), 0)
 
 
