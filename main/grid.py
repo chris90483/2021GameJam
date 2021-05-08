@@ -193,111 +193,111 @@ class Grid:
             for y in range(self.height):
                 if not self.grid[x][y].type == CellType.ROAD:
                     continue
-                if (self.is_in_grid(x, y + 1) and self.grid[x][y + 1].type == CellType.ROAD):
+                if self.is_in_grid(x, y + 1) and self.grid[x][y + 1].type == CellType.ROAD:
                     # BOTTOM
-                    if (self.is_in_grid(x + 1, y) and self.grid[x + 1][y].type == CellType.ROAD):
+                    if self.is_in_grid(x + 1, y) and self.grid[x + 1][y].type == CellType.ROAD:
                         # BOTTOM, RIGHT
-                        if (self.is_in_grid(x, y - 1) and self.grid[x][y - 1].type == CellType.ROAD):
+                        if self.is_in_grid(x, y - 1) and self.grid[x][y - 1].type == CellType.ROAD:
                             # BOTTOM, RIGHT, TOP
-                            if (self.is_in_grid(x - 1, y) and self.grid[x - 1][y].type == CellType.ROAD):
+                            if self.is_in_grid(x - 1, y) and self.grid[x - 1][y].type == CellType.ROAD:
                                 # BOTTOM, RIGHT, TOP, LEFT
                                 # =R=
                                 # RRR  INTERSECTION
                                 # =R=
                                 self.grid[x][y].surface = CellType.surface_of_road("INTERSECTION")
-                            else: # BOTTOM, RIGHT, TOP
+                            else:  # BOTTOM, RIGHT, TOP
                                 # =R=
                                 # =RR  TSECTION
                                 # =R=
                                 self.grid[x][y].surface = pygame.transform.rotate(CellType.surface_of_road("TSECTION"), 90)
-                        else: # BOTTOM, RIGHT
-                            if (self.is_in_grid(x - 1, y) and self.grid[x - 1][y].type == CellType.ROAD):
+                        else:  # BOTTOM, RIGHT
+                            if self.is_in_grid(x - 1, y) and self.grid[x - 1][y].type == CellType.ROAD:
                                 # BOTTOM, RIGHT, LEFT
                                 # ===
                                 # RRR  TSECTION
                                 # =R=
                                 self.grid[x][y].surface = CellType.surface_of_road("TSECTION")
-                            else: # BOTTOM, RIGHT
+                            else:  # BOTTOM, RIGHT
                                 # ===
                                 # =RR  CORNER
                                 # =R=
                                 self.grid[x][y].surface = pygame.transform.rotate(CellType.surface_of_road("CORNER"), 90)
-                    else: # BOTTOM
-                        if (self.is_in_grid(x, y - 1) and self.grid[x][y - 1].type == CellType.ROAD):
+                    else:  # BOTTOM
+                        if self.is_in_grid(x, y - 1) and self.grid[x][y - 1].type == CellType.ROAD:
                             # BOTTOM, TOP
-                            if (self.is_in_grid(x - 1, y) and self.grid[x - 1][y].type == CellType.ROAD):
-                                #BOTTOM, TOP, LEFT
+                            if self.is_in_grid(x - 1, y) and self.grid[x - 1][y].type == CellType.ROAD:
+                                # BOTTOM, TOP, LEFT
                                 # =R=
                                 # RR=  TSECTION
                                 # =R=
                                 self.grid[x][y].surface = pygame.transform.rotate(CellType.surface_of_road("TSECTION"), -90)
-                            else: # BOTTOM, TOP
+                            else:  # BOTTOM, TOP
                                 # =R=
                                 # =R=  STRAIGHT
                                 # =R=
                                 self.grid[x][y].surface = CellType.surface_of_road("STRAIGHT")
-                        else: # BOTTOM
-                            if (self.is_in_grid(x - 1, y) and self.grid[x - 1][y].type == CellType.ROAD):
+                        else:  # BOTTOM
+                            if self.is_in_grid(x - 1, y) and self.grid[x - 1][y].type == CellType.ROAD:
                                 # BOTTOM, LEFT
                                 # ===
                                 # RR=  CORNER
                                 # =R=
                                 self.grid[x][y].surface = CellType.surface_of_road("CORNER")
-                            else: # BOTTOM
+                            else:  # BOTTOM
                                 # ===
                                 # =R=  DEADEND
                                 # =R=
                                 self.grid[x][y].surface = CellType.surface_of_road("DEADEND")
-                else: # -nothing-
-                    if (self.is_in_grid(x + 1, y) and self.grid[x + 1][y].type == CellType.ROAD):
+                else:  # -nothing-
+                    if self.is_in_grid(x + 1, y) and self.grid[x + 1][y].type == CellType.ROAD:
                         # RIGHT
-                        if (self.is_in_grid(x, y - 1) and self.grid[x][y - 1].type == CellType.ROAD):
+                        if self.is_in_grid(x, y - 1) and self.grid[x][y - 1].type == CellType.ROAD:
                             # RIGHT, TOP
-                            if (self.is_in_grid(x - 1, y) and self.grid[x - 1][y].type == CellType.ROAD):
+                            if self.is_in_grid(x - 1, y) and self.grid[x - 1][y].type == CellType.ROAD:
                                 # RIGHT, TOP, LEFT
                                 # =R=
                                 # RRR  TSECTION
                                 # ===
                                 self.grid[x][y].surface = pygame.transform.rotate(CellType.surface_of_road("TSECTION"), 180)
-                            else: # RIGHT, TOP
+                            else:  # RIGHT, TOP
                                 # =R=
                                 # =RR  CORNER
                                 # ===
                                 self.grid[x][y].surface = pygame.transform.rotate(CellType.surface_of_road("CORNER"), 180)
-                        else: # RIGHT
-                            if (self.is_in_grid(x - 1, y) and self.grid[x - 1][y].type == CellType.ROAD):
+                        else:  # RIGHT
+                            if self.is_in_grid(x - 1, y) and self.grid[x - 1][y].type == CellType.ROAD:
                                 # RIGHT, LEFT
                                 # ===
                                 # RRR  STRAIGHT
                                 # ===
                                 self.grid[x][y].surface = pygame.transform.rotate(CellType.surface_of_road("STRAIGHT"), 90)
-                            else: # RIGHT
+                            else:  # RIGHT
                                 # ===
                                 # =RR  DEADEND
                                 # ===
                                 self.grid[x][y].surface = pygame.transform.rotate(CellType.surface_of_road("DEADEND"), 90)
-                    else: # -nothing-
-                        if (self.is_in_grid(x, y - 1) and self.grid[x][y - 1].type == CellType.ROAD):
+                    else:  # -nothing-
+                        if self.is_in_grid(x, y - 1) and self.grid[x][y - 1].type == CellType.ROAD:
                             # TOP
-                            if (self.is_in_grid(x - 1, y) and self.grid[x - 1][y].type == CellType.ROAD):
+                            if self.is_in_grid(x - 1, y) and self.grid[x - 1][y].type == CellType.ROAD:
                                 # TOP, LEFT
                                 # =R=
                                 # RR=  CORNER
                                 # ===
                                 self.grid[x][y].surface = pygame.transform.rotate(CellType.surface_of_road("CORNER"), 270)
-                            else: # TOP
+                            else:  # TOP
                                 # =R=
                                 # =R=  DEADEND
                                 # ===
                                 self.grid[x][y].surface = pygame.transform.rotate(CellType.surface_of_road("DEADEND"), 180)
-                        else: # -nothing-
-                            if (self.is_in_grid(x - 1, y) and self.grid[x - 1][y].type == CellType.ROAD):
+                        else:  # -nothing-
+                            if self.is_in_grid(x - 1, y) and self.grid[x - 1][y].type == CellType.ROAD:
                                 # LEFT
                                 # ===
                                 # RR=  DEADEND
                                 # ===
                                 self.grid[x][y].surface = pygame.transform.rotate(CellType.surface_of_road("DEADEND"), -90)
-                            else: # -nothing-
+                            else:  # -nothing-
                                 # ===
                                 # =R=  STRAIGHT
                                 # ===
