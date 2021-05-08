@@ -95,7 +95,7 @@ class Main:
 
     # Do all updates to the game state in this function
     def update_state(self):
-        self.window.fill((0, 128, 0))
+        self.window.fill((0, 0, 0))
         self.game.step()
 
         # call to the game controller drawing method
