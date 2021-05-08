@@ -53,13 +53,13 @@ class Player(object):
         self.angle = atan2(- (Constant.SCREEN_HEIGHT//2 - mouse_y), Constant.SCREEN_WIDTH//2 - mouse_x)
 
         # Silly Python has no switch case statement >:-(
-        if self.held_keys[pygame.K_w]:
+        if self.held_keys[pygame.K_w] or self.held_keys[pygame.K_UP]:
             self.y -= 10
-        if self.held_keys[pygame.K_s]:
+        if self.held_keys[pygame.K_s] or self.held_keys[pygame.K_DOWN]:
             self.y += 10
-        if self.held_keys[pygame.K_a]:
+        if self.held_keys[pygame.K_a] or self.held_keys[pygame.K_LEFT]:
             self.x -= 10
-        if self.held_keys[pygame.K_d]:
+        if self.held_keys[pygame.K_d] or self.held_keys[pygame.K_RIGHT]:
             self.x += 10
 
     def draw(self, screen: pygame.Surface, camera):
