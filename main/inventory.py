@@ -68,6 +68,7 @@ class Inventory(object):
                 if self.items[i] is None:
                     self.items[i] = Flamethrower(self.world.player,
                                                  item_type=InventoryItem.FLAMETHROWER,
+                                                 # TODO: Change to flamethrower icon
                                                  inventory_icon_file_name="pizza_inventory_icon.png")
                     return True
 
