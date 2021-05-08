@@ -1,5 +1,7 @@
 from pygame.surface import Surface
 
+from main.camera import Camera
+from main.grid import CellType, Cell, Grid
 from entities.player import Player
 from main.camera import Camera
 from main.generate import Grid
