@@ -18,5 +18,6 @@ class DestinationFlag(object):
     def draw(self, screen: pygame.Surface, camera: Camera):
         camera.blit_surface_to_screen(screen, self.keyframes[self.animation_counter // 10],
                                       self.destination.destination[0] * Constant.TILE_SIZE,
-                                      self.destination.destination[1] * Constant.TILE_SIZE + Constant.TILE_SIZE * 0.25)
+                                      self.destination.destination[1] * Constant.TILE_SIZE + Constant.TILE_SIZE * 0.25,
+                                      centered=False)
         self.animation_counter = (self.animation_counter + 1) % (10 * len(self.keyframes))

@@ -1,4 +1,3 @@
-
 from pygame.surface import Surface
 
 from audio.emitter_handler import EmitterHandler
@@ -20,7 +19,7 @@ class World(object):
         self.amount_tiles_y = amount_tiles_y
         self.grid = Grid(self.amount_tiles_x, self.amount_tiles_y)
         self.player = Player(self.grid, self, audio_manager)
-        self.zombie_handler = ZombieHandler()
+        self.zombie_handler = ZombieHandler(self)
         self.dog_handler = DogHandler(self.player, self)
         self.emitter_handler = EmitterHandler(self.zombie_handler)
         self.destination = Destination(self.grid, self.player, score)

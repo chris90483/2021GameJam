@@ -10,6 +10,7 @@ from main.constants import Constant
 import pygame
 from pygame.event import EventType
 from main.grid import CellType
+from main.util import distance
 from main.inventory import Inventory
 
 
@@ -31,8 +32,8 @@ class Player(object):
             x = self.grid.doominos_location[0] + delta_x
             y = self.grid.doominos_location[1] + delta_y
             if self.grid.grid[x][y].type == CellType.ROAD:
-                self.x = x * Constant.TILE_SIZE
-                self.y = y * Constant.TILE_SIZE
+                self.x = x * Constant.TILE_SIZE + Constant.TILE_SIZE//2
+                self.y = y * Constant.TILE_SIZE + Constant.TILE_SIZE//2
                 break
         self.world = world
         self.step_no = 0
@@ -116,10 +117,11 @@ class Player(object):
             delta_x /= sqrt(2)
             delta_y /= sqrt(2)
 
-        new_grid_x = (self.x + delta_x + Constant.TILE_SIZE * 0.5) // Constant.TILE_SIZE
-        new_grid_y = (self.y + delta_y + Constant.TILE_SIZE * 0.5) // Constant.TILE_SIZE
+        new_grid_x = (self.x + delta_x) // Constant.TILE_SIZE
+        new_grid_y = (self.y + delta_y) // Constant.TILE_SIZE
 
         old_moving = self.moving
+
 
         if (delta_x != 0 or delta_y != 0) and \
                 new_grid_x >= 0 and new_grid_y >= 0 and new_grid_x < Constant.GRID_WIDTH and new_grid_y < Constant.GRID_HEIGHT:
@@ -146,7 +148,7 @@ class Player(object):
         self.step_no += 1
 
         if self.step_no % 15 == 0 and self.moving:
-            self.world.emitter_handler.add_emitter(Footstep(self.x, self.y))
+            self.world.emitter_handler.add_emitter(Footstep(self.x, self.y, distance((0, 0), (delta_x, delta_y))))
 
         self.inventory.step()
 
@@ -163,11 +165,11 @@ class Player(object):
         """
         if as_int:
             return (
-                int((self.x + Constant.TILE_SIZE // 2) // Constant.TILE_SIZE),
-                int((self.y + Constant.TILE_SIZE // 2) // Constant.TILE_SIZE),
+                int(self.x // Constant.TILE_SIZE),
+                int(self.y // Constant.TILE_SIZE),
             )
         else:
             return (
-                (self.x + Constant.TILE_SIZE / 2) / Constant.TILE_SIZE,
-                (self.y + Constant.TILE_SIZE / 2) / Constant.TILE_SIZE,
+                self.x / Constant.TILE_SIZE,
+                self.y / Constant.TILE_SIZE,
             )
