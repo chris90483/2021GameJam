@@ -6,6 +6,7 @@ from entities.delivery_status import DeliveryStatus
 from entities.destination_flag import DestinationFlag
 from entities.player import Player
 from entities.zombie_handler import ZombieHandler
+from entities.dog_handler import DogHandler
 from main.camera import Camera
 from main.destination import Destination
 from main.grid import Grid
@@ -19,6 +20,7 @@ class World(object):
         self.grid = Grid(self.amount_tiles_x, self.amount_tiles_y)
         self.player = Player(self.grid, self, audio_manager)
         self.zombie_handler = ZombieHandler(self)
+        self.dog_handler = DogHandler(self.player, self)
         self.emitter_handler = EmitterHandler(self.zombie_handler)
         self.destination = Destination(self.grid, self.player, score)
         self.destination_flag = DestinationFlag(self.destination, self.player)
@@ -33,6 +35,7 @@ class World(object):
         self.player.step()
         self.destination.step()
         self.zombie_handler.step()
+        self.dog_handler.step()
 
     def draw(self, screen: Surface, camera: Camera):
         self.grid.draw(screen, camera)
@@ -43,3 +46,4 @@ class World(object):
         self.delivery_status.draw(screen)
 
         self.zombie_handler.draw(screen, camera)
+        self.dog_handler.draw(screen, camera)
