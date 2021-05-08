@@ -9,6 +9,10 @@ from main.constants import Constant
 grass_image = pygame.image.load("./resources/png/tiles/grass.png")
 house_image = pygame.image.load("./resources/png/tiles/house_1.png")
 street_intersection_image = pygame.image.load("./resources/png/tiles/street_intersection.png")
+street_t_section_image = pygame.image.load("./resources/png/tiles/street_t_section.png")
+street_corner_image = pygame.image.load("./resources/png/tiles/street_corner.png")
+street_straight_image = pygame.image.load("./resources/png/tiles/street_straight.png")
+street_dead_end_image = pygame.image.load("./resources/png/tiles/street_dead_end.png")
 doominos_image = pygame.image.load("./resources/png/tiles/doominos.png")
 
 
@@ -32,18 +36,18 @@ class CellType(Enum):
         elif cell_type == CellType.DOOMINOS:
             return doominos_image
 
+    @staticmethod
     def surface_of_road(road_piece):
         if road_piece == "INTERSECTION":
-            return pygame.image.load("./resources/png/tiles/street_intersection.png")
+            return street_intersection_image
         elif road_piece == "TSECTION":
-            return pygame.image.load("./resources/png/tiles/street_t_section.png")
+            return street_t_section_image
         elif road_piece == "CORNER":
-            return pygame.image.load("./resources/png/tiles/street_corner.png")
+            return street_corner_image
         elif road_piece == "STRAIGHT":
-            return pygame.image.load("./resources/png/tiles/street_straight.png")
+            return street_straight_image
         elif road_piece == "DEADEND":
-            return pygame.image.load("./resources/png/tiles/street_dead_end.png")
-
+            return street_dead_end_image
 
 class Cell:
     type = None
@@ -89,6 +93,21 @@ class Grid:
         for x in range(0, self.width, 2):
             for y in range(0, self.height, 2):
                 cells.append(self.grid[x][y])
+        return cells
+
+    def get_grid_cells_of_type(self, type):
+        """
+        Get all grid cells of the specified type
+        :param type: type of the cell
+        :type type: CellType
+        :return: list of cells
+        :rtype: [Cell]
+        """
+        cells = []
+        for x in range(0, self.width):
+            for y in range(0, self.height):
+                if self.grid[x][y].type == type:
+                    cells.append(self.grid[x][y])
         return cells
 
     def is_in_grid(self, x, y):
