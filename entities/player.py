@@ -74,11 +74,11 @@ class Player(object):
         """
         if as_int:
             return (
-                self.x // Constant.TILE_SIZE,
-                self.y // Constant.TILE_SIZE,
+                (self.x + Constant.TILE_SIZE // 2) // Constant.TILE_SIZE,
+                (self.y + Constant.TILE_SIZE // 2) // Constant.TILE_SIZE,
             )
         else:
             return (
-                self.x / Constant.TILE_SIZE,
-                self.y / Constant.TILE_SIZE,
+                (self.x + Constant.TILE_SIZE / 2) / Constant.TILE_SIZE,
+                (self.y + Constant.TILE_SIZE / 2) / Constant.TILE_SIZE,
             )
