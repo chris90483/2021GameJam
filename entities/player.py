@@ -11,6 +11,7 @@ import pygame
 from pygame.event import EventType
 from main.grid import CellType
 from main.util import distance
+from main.inventory import Inventory
 
 
 class Player(object):
@@ -36,17 +37,38 @@ class Player(object):
                 break
         self.world = world
         self.step_no = 0
+        self.inventory = Inventory(self)
 
     def gen_texture(self):
-        if self.moving:
+        if self.moving and not self.inventory.flamethrower.activated:
             player_sprite = self.keyframes_walking[self.keyframes_walking_animation_counter // 5]
             self.keyframes_walking_animation_counter = \
                 (self.keyframes_walking_animation_counter + 1) % (5 * len(self.keyframes_walking))
+
+            player_sprite = pygame.transform.rotate(player_sprite, 90)
+            player_sprite = pygame.transform.scale(player_sprite, (50, 50))
+        elif self.inventory.flamethrower.activated:
+
+            if not self.inventory.flamethrower.empty:
+                player_sprite = self.inventory.flamethrower.keyframes_fire_spitting[
+                    self.inventory.flamethrower.keyframes_fire_spitting_counter]
+                self.inventory.flamethrower.keyframes_fire_spitting_counter = \
+                    (self.inventory.flamethrower.keyframes_fire_spitting_counter + 1) \
+                    % len(self.inventory.flamethrower.keyframes_fire_spitting)
+            else:
+                player_sprite = self.inventory.flamethrower.keyframes_empty[
+                    self.inventory.flamethrower.keyframes_empty_counter]
+                self.inventory.flamethrower.keyframes_empty_counter = \
+                    (self.inventory.flamethrower.keyframes_empty_counter + 1) \
+                    % len(self.inventory.flamethrower.keyframes_empty)
+            player_sprite = pygame.transform.rotate(player_sprite, 90)
+            player_sprite = pygame.transform.scale(player_sprite, (400, 100))
         else:
             player_sprite = pygame.image.load('./resources/png/player_standing.png')
 
-        player_sprite = pygame.transform.rotate(player_sprite, 90)
-        player_sprite = pygame.transform.scale(player_sprite, (50, 50))
+            player_sprite = pygame.transform.rotate(player_sprite, 90)
+            player_sprite = pygame.transform.scale(player_sprite, (50, 50))
+
         return player_sprite
         # texture = pygame.Surface((40, 40))
         # texture.fill((246, 1, 1), rect=(10, 10, 20, 20))
@@ -58,7 +80,10 @@ class Player(object):
         :param event: pygame event
         """
         if event.type == pygame.KEYDOWN:
-            self.held_keys[event.key] = True
+            if event.key == pygame.K_f:
+                self.inventory.flamethrower.toggle()
+            else:
+                self.held_keys[event.key] = True
 
         elif event.type == pygame.KEYUP:
             self.held_keys[event.key] = False
@@ -125,9 +150,12 @@ class Player(object):
         if self.step_no % 15 == 0 and self.moving:
             self.world.emitter_handler.add_emitter(Footstep(self.x, self.y, distance((0, 0), (delta_x, delta_y))))
 
+        self.inventory.step()
+
     def draw(self, screen: pygame.Surface, camera):
         rotated = pygame.transform.rotate(self.gen_texture(), self.angle * (180.0 / pi))
         camera.blit_surface_to_screen(screen, rotated, self.x, self.y)
+        self.inventory.draw(screen, camera)
 
     def get_grid_position(self, as_int=True):
         """
