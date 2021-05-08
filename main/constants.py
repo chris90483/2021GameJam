@@ -10,5 +10,7 @@ class Constant:
 
     DELIVERY_TIME = 5
 
-    PLAYER_SPEED = 6
+    PLAYER_SPEED = 3
     PLAYER_SPEED_GRASS_MULTIPLIER = 0.6
+
+    ZOMBIE_SPEED = 2

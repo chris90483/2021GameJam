@@ -8,6 +8,7 @@ from main.constants import Constant
 import pygame
 from pygame.event import EventType
 from main.grid import CellType
+from main.util import distance
 
 
 class Player(object):
@@ -99,7 +100,7 @@ class Player(object):
             moving = True
 
         if self.step_no % 15 == 0 and moving:
-            self.world.emitter_handler.add_emitter(Footstep(self.x, self.y))
+            self.world.emitter_handler.add_emitter(Footstep(self.x, self.y, distance((0, 0), (delta_x, delta_y))))
 
     def draw(self, screen: pygame.Surface, camera):
         rotated = pygame.transform.rotate(self.gen_texture(), self.angle * (180.0 / pi))
