@@ -14,13 +14,11 @@ pygame.init()
 window = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
 pygame.font.init()
 font = pygame.font.SysFont("Arial", 20)
-msg_surface = None
 game = Game(12, 12)
 
 # Do all necessary setup
 def setup():
-    global msg_surface
-    msg_surface = font.render("it works!", False, (255, 255, 255))
+    pass
 
 
 
@@ -48,16 +46,6 @@ def update_state():
     global offset, window
     window.fill((0, 128, 0))
     game.step()
-
-    object_width = msg_surface.get_width()
-    o1 = (offset + 1) % SCREEN_WIDTH
-    o2 = (offset + 1 + object_width) % SCREEN_WIDTH
-    offset = o1
-    if o2 != (o1 + msg_surface.get_width()):
-        print(o2-o1 - object_width)
-        window.blit(msg_surface, (o2 - object_width, 0))
-
-    window.blit(msg_surface, (offset, 0))
 
     # call to the game controller drawing method
     game.draw(window)
