@@ -42,7 +42,7 @@ class SoundEmitter(ABC):
             pygame.draw.circle(screen, (246, 1, 1), (screen_x, screen_y), self.step_v * 2 + 1, 1)
 
 
-class AudioManagement:
+class AudioManager:
     MUSIC_PATH = "./resources/audio/music/"
     SFX_PATH = "./resources/audio/sfx/"
 
@@ -62,11 +62,9 @@ class AudioManagement:
 
     def play_sfx(self, sfx):
         if sfx == SFX.FAST_WALK:
-            thread = Thread(target=self.load_sfx, args=("walk_fast.wav",))
-            thread.start()
+            return self.load_sfx("walk_fast.wav")
         if sfx == SFX.SLOW_WALK:
-            thread = Thread(target=self.load_sfx, args=("walk_slow.wav",))
-            thread.start()
+            return self.load_sfx("walk_slow.wav")
 
     def load_song(self, song_str):
         # song_obj = pygame.mixer.Sound(self.MUSIC_PATH + song_str)
@@ -79,6 +77,10 @@ class AudioManagement:
         sound = pygame.mixer.Sound(self.SFX_PATH + sfx_str)
         sound.set_volume(self.sfx_audio_level)
         sound.play()
+        return sound
+
+    def unload_sfx(self, sound):
+        sound.stop()
 
     def update_music_audio_level(self, direction):
         if direction == 'left':

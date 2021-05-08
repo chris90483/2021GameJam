@@ -4,7 +4,7 @@ import pygame
 import sys
 import time
 
-from audio.audio import AudioManagement, Songs, SFX
+from audio.audio import AudioManager, Songs, SFX
 
 from main.game import Game
 from main.constants import Constant
@@ -27,9 +27,8 @@ class Main:
         self.window = pygame.display.set_mode((Constant.SCREEN_WIDTH, Constant.SCREEN_HEIGHT), 0, 32)
         pygame.font.init()
         self.font = pygame.font.SysFont("Arial", 20)
-        self.audio_management = AudioManagement()
-        self.game = Game(Constant.GRID_WIDTH, Constant.GRID_HEIGHT, audio_management)
-
+        self.audio_manager = AudioManager()
+        self.game = Game(Constant.GRID_WIDTH, Constant.GRID_HEIGHT, self.audio_manager)
 
         self.paused = False
 
@@ -38,7 +37,7 @@ class Main:
 
     # Do all necessary setup
     def setup(self):
-        self.audio_management.play_song(song=Songs.ENERGIEK)
+        self.audio_manager.play_song(song=Songs.ENERGIEK)
 
     # handle a pressed key event in the context of the game root
     def handle_key_press(self, event_key):
@@ -58,15 +57,15 @@ class Main:
 
             if self.settings[self.current_setting_index] == self.Setting.MusicVolume:
                 if event_key == pygame.K_LEFT or event_key == pygame.K_a:
-                    self.audio_management.update_music_audio_level('left')
+                    self.audio_manager.update_music_audio_level('left')
                 elif event_key == pygame.K_RIGHT or event_key == pygame.K_d:
-                    self.audio_management.update_music_audio_level('right')
+                    self.audio_manager.update_music_audio_level('right')
 
             if self.settings[self.current_setting_index] == self.Setting.SfxVolume:
                 if event_key == pygame.K_LEFT or event_key == pygame.K_a:
-                    self.audio_management.update_sfx_audio_level('left')
+                    self.audio_manager.update_sfx_audio_level('left')
                 elif event_key == pygame.K_RIGHT or event_key == pygame.K_d:
-                    self.audio_management.update_sfx_audio_level('right')
+                    self.audio_manager.update_sfx_audio_level('right')
 
             if self.settings[self.current_setting_index] == self.Setting.ReturnToGame:
                 if event_key == pygame.K_RETURN:
@@ -138,7 +137,7 @@ class Main:
         volume_font = pygame.font.SysFont("Arial", 24)
         # print(self.current_setting_index)
         # print(self.settings[self.current_setting_index])
-        volume_text = 'Music Volume ' + str(int(self.audio_management.music_audio_level * 100)) + "%"
+        volume_text = 'Music Volume ' + str(int(self.audio_manager.music_audio_level * 100)) + "%"
         if self.settings[self.current_setting_index] == self.Setting.MusicVolume:
             vol_textsurface = volume_font.render(volume_text, False, default_black)
         else:
@@ -153,7 +152,7 @@ class Main:
         sfx_volume_font = pygame.font.SysFont("Arial", 24)
         # print(self.current_setting_index)
         # print(self.settings[self.current_setting_index])
-        sfx_volume_text = 'SFX Volume ' + str(int(self.audio_management.sfx_audio_level * 100)) + "%"
+        sfx_volume_text = 'SFX Volume ' + str(int(self.audio_manager.sfx_audio_level * 100)) + "%"
         if self.settings[self.current_setting_index] == self.Setting.SfxVolume:
             sfx_vol_textsurface = sfx_volume_font.render(sfx_volume_text, False, default_black)
         else:
