@@ -2,8 +2,12 @@ import time
 from queue import PriorityQueue, Queue
 from threading import Thread
 
+import pygame
+from pygame.surface import Surface
+
 from audio.audio import SoundEmitter
 from entities.zombie_handler import ZombieHandler
+from main.constants import Constant
 
 
 class EmitterHandler(object):
@@ -15,6 +19,7 @@ class EmitterHandler(object):
         self.running = True
         self.current_emitter = None
         self.zombie_handler = zombie_handler
+        self.emitter_surface = Surface((Constant.SCREEN_WIDTH, Constant.SCREEN_HEIGHT), pygame.SRCALPHA)
         self.thread = Thread(target=self.handler_thread)
         self.thread.start()
 
@@ -38,8 +43,11 @@ class EmitterHandler(object):
                 self.current_emitter = None
 
     def draw(self, screen, camera):
+
         if self.current_emitter is not None:
-            self.current_emitter.draw(screen, camera)
+            self.emitter_surface.fill((0, 0, 0, 0))
+            self.current_emitter.draw(self.emitter_surface, camera)
+            screen.blit(self.emitter_surface, (0, 0))
 
     def __del__(self):
         # Stop thread on delete

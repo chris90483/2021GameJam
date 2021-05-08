@@ -42,16 +42,15 @@ class SoundEmitter(ABC):
 
     def step(self):
         self.step_v += 1
-
+        # The emitter will be removed after 100 steps
         return self.step_v > 100
 
     def draw(self, screen, camera):
-        pass
         # Circles for debug:
-        # if 2 < self.step_v < 10:
-        #     screen_x, screen_y = camera.compute_screen_position(self.x, self.y)
-        #     pygame.draw.circle(screen, (246, 1, 1), (int(screen_x), int(screen_y)),
-        #                        int(self.get_loudness() * (self.step_v/10.0)), 1)
+        if 2 < self.step_v < 100:
+            screen_x, screen_y = camera.compute_screen_position(self.x, self.y)
+            pygame.draw.circle(screen, (246, 1, 1, 20), (int(screen_x), int(screen_y)),
+                               int(self.get_loudness()), 0)
 
 
 class AudioManagement:
