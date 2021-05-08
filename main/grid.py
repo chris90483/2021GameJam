@@ -3,7 +3,6 @@ from enum import Enum
 
 import pygame
 
-from main.camera import Camera
 from main.constants import Constant
 
 images = {
@@ -426,7 +425,7 @@ class Grid:
                     print('  ', end='')
             print('')
 
-    def draw(self, screen: pygame.Surface, camera: Camera):
+    def draw(self, screen: pygame.Surface, camera):
         for x in range(0, self.width):
             for y in range(0, self.height):
                 current_cell = self.grid[x][y]
