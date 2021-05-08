@@ -3,7 +3,7 @@
 """
 from collections import defaultdict
 from math import atan2, pi
-
+from main.constants import Constant
 import pygame
 from pygame.event import EventType
 
@@ -50,7 +50,7 @@ class Player(object):
     def step(self):
         # Get mouse position
         mouse_x, mouse_y = pygame.mouse.get_pos()
-        self.angle = atan2(- (self.y - mouse_y), self.x - mouse_x)
+        self.angle = atan2(- (Constant.SCREEN_HEIGHT//2 - mouse_y), Constant.SCREEN_WIDTH//2 - mouse_x)
 
         # Silly Python has no switch case statement >:-(
         if self.held_keys[pygame.K_w]:
@@ -62,7 +62,6 @@ class Player(object):
         if self.held_keys[pygame.K_d]:
             self.x += 10
 
-    def draw(self, screen: pygame.Surface):
+    def draw(self, screen: pygame.Surface, camera):
         rotated = pygame.transform.rotate(self.gen_texture(), self.angle * (180.0/pi))
-        surf_w, surf_h = rotated.get_size()
-        screen.blit(rotated, (self.x - surf_w//2, self.y - surf_h//2))
+        camera.blit_surface_to_screen(screen, rotated, self.x, self.y)
