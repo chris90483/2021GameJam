@@ -73,7 +73,7 @@ class Player(object):
             speed *= Constant.PLAYER_SPEED_GRASS_MULTIPLIER
 
         if self.held_keys[pygame.K_LSHIFT]:
-            speed *=  Constant.PLAYER_SPEED_SLOW_WALKING_MULTIPLIER
+            speed *= Constant.PLAYER_SPEED_SLOW_WALKING_MULTIPLIER
 
         # Silly Python has no switch case statement >:-(
         delta_x = 0
@@ -97,10 +97,12 @@ class Player(object):
         old_moving = self.moving
 
         if (delta_x != 0 or delta_y != 0) and \
-                new_grid_x >= 0 and new_grid_y >= 0 and new_grid_x < Constant.GRID_WIDTH and new_grid_y < Constant.GRID_HEIGHT and \
-                self.grid.grid[int(new_grid_x)][int(new_grid_y)].type not in [CellType.BUILDING, CellType.DOOMINOS]:
-            self.x += delta_x
-            self.y += delta_y
+                new_grid_x >= 0 and new_grid_y >= 0 and new_grid_x < Constant.GRID_WIDTH and new_grid_y < Constant.GRID_HEIGHT:
+            if self.grid.grid[int(new_grid_x)][self.get_grid_position(True)[1]].type not in [CellType.BUILDING, CellType.DOOMINOS]:
+                self.x += delta_x
+            if self.grid.grid[self.get_grid_position(True)[0]][int(new_grid_y)].type not in [CellType.BUILDING, CellType.DOOMINOS]:
+                self.y += delta_y
+
             self.moving = True
         else:
             self.moving = False

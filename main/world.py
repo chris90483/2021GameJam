@@ -14,7 +14,7 @@ from main.grid import Grid
 
 
 class World(object):
-    def __init__(self, amount_tiles_x, amount_tiles_y, audio_manager):
+    def __init__(self, amount_tiles_x, amount_tiles_y, audio_manager, score):
         self.audio_manager = audio_manager
         self.amount_tiles_x = amount_tiles_x
         self.amount_tiles_y = amount_tiles_y
@@ -23,10 +23,10 @@ class World(object):
         self.zombie_handler = ZombieHandler()
         self.dog_handler = DogHandler(self.player, self)
         self.emitter_handler = EmitterHandler(self.zombie_handler)
-        self.destination = Destination(self.grid, self.player)
+        self.destination = Destination(self.grid, self.player, score)
         self.destination_flag = DestinationFlag(self.destination, self.player)
         self.compass = Compass(self.destination, self.player, self.destination_flag)
-        self.delivery_status = DeliveryStatus(self.destination)
+        self.delivery_status = DeliveryStatus(self.destination, score)
 
     def handle_input(self, event):
         self.player.handle_input(event)
