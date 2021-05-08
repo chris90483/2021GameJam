@@ -51,21 +51,21 @@ class Main:
             pass
 
         if self.paused:
-            if event_key == pygame.K_DOWN:
+            if event_key == pygame.K_DOWN or event_key == pygame.K_s:
                 self.change_current_setting('down')
-            elif event_key == pygame.K_UP:
+            elif event_key == pygame.K_UP or event_key == pygame.K_w:
                 self.change_current_setting('up')
 
             if self.settings[self.current_setting_index] == self.Setting.MusicVolume:
-                if event_key == pygame.K_LEFT:
+                if event_key == pygame.K_LEFT or event_key == pygame.K_a:
                     self.audio_management.update_music_audio_level('left')
-                elif event_key == pygame.K_RIGHT:
+                elif event_key == pygame.K_RIGHT or event_key == pygame.K_d:
                     self.audio_management.update_music_audio_level('right')
 
             if self.settings[self.current_setting_index] == self.Setting.SfxVolume:
-                if event_key == pygame.K_LEFT:
+                if event_key == pygame.K_LEFT or event_key == pygame.K_a:
                     self.audio_management.update_sfx_audio_level('left')
-                elif event_key == pygame.K_RIGHT:
+                elif event_key == pygame.K_RIGHT or event_key == pygame.K_d:
                     self.audio_management.update_sfx_audio_level('right')
 
             if self.settings[self.current_setting_index] == self.Setting.ReturnToGame:
@@ -95,7 +95,7 @@ class Main:
 
     # Do all updates to the game state in this function
     def update_state(self):
-        self.window.fill((0, 128, 0))
+        self.window.fill((0, 0, 0))
         self.game.step()
 
         # call to the game controller drawing method
