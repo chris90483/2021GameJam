@@ -10,10 +10,8 @@ from main.grid import CellType
 
 
 class Player(object):
-    def __init__(self, grid, x, y):
+    def __init__(self, grid):
         self.grid = grid
-        self.x = x
-        self.y = y
         self.angle = 0
         self.held_keys = defaultdict(lambda: False)
         self.keyframes_walking = []
@@ -21,6 +19,14 @@ class Player(object):
         for x in range(1, 6):
             self.keyframes_walking.append(
                 pygame.image.load('./resources/png/animations/player/player_walking_' + str(x) + '.png'))
+
+        for delta_x, delta_y in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+            x = self.grid.doominos_location[0] + delta_x
+            y = self.grid.doominos_location[1] + delta_y
+            if self.grid.grid[x][y].type == CellType.ROAD:
+                self.x = x * Constant.TILE_SIZE
+                self.y = y * Constant.TILE_SIZE
+                break
 
     def gen_texture(self):
         player_sprite = None
@@ -76,8 +82,11 @@ class Player(object):
             delta_x /= sqrt(2)
             delta_y /= sqrt(2)
 
-        self.x += delta_x
-        self.y += delta_y
+        new_grid_x = (self.x + delta_x + Constant.TILE_SIZE * 0.5) // Constant.TILE_SIZE
+        new_grid_y = (self.y + delta_y + Constant.TILE_SIZE * 0.5) // Constant.TILE_SIZE
+        if self.grid.grid[int(new_grid_x)][int(new_grid_y)].type not in [CellType.BUILDING, CellType.DOOMINOS]:
+            self.x += delta_x
+            self.y += delta_y
 
     def draw(self, screen: pygame.Surface, camera):
         rotated = pygame.transform.rotate(self.gen_texture(), self.angle * (180.0/pi))
