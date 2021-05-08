@@ -59,13 +59,13 @@ class Player(object):
         self.angle = atan2(- (Constant.SCREEN_HEIGHT // 2 - mouse_y), Constant.SCREEN_WIDTH // 2 - mouse_x)
 
         # Silly Python has no switch case statement >:-(
-        if self.held_keys[pygame.K_w]:
+        if self.held_keys[pygame.K_w] or self.held_keys[pygame.K_UP]:
             self.y -= 10
-        if self.held_keys[pygame.K_s]:
+        if self.held_keys[pygame.K_s] or self.held_keys[pygame.K_DOWN]:
             self.y += 10
-        if self.held_keys[pygame.K_a]:
+        if self.held_keys[pygame.K_a] or self.held_keys[pygame.K_LEFT]:
             self.x -= 10
-        if self.held_keys[pygame.K_d]:
+        if self.held_keys[pygame.K_d] or self.held_keys[pygame.K_RIGHT]:
             self.x += 10
 
         self.step_no += 1
@@ -76,3 +76,20 @@ class Player(object):
     def draw(self, screen: pygame.Surface, camera):
         rotated = pygame.transform.rotate(self.gen_texture(), self.angle * (180.0 / pi))
         camera.blit_surface_to_screen(screen, rotated, self.x, self.y)
+
+    def get_grid_position(self, as_int=True):
+        """
+        Return the coordinates of the grid cell the player is currently in
+        :param as_int: should the coordinates be returned as integers (default) or floats
+        :return: tuple of x,y coordinates
+        """
+        if as_int:
+            return (
+                self.x // Constant.TILE_SIZE,
+                self.y // Constant.TILE_SIZE,
+            )
+        else:
+            return (
+                self.x / Constant.TILE_SIZE,
+                self.y / Constant.TILE_SIZE,
+            )

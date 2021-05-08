@@ -5,9 +5,11 @@ from entities.zombie_handler import ZombieHandler
 from main.camera import Camera
 from main.grid import CellType, Cell, Grid
 from entities.player import Player
+from entities.compass import Compass
 from main.camera import Camera
 from main.grid import Grid
 from main.constants import Constant
+from main.destination import Destination
 
 
 class World(object):
@@ -18,13 +20,17 @@ class World(object):
         self.player = Player(Constant.TILE_SIZE * self.grid.doominos_location[0], Constant.TILE_SIZE * self.grid.doominos_location[1], self)
         self.zombie_handler = ZombieHandler()
         self.emitter_handler = EmitterHandler(self.zombie_handler)
+        self.destination = Destination(self.grid, self.player)
+        self.compass = Compass(self.destination, self.player)
 
     def handle_input(self, event):
         self.player.handle_input(event)
 
     def step(self):
         self.player.step()
+        self.destination.step()
 
     def draw(self, screen: Surface, camera: Camera):
         self.grid.draw(screen, camera)
         self.player.draw(screen, camera)
+        self.compass.draw(screen)
