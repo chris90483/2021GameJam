@@ -22,7 +22,8 @@ class Player(object):
 
     def gen_texture(self):
         player_sprite = None
-        if self.held_keys[pygame.K_w] or self.held_keys[pygame.K_s] or self.held_keys[pygame.K_a] or self.held_keys[pygame.K_d]:
+        if self.held_keys[pygame.K_w] or self.held_keys[pygame.K_s] or self.held_keys[pygame.K_a] or self.held_keys[pygame.K_d] or self.held_keys[pygame.K_UP] \
+                or self.held_keys[pygame.K_DOWN] or self.held_keys[pygame.K_LEFT] or self.held_keys[pygame.K_RIGHT]:
             player_sprite = self.keyframes_walking[self.keyframes_walking_animation_counter // 5]
             self.keyframes_walking_animation_counter = \
                 (self.keyframes_walking_animation_counter + 1) % (5 * len(self.keyframes_walking))
@@ -53,13 +54,13 @@ class Player(object):
         self.angle = atan2(- (Constant.SCREEN_HEIGHT//2 - mouse_y), Constant.SCREEN_WIDTH//2 - mouse_x)
 
         # Silly Python has no switch case statement >:-(
-        if self.held_keys[pygame.K_w]:
+        if self.held_keys[pygame.K_w] or self.held_keys[pygame.K_UP]:
             self.y -= 10
-        if self.held_keys[pygame.K_s]:
+        if self.held_keys[pygame.K_s] or self.held_keys[pygame.K_DOWN]:
             self.y += 10
-        if self.held_keys[pygame.K_a]:
+        if self.held_keys[pygame.K_a] or self.held_keys[pygame.K_LEFT]:
             self.x -= 10
-        if self.held_keys[pygame.K_d]:
+        if self.held_keys[pygame.K_d] or self.held_keys[pygame.K_RIGHT]:
             self.x += 10
 
     def draw(self, screen: pygame.Surface, camera):
@@ -74,11 +75,11 @@ class Player(object):
         """
         if as_int:
             return (
-                self.x // Constant.TILE_SIZE,
-                self.y // Constant.TILE_SIZE,
+                (self.x + Constant.TILE_SIZE // 2) // Constant.TILE_SIZE,
+                (self.y + Constant.TILE_SIZE // 2) // Constant.TILE_SIZE,
             )
         else:
             return (
-                self.x / Constant.TILE_SIZE,
-                self.y / Constant.TILE_SIZE,
+                (self.x + Constant.TILE_SIZE / 2) / Constant.TILE_SIZE,
+                (self.y + Constant.TILE_SIZE / 2) / Constant.TILE_SIZE,
             )

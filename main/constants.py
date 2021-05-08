@@ -7,3 +7,5 @@ class Constant:
 
     GRID_WIDTH = 32
     GRID_HEIGHT = 32
+
+    DELIVERY_TIME = 5
