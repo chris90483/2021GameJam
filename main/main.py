@@ -3,23 +3,21 @@ import sys
 import time
 
 from main.game import Game
+from main.constants import Constant
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-FRAME_RATE = 60
 offset = 0
 
 # setup stuff
 pygame.init()
-window = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
+window = pygame.display.set_mode((Constant.SCREEN_WIDTH, Constant.SCREEN_HEIGHT), 0, 32)
 pygame.font.init()
 font = pygame.font.SysFont("Arial", 20)
-game = Game(12, 12)
+game = Game(Constant.GRID_WIDTH, Constant.GRID_HEIGHT)
+
 
 # Do all necessary setup
 def setup():
     pass
-
 
 
 # handle a pressed key event in the context of the game root
@@ -63,7 +61,7 @@ if __name__ == '__main__':
 
         # possibly delay program execution to ensure steady frame rate
         running_time = time.time() - start_time
-        if running_time < 1/FRAME_RATE:
-            time.sleep((1/FRAME_RATE) - running_time)
+        if running_time < 1/Constant.FRAME_RATE:
+            time.sleep((1/Constant.FRAME_RATE) - running_time)
 
         pygame.display.update()

@@ -4,6 +4,7 @@ from enum import Enum
 import pygame
 
 from main.camera import Camera
+from main.constants import Constant
 
 
 class CellType(Enum):
@@ -12,8 +13,6 @@ class CellType(Enum):
     ROAD = 2
     NATURE = 3
     DOOMINOS = 4
-
-
 
     def surface_of(cell_type):
         if cell_type == CellType.EMPTY:
@@ -26,6 +25,7 @@ class CellType(Enum):
             return pygame.image.load("./resources/png/tiles/grass.png")
         elif cell_type == CellType.DOOMINOS:
             return pygame.image.load("./resources/png/tiles/doominos.png")
+
 
 class Cell:
     type = None
@@ -235,6 +235,4 @@ class Grid:
         for x in range(0, self.width):
             for y in range(0, self.height):
                 current_cell = self.grid[x][y]
-                camera.blit_surface_to_screen(screen, current_cell.surface, 256 * x, 256 * y)
-
-Grid(10, 10).print_grid()
+                camera.blit_surface_to_screen(screen, current_cell.surface, Constant.TILE_SIZE * x, Constant.TILE_SIZE * y)

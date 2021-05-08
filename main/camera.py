@@ -1,12 +1,10 @@
 from pygame.surface import Surface
 
 from entities.player import Player
+from main.constants import Constant
 
 
 class Camera(object):
-    SCREEN_WIDTH = 1280
-    SCREEN_HEIGHT = 720
-
     def __init__(self, player: Player):
         self.player = player
 
@@ -17,8 +15,8 @@ class Camera(object):
         :param y: World y coordinate
         :return: (screen_x, screen_y) and lots of love <3
         """
-        screen_left_x = self.player.x - self.SCREEN_WIDTH // 2
-        screen_top_y = self.player.y - self.SCREEN_HEIGHT // 2
+        screen_left_x = self.player.x - Constant.SCREEN_WIDTH // 2
+        screen_top_y = self.player.y - Constant.SCREEN_HEIGHT // 2
 
         return x - screen_left_x, y - screen_top_y
 
@@ -36,5 +34,5 @@ class Camera(object):
         top_y, bottom_y = screen_y - surface.get_size()[1]//2, screen_y + surface.get_size()[1]//2
 
         # Check if it is visible and draw if it is
-        if bottom_y > 0 and top_y < self.SCREEN_HEIGHT and right_x > 0 and left_x < self.SCREEN_WIDTH:
+        if bottom_y > 0 and top_y < Constant.SCREEN_HEIGHT and right_x > 0 and left_x < Constant.SCREEN_WIDTH:
             screen.blit(surface, (left_x, top_y))
