@@ -70,6 +70,12 @@ class Zombie(object):
         self.world = world
         self.is_colliding = False
 
+        # Convert textures
+        global zombie_texture, zombie_attacking_keyframes, super_zombie_attacking_keyframes
+        zombie_texture = zombie_texture.convert_alpha()
+        zombie_attacking_keyframes = [keyframe.convert_alpha() for keyframe in zombie_attacking_keyframes]
+        super_zombie_attacking_keyframes = [keyframe.convert_alpha() for keyframe in super_zombie_attacking_keyframes]
+
     def step(self):
         if self.target is not None:
             if distance((self.x, self.y), (self.world.player.x, self.world.player.y)) < self.VISION_RANGE:

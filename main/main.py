@@ -52,6 +52,7 @@ class Main:
         for event in pygame.event.get():
             self.game.handle_input(event)
             if event.type == pygame.QUIT:
+                self.game.world.emitter_handler.quit_thread()
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN:
@@ -99,7 +100,9 @@ class Main:
             pygame.display.update()
 
     def reset(self):
+        player_name = self.game.player_name
         self.game = Game(Constant.GRID_WIDTH, Constant.GRID_HEIGHT, self.audio_manager)
+        self.game.player_name = player_name
 
         # Draw the state once before starting the game so that it is shown as the background of the start menu
         self.update_state()

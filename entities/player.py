@@ -155,8 +155,6 @@ class Player(object):
                     else:
                         player_sprite = pygame.image.load('./resources/png/player_holding_knife.png')
                         player_sprite = pygame.transform.scale(player_sprite, (50, 100))
-
-                    player_sprite = pygame.transform.rotate(player_sprite, 90)
                 else:
                     player_sprite = pygame.image.load('./resources/png/player_standing.png')
                     player_sprite = pygame.transform.scale(player_sprite, (50, 50))
@@ -226,16 +224,14 @@ class Player(object):
         mouse_x, mouse_y = pygame.mouse.get_pos()
         self.angle = atan2(- (Constant.SCREEN_HEIGHT // 2 - mouse_y), Constant.SCREEN_WIDTH // 2 - mouse_x)
 
+        speed = Constant.PLAYER_SPEED
         if self.world.inventory.items[self.world.inventory.current_item]:
             if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.SKATEBOARD:
-              speed = Constant.PLAYER_SPEED_SKATEBOARD
-            else:
-                speed = Constant.PLAYER_SPEED
-        else:
-            speed = Constant.PLAYER_SPEED
+                speed = Constant.PLAYER_SPEED_SKATEBOARD
         player_pos = self.get_grid_position()
         if self.grid.grid[player_pos[0]][player_pos[1]].type == CellType.NATURE:
-            speed *= Constant.PLAYER_SPEED_GRASS_MULTIPLIER
+            # If we are on grass we are always slow, also with a skateboard
+            speed = Constant.PLAYER_SPEED * Constant.PLAYER_SPEED_GRASS_MULTIPLIER
 
         if self.held_keys[pygame.K_LSHIFT]:
             speed *= Constant.PLAYER_SPEED_SLOW_WALKING_MULTIPLIER
