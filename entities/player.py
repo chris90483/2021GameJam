@@ -187,7 +187,7 @@ class Player(object):
                 if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.KLOK:
                     self.health = Constant.PLAYER_HEALTH
                     self.world.inventory.remove_item(InventoryItem.KLOK)
-                    print(self.world.inventory.items)
+                    #print(self.world.inventory.items)
 
                 # Knife
                 if self.world.inventory.items[self.world.inventory.current_item] and self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.KNIFE:
