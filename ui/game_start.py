@@ -33,7 +33,6 @@ class GameStartMenu:
         else:
             self.name += string
         self.name = self.name.replace(' Van ', ' van ').replace(' De ', ' de ').replace(' Der ', ' der ')
-        print("New name: "+self.name)
 
     def render_game_start_screen(self, window):
         start_screen_width = Constant.SCREEN_WIDTH * 0.6
