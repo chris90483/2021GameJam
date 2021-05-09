@@ -185,7 +185,10 @@ class Player(object):
 
                 # Knife
                 if self.world.inventory.items[self.world.inventory.current_item] and self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.KNIFE:
+                    already_activated = self.world.inventory.items[self.world.inventory.current_item].activated
                     self.world.inventory.items[self.world.inventory.current_item].activated = True
+                    if already_activated != self.world.inventory.items[self.world.inventory.current_item].activated:
+                        self.world.audio_manager.play_sfx(SFX.KNIFE_SWISH)
 
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             if self.world.inventory.items[self.world.inventory.current_item]:
@@ -197,7 +200,8 @@ class Player(object):
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_f:
-                self.world.inventory.items[0].toggle()
+                pass
+                # self.world.inventory.items[0].toggle()
             else:
                 self.held_keys[event.key] = True
 

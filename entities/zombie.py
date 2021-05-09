@@ -6,7 +6,7 @@ import pygame
 from pygame.surface import Surface
 
 from audio.audio import SoundEmitter
-from audio.sound_emitter import Footstep
+from audio.sound_emitter import Footstep, PlayerSoundEmitter
 from main import constants
 from main.camera import Camera
 from main.constants import Constant
@@ -151,7 +151,7 @@ class Zombie(object):
                 if self.state == ZombieState.IDLE \
                         or not isinstance(self.target, SoundEmitter) \
                         or self.target.timestamp < emitter.timestamp \
-                        or (isinstance(emitter, Footstep) and not isinstance(self.target, Footstep)):
+                        or (isinstance(emitter, PlayerSoundEmitter) and not isinstance(self.target, PlayerSoundEmitter)):
                     self.target = emitter
                     self.state = ZombieState.REACTING_TO_NOISE
 
