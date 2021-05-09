@@ -43,6 +43,8 @@ class Player(object):
         self.world = world
         self.step_no = 0
 
+        self.current_movement_type = None
+
     def set_start_location(self):
         for delta_x, delta_y in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
             x = self.grid.doominos_location[0] + delta_x
@@ -224,9 +226,13 @@ class Player(object):
         mouse_x, mouse_y = pygame.mouse.get_pos()
         self.angle = atan2(- (Constant.SCREEN_HEIGHT // 2 - mouse_y), Constant.SCREEN_WIDTH // 2 - mouse_x)
 
+        old_movement_type = self.current_movement_type
         speed = Constant.PLAYER_SPEED
+        self.current_movement_type = "legs"
+
         if self.world.inventory.items[self.world.inventory.current_item]:
             if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.SKATEBOARD:
+                self.current_movement_type = "skateboard"
                 speed = Constant.PLAYER_SPEED_SKATEBOARD
         player_pos = self.get_grid_position()
         if self.grid.grid[player_pos[0]][player_pos[1]].type == CellType.NATURE:
@@ -272,7 +278,18 @@ class Player(object):
                 self.moving_sound = None
 
         if not old_moving and self.moving:
-            self.moving_sound = self.audio_manager.play_sfx(SFX.FAST_WALK)
+            if self.world.inventory.items[self.world.inventory.current_item] and self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.SKATEBOARD:
+                self.moving_sound = self.audio_manager.play_sfx(SFX.SKATEBOARD)
+            else:
+                self.moving_sound = self.audio_manager.play_sfx(SFX.FAST_WALK)
+
+        if self.moving and (old_movement_type != self.current_movement_type):
+            if self.moving_sound:
+                self.moving_sound.stop()
+            if self.current_movement_type == "skateboard":
+                self.moving_sound = self.audio_manager.play_sfx(SFX.SKATEBOARD)
+            elif self.current_movement_type == "legs":
+                self.moving_sound = self.audio_manager.play_sfx(SFX.FAST_WALK)
 
         if not self.moving:
             if self.moving_sound:

@@ -21,7 +21,8 @@ class SFX(Enum):
     DOG_BARK = "dog_bark.wav",
     FLAMETHROWER_FIRE = "flamethrower_fire.wav",
     FLAMETHROWER_EMPTY = "flamethrower_empty.wav",
-    KNIFE_SWISH = "knife_swish.wav"
+    KNIFE_SWISH = "knife_swish.wav",
+    SKATEBOARD = "skateboard.wav"
 
 
 class SoundEmitter(ABC):
@@ -93,6 +94,8 @@ class AudioManager:
             return self.load_sfx("flamethrower_empty.wav", sound_factor=1, loop=-1)
         if sfx == SFX.KNIFE_SWISH:
             return self.load_sfx("knife_swish.wav", sound_factor=1, loop=0)
+        if sfx == SFX.SKATEBOARD:
+            return self.load_sfx("skateboard_sound.wav", sound_factor=1, loop=-1)
 
     def load_song(self, song_str):
         # song_obj = pygame.mixer.Sound(self.MUSIC_PATH + song_str)
