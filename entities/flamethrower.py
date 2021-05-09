@@ -3,6 +3,7 @@ from math import atan2
 
 import pygame
 
+from audio.audio import SFX
 from main.constants import Constant
 from main.item import Item
 from main.util import distance
@@ -28,11 +29,17 @@ class Flamethrower(Item):
 
         self.flamethrower_thickness = math.pi/16
 
+        self.playing_fire_sfx = False
+
     def toggle(self):
         self.activated = not self.activated
 
     def step(self):
+        currently_playing_fire_sfx = self.playing_fire_sfx
         if self.activated and not self.empty:
+            self.playing_fire_sfx = True
+            if currently_playing_fire_sfx != self.playing_fire_sfx:
+                self.player.world.audio_manager.play_sfx(SFX.FLAMETHROWER_FIRE)
             # print("Using fuel")
             self.fuel_left -= 1
             if self.fuel_left < 1:
