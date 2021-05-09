@@ -1,6 +1,7 @@
 """
     Defines all code for the player object
 """
+import sys
 from collections import defaultdict
 from math import atan2, pi, sqrt
 
@@ -24,6 +25,7 @@ class Player(object):
         self.keyframes_walking_animation_counter = 0
         self.moving = False
         self.moving_sound = None
+        self.health = 1000
         for x in range(1, 6):
             self.keyframes_walking.append(
                 pygame.image.load('./resources/png/animations/player/player_walking_' + str(x) + '.png'))
@@ -162,6 +164,13 @@ class Player(object):
         rotated = pygame.transform.rotate(self.gen_texture(), self.angle * (180.0 / pi))
         camera.blit_surface_to_screen(screen, rotated, self.x, self.y)
         self.world.inventory.draw(screen, camera)
+
+    def take_damage(self, amount):
+        self.is_taking_damage = True
+        self.health -= 1
+        if self.health < 1:
+            print("You are dead. Not big surprise.")
+            # todo: call to game.game_over something like that
 
     def get_grid_position(self, as_int=True):
         """
