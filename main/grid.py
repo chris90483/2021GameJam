@@ -4,6 +4,7 @@ from enum import Enum
 import pygame
 
 from main.constants import Constant
+from main.util import convert_world_to_grid_position
 
 images = {
     'GRASS1': {
@@ -58,6 +59,7 @@ images = {
         0: pygame.image.load("./resources/png/tiles/doominos.png")
     }
 }
+images_converted = []
 
 
 def get_image(image, rotation=0):
@@ -72,6 +74,9 @@ def get_image(image, rotation=0):
     if image not in images:
         print(image, 'not found')
         return None
+    if image not in images_converted:
+        images[image][0] = images[image][0].convert()
+        images_converted.append(image)
     if rotation not in images[image]:
         images[image][rotation] = pygame.transform.rotate(images[image][0], rotation)
     return images[image][rotation]
@@ -117,12 +122,13 @@ inaccessible_tiles = {CellType.DOOMINOS, CellType.BUILDING}
 class Grid:
     doominos_location = None
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, world):
         """
         Initialize the grid
         :param width: width of the grid
         :param height: height of the grid
         """
+        self.world = world
         # Create empty grid
         self.width = width
         self.height = height
@@ -462,8 +468,14 @@ class Grid:
             print('')
 
     def draw(self, screen: pygame.Surface, camera):
-        for x in range(0, self.width):
-            for y in range(0, self.height):
+        player_x, player_y = convert_world_to_grid_position(self.world.player.x, self.world.player.y)
+        left_x = max(0, player_x - Constant.GRID_SPAWN_RANGE)
+        right_x = min(Constant.GRID_WIDTH, player_x + Constant.GRID_SPAWN_RANGE)
+        top_y = max(0, player_y - Constant.GRID_SPAWN_RANGE)
+        bottom_y = min(Constant.GRID_HEIGHT, player_y + Constant.GRID_SPAWN_RANGE)
+
+        for x in range(left_x, right_x):
+            for y in range(top_y, bottom_y):
                 current_cell = self.grid[x][y]
                 camera.blit_surface_to_screen(screen, current_cell.surface, Constant.TILE_SIZE * x,
                                               Constant.TILE_SIZE * y, centered=False)
