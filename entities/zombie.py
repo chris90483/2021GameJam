@@ -67,6 +67,7 @@ class Zombie(object):
                     self.speed = 0
                 if self.state == ZombieState.REACTING_TO_NOISE:
                     self.state = ZombieState.IDLE
+                    self.target = None
 
                 self.angle = random.random() * 2 * pi
 
