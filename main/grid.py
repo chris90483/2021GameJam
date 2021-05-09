@@ -6,11 +6,32 @@ import pygame
 from main.constants import Constant
 
 images = {
-    'GRASS': {
-        0: pygame.image.load("./resources/png/tiles/grass.png")
+    'GRASS1': {
+        0: pygame.image.load("./resources/png/tiles/grass_1.png")
     },
-    'HOUSE': {
+    'GRASS2': {
+        0: pygame.image.load("./resources/png/tiles/grass_2.png")
+    },
+    'GRASS3': {
+        0: pygame.image.load("./resources/png/tiles/grass_3.png")
+    },
+    'GRASS4': {
+        0: pygame.image.load("./resources/png/tiles/grass_4.png")
+    },
+    'GRASS5': {
+        0: pygame.image.load("./resources/png/tiles/grass_5.png")
+    },
+    'HOUSE1': {
         0: pygame.image.load("./resources/png/tiles/house_1.png")
+    },
+    'HOUSE2': {
+        0: pygame.image.load("./resources/png/tiles/house_2.png")
+    },
+    'HOUSE3': {
+        0: pygame.image.load("./resources/png/tiles/house_3.png")
+    },
+    'HOUSE4': {
+        0: pygame.image.load("./resources/png/tiles/house_4.png")
     },
     'INTERSECTION': {
         0: pygame.image.load("./resources/png/tiles/street_intersection.png")
@@ -21,8 +42,11 @@ images = {
     'CORNER': {
         0: pygame.image.load("./resources/png/tiles/street_corner.png")
     },
-    'STRAIGHT': {
-        0: pygame.image.load("./resources/png/tiles/street_straight.png")
+    'STRAIGHT1': {
+        0: pygame.image.load("./resources/png/tiles/street_straight_1.png")
+    },
+    'STRAIGHT2': {
+        0: pygame.image.load("./resources/png/tiles/street_straight_2.png")
     },
     'DEADEND': {
         0: pygame.image.load("./resources/png/tiles/street_dead_end.png")
@@ -34,6 +58,14 @@ images = {
 
 
 def get_image(image, rotation=0):
+    if image == 'GRASS':
+        image += str(randint(1, 5))
+    elif image == 'HOUSE':
+        image += str(randint(1, 4))
+    elif image == 'STRAIGHT':
+        variant = 2 if randint(1, 10) == 1 else 1
+        image += str(variant)
+
     if image not in images:
         print(image, 'not found')
         return None
@@ -51,16 +83,14 @@ class CellType(Enum):
 
     @staticmethod
     def surface_of(cell_type, rotation=0):
-        if cell_type == CellType.EMPTY:
-            return get_image('GRASS', rotation)
-        elif cell_type == CellType.BUILDING:
+        if cell_type == CellType.BUILDING:
             return get_image('HOUSE', rotation)
         elif cell_type == CellType.ROAD:
             return get_image('STRAIGHT', rotation)
-        elif cell_type == CellType.NATURE:
-            return get_image('GRASS', rotation)
         elif cell_type == CellType.DOOMINOS:
             return get_image('DOOMINOS', rotation)
+        elif cell_type == CellType.NATURE or cell_type == CellType.EMPTY:
+            return get_image('GRASS', rotation)
 
 
 class Cell:
