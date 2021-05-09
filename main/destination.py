@@ -16,10 +16,10 @@ class Destination:
 
     steps = 0
 
-    def __init__(self, world, score):
+    def __init__(self, world):
         self.grid = world.grid
         self.player = world.player
-        self.score = score
+        self.score = world.score
         self.world = world
 
         self.__generate_destination()
@@ -41,12 +41,10 @@ class Destination:
                 # Update the delivery destination
                 self.finishing_delivery_time = None
                 if not self.destination_doominos:
-                    self.destination = self.grid.doominos_location
-                    self.destination_doominos = True
                     self.total_deliveries += 1
-                    self.score.increment_score(int(self.get_delivery_progress() * Constant.DELIVERY_SCORE_INCREASE))
-                    self.delivery_time = None
+                    self.score.increment_score(Constant.DELIVERY_PROFIT + self.get_delivery_progress() * Constant.DELIVERY_TIP)
                     self.world.inventory.remove_item(InventoryItem.PIZZA)
+                    self.set_mission_to_go_to_doominos()
                 else:
                     self.world.inventory.add_item(InventoryItem.PIZZA)
                     self.__generate_destination()

@@ -135,6 +135,7 @@ class Player(object):
                     self.world.destination.set_mission_to_go_to_doominos()
                     self.world.inventory.remove_item(InventoryItem.PIZZA)
                     self.throw_pizza(pygame.mouse.get_pos())
+                    self.world.score.decrement_score(10)
 
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             if self.world.inventory.items[self.world.inventory.current_item]:
