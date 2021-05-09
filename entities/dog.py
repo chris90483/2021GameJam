@@ -19,7 +19,7 @@ dog_keyframes = [pygame.image.load("./resources/png/animations/dog/dog_" + str(x
 class Dog(object):
 
     PIZZA_VISION_RANGE = 1000.0
-    PIZZA_EATING_RANGE = 100.0
+    PIZZA_EATING_RANGE = 5.0
     VISION_RANGE = 500.0
     FOLLOW_RANGE = 250.0
     SPEED = 7.5

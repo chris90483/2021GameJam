@@ -54,6 +54,9 @@ class World(object):
         # Sound circle
         self.emitter_handler.draw(screen, camera)
 
+        if self.pizza:
+            self.pizza.draw(screen, camera)
+
         # Moving entites
         self.player.draw(screen, camera)
         self.zombie_handler.draw(screen, camera)
@@ -64,7 +67,4 @@ class World(object):
         self.delivery_status.draw(screen)
         self.inventory.draw(screen, camera)
         self.health_bar.draw(screen)
-
-        if self.pizza:
-            self.pizza.draw(screen, camera)
 
