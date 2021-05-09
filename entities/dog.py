@@ -7,7 +7,7 @@ from pygame.surface import Surface
 from audio.audio import SoundEmitter
 from audio.sound_emitter import DogBark
 from main.camera import Camera
-from main.util import distance
+from main.util import distance, can_move_to
 
 dog_texture = pygame.image.load("./resources/png/dog.png")
 dog_texture = pygame.transform.scale(dog_texture, (50, 50))
@@ -36,6 +36,8 @@ class Dog(object):
     def step(self):
         self.target_pos = (self.player.x, self.player.y)
 
+        dx = 0
+        dy = 0
         # TODO: Bark every 2-6 seconds?
         if self.following_player:
             self.bark_delay_counter += 1
@@ -52,8 +54,17 @@ class Dog(object):
                     (random.random() - 0.5) * 0.05)
             self.speed = self.SPEED * (1.0 + random.random() * 0.1)
 
-            self.x += cos(self.angle) * self.speed
-            self.y += sin(self.angle) * self.speed
+            dx = cos(self.angle) * self.speed
+            dy = sin(self.angle) * self.speed
+
+        # Check whether we can move anywhere
+        if can_move_to(self.x + dx, self.y + dy, self.world.grid):
+            self.x += dx
+            self.y += dy
+        elif can_move_to(self.x + dx, self.y, self.world.grid):
+            self.x += dx
+        elif can_move_to(self.x, self.y + dy, self.world.grid):
+            self.y += dy
 
     def draw(self, screen: Surface, camera: Camera):
         rotated = pygame.transform.rotate(dog_texture, -self.angle * (180.0 / pi))
