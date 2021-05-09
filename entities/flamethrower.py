@@ -2,6 +2,7 @@ import pygame
 
 from main.constants import Constant
 from main.item import Item
+from main.util import distance
 
 
 class Flamethrower(Item):
@@ -31,6 +32,18 @@ class Flamethrower(Item):
             self.fuel_left -= 1
             if self.fuel_left < 1:
                 self.empty = True
+
+            if not self.empty:
+                zombies = self.player.world.zombie_handler.zombies
+                zombies_to_delete = []
+
+                for i in range(len(zombies)):
+                    player_angle = self.player.angle
+                    zombie_angle = zombies[i]
+
+                    if distance((self.player.x, self.player.y), (zombies[i].x, zombies[i].y)) < 250.0:
+                        # TODO: delete zombie
+                        print("kill zombie", i)
 
     def draw_inventory_slot(self, window, camera, x, y):
         super().draw_inventory_slot(window, camera, x, y)
