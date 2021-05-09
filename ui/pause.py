@@ -14,8 +14,9 @@ class PauseMenu:
         ReturnToGame = "return_to_game"
         QuitGame = "quit_game"
 
-    def __init__(self, audio_manager):
+    def __init__(self, audio_manager, game):
         self.paused = False
+        self.game = game
         self.audio_manager = audio_manager
 
         self.settings = [self.Setting.MusicVolume, self.Setting.SfxVolume, self.Setting.ReturnToGame, self.Setting.QuitGame]
@@ -50,6 +51,9 @@ class PauseMenu:
                     sys.exit()
 
         if event_key == pygame.K_ESCAPE:
+            if self.game.world.player.moving_sound:
+                self.game.world.player.moving_sound.stop()
+                self.game.world.player.moving_sound = None
             self.paused = not self.paused
             self.current_setting_index = 0
 

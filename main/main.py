@@ -28,7 +28,7 @@ class Main:
         self.audio_manager = AudioManager()
         self.game = Game(Constant.GRID_WIDTH, Constant.GRID_HEIGHT, self.audio_manager)
 
-        self.pause_menu = PauseMenu(self.audio_manager)
+        self.pause_menu = PauseMenu(self.audio_manager, self.game)
         self.game_over_menu = GameOverMenu(self)
         self.game_start_menu = GameStartMenu(self)
         self.start_screen = StartScreen(self.window)
