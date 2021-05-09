@@ -1,23 +1,17 @@
-from enum import Enum
-
-import pygame
 import sys
 import time
 
-from audio.audio import AudioManager, Songs, SFX
+import pygame
 
-from main.game import Game
+from audio.audio import AudioManager, Songs
 from main.constants import Constant
-from main.inventory import Inventory
+from main.game import Game
+from ui.game_over import GameOverMenu
+from ui.game_start import GameStartMenu
+from ui.pause import PauseMenu
 
 
 class Main:
-
-    class Setting(Enum):
-        MusicVolume = "music_volume",
-        SfxVolume = "sfx_volume",
-        ReturnToGame = "return_to_game"
-        QuitGame = "quit_game"
 
     def __init__(self):
         self.offset = 0
@@ -29,57 +23,19 @@ class Main:
         pygame.font.init()
         self.font = pygame.font.SysFont("Arial", 20)
         self.audio_manager = AudioManager()
-        self.game = Game(Constant.GRID_WIDTH, Constant.GRID_HEIGHT, self.audio_manager)
+        self.game = Game('<username>', Constant.GRID_WIDTH, Constant.GRID_HEIGHT, self.audio_manager)
 
-        self.paused = False
-
-        self.settings = [self.Setting.MusicVolume, self.Setting.SfxVolume, self.Setting.ReturnToGame, self.Setting.QuitGame]
-        self.current_setting_index = 0
+        self.pause_menu = PauseMenu(self.audio_manager)
+        self.game_over_menu = GameOverMenu(self.game)
+        self.game_start_menu = GameStartMenu(self.game)
 
         self.audio_manager.play_song(song=Songs.ENERGIEK)
 
     # handle a pressed key event in the context of the game root
     def handle_key_press(self, event_key):
-        if event_key == pygame.K_ESCAPE:
-            # end the program, close the window
-            # pygame.quit()
-            # sys.exit()
-            self.paused = not self.paused
-            self.current_setting_index = 0
-            pass
-
-        if self.paused:
-            if event_key == pygame.K_DOWN or event_key == pygame.K_s:
-                self.change_current_setting('down')
-            elif event_key == pygame.K_UP or event_key == pygame.K_w:
-                self.change_current_setting('up')
-
-            if self.settings[self.current_setting_index] == self.Setting.MusicVolume:
-                if event_key == pygame.K_LEFT or event_key == pygame.K_a:
-                    self.audio_manager.update_music_audio_level('left')
-                elif event_key == pygame.K_RIGHT or event_key == pygame.K_d:
-                    self.audio_manager.update_music_audio_level('right')
-
-            if self.settings[self.current_setting_index] == self.Setting.SfxVolume:
-                if event_key == pygame.K_LEFT or event_key == pygame.K_a:
-                    self.audio_manager.update_sfx_audio_level('left')
-                elif event_key == pygame.K_RIGHT or event_key == pygame.K_d:
-                    self.audio_manager.update_sfx_audio_level('right')
-
-            if self.settings[self.current_setting_index] == self.Setting.ReturnToGame:
-                if event_key == pygame.K_RETURN:
-                    self.paused = False
-
-            if self.settings[self.current_setting_index] == self.Setting.QuitGame:
-                if event_key == pygame.K_RETURN:
-                    pygame.quit()
-                    sys.exit()
-
-    def change_current_setting(self, direction):
-        if direction == 'down':
-            self.current_setting_index = (self.current_setting_index + 1) % len(self.settings)
-        else:
-            self.current_setting_index = (self.current_setting_index - 1) % len(self.settings)
+        self.pause_menu.handle_input(event_key)
+        self.game_over_menu.handle_input(event_key)
+        self.game_start_menu.handle_input(event_key)
 
     # Handle all pygame events
     def handle_events(self):
@@ -93,7 +49,7 @@ class Main:
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
             if event.type == pygame.MOUSEWHEEL:
-                if not self.paused:
+                if not self.pause_menu.paused:
                     if event.y == -1:
                         self.game.world.inventory.change_current_selected_item("right")
                     elif event.y == 1:
@@ -110,16 +66,17 @@ class Main:
         self.game.draw(self.window)
 
     def run(self):
+        # Draw the state once before starting the game so that it is shown as the background of the start menu
+        self.update_state()
+
         while True:
             start_time = time.time()
 
             # handle pygame events from the queue
             self.handle_events()
-            # update the state of the game
-            if not self.paused:
+
+            if not self.pause_menu.draw(self.window) and not self.game_over_menu.draw(self.window) and not self.game_start_menu.draw(self.window):
                 self.update_state()
-            else:
-                self.render_pause_screen()
 
             # possibly delay program execution to ensure steady frame rate
             running_time = time.time() - start_time
@@ -127,76 +84,6 @@ class Main:
                 time.sleep((1 / Constant.FRAME_RATE) - running_time)
 
             pygame.display.update()
-
-    def render_pause_screen(self):
-        default_gray = (123, 123, 123)
-        default_black = (0, 0, 0)
-
-        total_top_offset = 0
-
-        pygame.draw.rect(self.window, (255, 255, 255), pygame.Rect(Constant.SCREEN_WIDTH / 2 - 400 / 2, Constant.SCREEN_HEIGHT / 4, 400, 250))
-
-        paused_font = pygame.font.SysFont("Arial", 50)
-        textsurface = paused_font.render('Game Paused', False, (0, 0, 0))
-        self.window.blit(textsurface,
-                         (Constant.SCREEN_WIDTH / 2 - textsurface.get_width() / 2, Constant.SCREEN_HEIGHT / 4))
-
-        total_top_offset += textsurface.get_height()
-
-        volume_font = pygame.font.SysFont("Arial", 24)
-        # print(self.current_setting_index)
-        # print(self.settings[self.current_setting_index])
-        volume_text = 'Music Volume ' + str(int(self.audio_manager.music_audio_level * 100)) + "%"
-        if self.settings[self.current_setting_index] == self.Setting.MusicVolume:
-            vol_textsurface = volume_font.render(volume_text, False, default_black)
-        else:
-            vol_textsurface = volume_font.render(volume_text, False, default_gray)
-
-        total_top_offset += vol_textsurface.get_height()
-
-        self.window.blit(vol_textsurface,
-                         (Constant.SCREEN_WIDTH / 2 - vol_textsurface.get_width() / 2,
-                          Constant.SCREEN_HEIGHT / 4 + total_top_offset))
-
-        sfx_volume_font = pygame.font.SysFont("Arial", 24)
-        # print(self.current_setting_index)
-        # print(self.settings[self.current_setting_index])
-        sfx_volume_text = 'SFX Volume ' + str(int(self.audio_manager.sfx_audio_level * 100)) + "%"
-        if self.settings[self.current_setting_index] == self.Setting.SfxVolume:
-            sfx_vol_textsurface = sfx_volume_font.render(sfx_volume_text, False, default_black)
-        else:
-            sfx_vol_textsurface = sfx_volume_font.render(sfx_volume_text, False, default_gray)
-
-        total_top_offset += sfx_vol_textsurface.get_height()
-
-        self.window.blit(sfx_vol_textsurface,
-                         (Constant.SCREEN_WIDTH / 2 - sfx_vol_textsurface.get_width() / 2,
-                          Constant.SCREEN_HEIGHT / 4 + total_top_offset))
-
-        return_font = pygame.font.SysFont("Arial", 24)
-        if self.settings[self.current_setting_index] == self.Setting.ReturnToGame:
-            return_textsurface = return_font.render('Return to Game', False, default_black)
-        else:
-            return_textsurface = return_font.render('Return to Game', False, default_gray)
-
-        total_top_offset += return_textsurface.get_height()
-
-        self.window.blit(return_textsurface,
-                         (Constant.SCREEN_WIDTH / 2 - return_textsurface.get_width() / 2,
-                          Constant.SCREEN_HEIGHT / 4 + total_top_offset))
-
-        exit_font = pygame.font.SysFont("Arial", 24)
-        if self.settings[self.current_setting_index] == self.Setting.QuitGame:
-            exit_textsurface = exit_font.render('Quit Game', False, default_black)
-        else:
-            exit_textsurface = exit_font.render('Quit Game', False, default_gray)
-
-        total_top_offset += exit_textsurface.get_height()
-
-        self.window.blit(exit_textsurface,
-                         (Constant.SCREEN_WIDTH / 2 - exit_textsurface.get_width() / 2,
-                          Constant.SCREEN_HEIGHT / 4 + total_top_offset))
-
 
 if __name__ == '__main__':
     main = Main()

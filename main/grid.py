@@ -78,6 +78,9 @@ class Cell:
         self.y = y
 
 
+inaccessible_tiles = {CellType.DOOMINOS, CellType.BUILDING}
+
+
 class Grid:
     doominos_location = None
 
@@ -429,4 +432,12 @@ class Grid:
         for x in range(0, self.width):
             for y in range(0, self.height):
                 current_cell = self.grid[x][y]
-                camera.blit_surface_to_screen(screen, current_cell.surface, Constant.TILE_SIZE * x, Constant.TILE_SIZE * y, centered=False)
+                camera.blit_surface_to_screen(screen, current_cell.surface, Constant.TILE_SIZE * x,
+                                              Constant.TILE_SIZE * y, centered=False)
+
+    def is_accessible(self, grid_x, grid_y):
+        # The map is a jail, you cannot escape >:-)
+        if not self.is_in_grid(grid_x, grid_y):
+            return False
+
+        return self.grid[grid_x][grid_y].type not in inaccessible_tiles
