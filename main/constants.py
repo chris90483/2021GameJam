@@ -21,3 +21,8 @@ class Constant:
     MAX_ZOMBIE_SPEED = 3
 
     SCORE_SUBMIT_URL = 'http://gamejam2021.nl/submit2021.php'
+
+    SLOT_WIDTH = 50
+    SLOT_HEIGHT = 50
+
+    FLAMETHROWER_FUEL = 1000

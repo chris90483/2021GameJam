@@ -33,14 +33,6 @@ class Player(object):
         self.world = world
         self.step_no = 0
 
-    def reset(self):
-        self.angle = 0
-        self.held_keys = defaultdict(lambda: False)
-        self.moving = False
-        self.step_no = 0
-        self.set_start_location()
-        self.health = 1000
-
     def set_start_location(self):
         for delta_x, delta_y in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
             x = self.grid.doominos_location[0] + delta_x
@@ -225,7 +217,7 @@ class Player(object):
 
     def take_damage(self, amount):
         self.is_taking_damage = True
-        self.health -= 1
+        self.health = max(0, self.health - 1)
 
     def get_grid_position(self, as_int=True):
         """
