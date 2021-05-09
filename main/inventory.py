@@ -3,19 +3,19 @@ from enum import Enum
 import pygame
 
 from entities.flamethrower import Flamethrower
+from entities.skateboard import Skateboard
 from main.constants import Constant
 from main.item import Pizza
 
 
 class InventoryItem(Enum):
-    FLAMETHROWER = "flamethrower",
+    FLAMETHROWER = "flamethrower"
     PIZZA = "pizza"
+    SKATEBOARD = "skateboard"
 
 
 class Inventory(object):
 
-    SLOT_WIDTH = 50
-    SLOT_HEIGHT = 50
     SLOT_MARGIN = 20
     SELECT_THICKNESS = 3
 
@@ -29,30 +29,37 @@ class Inventory(object):
 
         self.add_item(InventoryItem.FLAMETHROWER)
         self.add_item(InventoryItem.PIZZA)
+        self.add_item(InventoryItem.SKATEBOARD)
 
     def step(self):
         for item in self.items:
             if item:
                 item.step()
 
+    def get_item(self, item_type: InventoryItem):
+        for x in range(0, len(self.items)):
+            if not self.items[x] is None:
+                if self.items[x].item_type == item_type:
+                    return self.items[x]
+
     def draw(self, window: pygame.Surface, camera):
-        pygame.draw.rect(window, (123, 123, 123), pygame.Rect(Constant.SCREEN_WIDTH / 2 - self.SLOT_WIDTH / 2 - int(self.N_slots / 2) * (self.SLOT_WIDTH + self.SLOT_MARGIN) - self.SLOT_MARGIN,
+        pygame.draw.rect(window, (123, 123, 123), pygame.Rect(Constant.SCREEN_WIDTH / 2 - Constant.SLOT_WIDTH / 2 - int(self.N_slots / 2) * (Constant.SLOT_WIDTH + self.SLOT_MARGIN) - self.SLOT_MARGIN,
                                                               Constant.SCREEN_HEIGHT - 70,
-                                                              (self.SLOT_WIDTH + self.SLOT_MARGIN) * self.N_slots + self.SLOT_MARGIN,
-                                                              self.SLOT_HEIGHT + 100))
+                                                              (Constant.SLOT_WIDTH + self.SLOT_MARGIN) * self.N_slots + self.SLOT_MARGIN,
+                                                              Constant.SLOT_HEIGHT + 100))
         current_item_to_draw = 0
         for i in range(0 - int(self.N_slots / 2), self.N_slots - int(self.N_slots / 2)):
             if current_item_to_draw == self.current_item:
-                left_offset = Constant.SCREEN_WIDTH / 2 - self.SLOT_WIDTH / 2 + i * (self.SLOT_WIDTH + self.SLOT_MARGIN)
+                left_offset = Constant.SCREEN_WIDTH / 2 - Constant.SLOT_WIDTH / 2 + i * (Constant.SLOT_WIDTH + self.SLOT_MARGIN)
                 pygame.draw.rect(window, (255, 255, 0), pygame.Rect(left_offset - self.SELECT_THICKNESS,
                                                                     Constant.SCREEN_HEIGHT - 60 - self.SELECT_THICKNESS,
-                                                                    self.SLOT_WIDTH + self.SELECT_THICKNESS * 2,
-                                                                    self.SLOT_HEIGHT + self.SELECT_THICKNESS * 2))
+                                                                    Constant.SLOT_WIDTH + self.SELECT_THICKNESS * 2,
+                                                                    Constant.SLOT_HEIGHT + self.SELECT_THICKNESS * 2))
 
-            left_offset = Constant.SCREEN_WIDTH / 2 - self.SLOT_WIDTH / 2 + i * (self.SLOT_WIDTH + self.SLOT_MARGIN)
+            left_offset = Constant.SCREEN_WIDTH / 2 - Constant.SLOT_WIDTH / 2 + i * (Constant.SLOT_WIDTH + self.SLOT_MARGIN)
             pygame.draw.rect(window, (233, 233, 233), pygame.Rect(left_offset,
                                                                   Constant.SCREEN_HEIGHT - 60,
-                                                                  self.SLOT_WIDTH, self.SLOT_HEIGHT))
+                                                                  Constant.SLOT_WIDTH, Constant.SLOT_HEIGHT))
 
             item_to_draw = self.items[current_item_to_draw]
             if item_to_draw:
@@ -74,6 +81,9 @@ class Inventory(object):
                 if item == InventoryItem.PIZZA:
                     self.items[i] = Pizza(InventoryItem.PIZZA, inventory_icon_file_name="pizza_inventory_icon.png")
                     return True
+                if item == InventoryItem.SKATEBOARD:
+                    self.items[i] = Skateboard(InventoryItem.SKATEBOARD, inventory_icon_file_name="skateboard_inventory_icon.png")
+                    return True
 
     def remove_item(self, to_remove_item: InventoryItem):
         for i in range(len(self.items)):
@@ -86,11 +96,3 @@ class Inventory(object):
             self.current_item = (self.current_item - 1) % self.N_slots
         else:
             self.current_item = (self.current_item + 1) % self.N_slots
-
-    def reset(self):
-        self.current_item = 0
-
-        self.items = [None] * self.N_slots
-
-        self.add_item(InventoryItem.FLAMETHROWER)
-        self.add_item(InventoryItem.PIZZA)

@@ -1,6 +1,6 @@
 import pygame
-from math import pi
 
+from main.constants import Constant
 from main.item import Item
 
 
@@ -9,7 +9,7 @@ class Flamethrower(Item):
     def __init__(self, player, item_type, inventory_icon_file_name):
         super().__init__(item_type, inventory_icon_file_name)
         self.player = player
-        self.fuel_left = 1000
+        self.fuel_left = Constant.FLAMETHROWER_FUEL
         self.activated = False
         self.empty = False
         self.keyframes_fire_spitting_counter = 0
@@ -32,5 +32,7 @@ class Flamethrower(Item):
             if self.fuel_left < 1:
                 self.empty = True
 
-    # def draw_inventory_slot(self, window):
-    #     pass
+    def draw_inventory_slot(self, window, camera, x, y):
+        super().draw_inventory_slot(window, camera, x, y)
+
+        pygame.draw.rect(window, (0, 128, 0), pygame.Rect(x, y + Constant.SLOT_HEIGHT - 5, Constant.SLOT_WIDTH * (self.fuel_left / Constant.FLAMETHROWER_FUEL), 5))

@@ -24,15 +24,6 @@ class Destination:
 
         self.__generate_destination()
 
-    def reset(self):
-        self.destination_doominos = False
-        self.delivery_time = 0
-        self.finishing_delivery_time = None
-        self.total_deliveries = 0
-        self.steps = 0
-
-        self.__generate_destination()
-
     def set_mission_to_go_to_doominos(self):
         self.destination = self.grid.doominos_location
         self.destination_doominos = True

@@ -34,14 +34,6 @@ class Player(object):
         self.world = world
         self.step_no = 0
 
-    def reset(self):
-        self.angle = 0
-        self.held_keys = defaultdict(lambda: False)
-        self.moving = False
-        self.step_no = 0
-        self.set_start_location()
-        self.health = 1000
-
     def set_start_location(self):
         for delta_x, delta_y in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
             x = self.grid.doominos_location[0] + delta_x
@@ -52,7 +44,7 @@ class Player(object):
                 break
 
     def gen_texture(self):
-        if self.moving and not self.world.inventory.items[0].activated:
+        if self.moving and not self.world.inventory.items[0].activated and ( self.world.inventory.items[self.world.inventory.current_item] and not self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.SKATEBOARD):
             player_sprite = self.keyframes_walking[self.keyframes_walking_animation_counter // 5]
             self.keyframes_walking_animation_counter = \
                 (self.keyframes_walking_animation_counter + 1) % (5 * len(self.keyframes_walking))
@@ -81,6 +73,14 @@ class Player(object):
                     % (5 * len(self.world.inventory.items[0].keyframes_empty))
             player_sprite = pygame.transform.rotate(player_sprite, 90)
             player_sprite = pygame.transform.scale(player_sprite, (400, 100))
+        elif self.world.inventory.items[self.world.inventory.current_item]:
+            if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.SKATEBOARD:
+                player_sprite = pygame.image.load('./resources/png/player_skateboarding.png')
+            else:
+                player_sprite = pygame.image.load('./resources/png/player_standing.png')
+
+            player_sprite = pygame.transform.rotate(player_sprite, 90)
+            player_sprite = pygame.transform.scale(player_sprite, (50, 50))
         else:
             player_sprite = pygame.image.load('./resources/png/player_standing.png')
 
@@ -88,9 +88,6 @@ class Player(object):
             player_sprite = pygame.transform.scale(player_sprite, (50, 50))
 
         return player_sprite
-        # texture = pygame.Surface((40, 40))
-        # texture.fill((246, 1, 1), rect=(10, 10, 20, 20))
-        # return texture
 
     def handle_input(self, event: EventType):
         """
@@ -209,7 +206,7 @@ class Player(object):
 
     def take_damage(self, amount):
         self.is_taking_damage = True
-        self.health -= 1
+        self.health = max(0, self.health - 1)
 
     def get_grid_position(self, as_int=True):
         """

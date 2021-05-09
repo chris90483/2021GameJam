@@ -47,22 +47,24 @@ class World(object):
             self.pizza.step()
 
     def draw(self, screen: Surface, camera: Camera):
+        # Grid
         self.grid.draw(screen, camera)
-        self.emitter_handler.draw(screen, camera)
         self.destination_flag.draw(screen, camera)
+
+        # Sound circle
+        self.emitter_handler.draw(screen, camera)
+
+        # Moving entites
+        self.player.draw(screen, camera)
+        self.zombie_handler.draw(screen, camera)
+        self.dog_handler.draw(screen, camera)
+
+        # UI
         self.compass.draw(screen, camera)
         self.delivery_status.draw(screen)
-
-        self.zombie_handler.draw(screen, camera)
-        self.player.draw(screen, camera)
-        self.dog_handler.draw(screen, camera)
         self.inventory.draw(screen, camera)
         self.health_bar.draw(screen)
 
         if self.pizza:
             self.pizza.draw(screen, camera)
 
-    def reset(self):
-        self.player.reset()
-        self.destination.reset()
-        self.inventory.reset()
