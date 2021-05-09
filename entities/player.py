@@ -78,18 +78,19 @@ class Player(object):
                     player_sprite = pygame.transform.rotate(player_sprite, 90)
                 elif self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.KNIFE:
                     if self.world.inventory.items[self.world.inventory.current_item].activated:
-                        player_sprite = self.keyframes_knife_attacking[self.keyframes_knife_attacking_counter // 5]
+                        player_sprite = self.keyframes_knife_attacking[self.keyframes_knife_attacking_counter // 3]
                         self.keyframes_knife_attacking_counter = \
-                            (self.keyframes_knife_attacking_counter + 1) % (5 * len(self.keyframes_knife_attacking))
+                            (self.keyframes_knife_attacking_counter + 1) % (3 * len(self.keyframes_knife_attacking))
                         if self.keyframes_knife_attacking_counter == 0:
                             self.world.inventory.items[self.world.inventory.current_item].activated = False
+                            player_sprite = pygame.transform.scale(player_sprite, (100, 50))
                     else:
                         player_sprite = self.keyframes_walking_holding_knife[self.keyframes_walking_animation_counter // 5]
                         self.keyframes_walking_animation_counter = \
                             (self.keyframes_walking_animation_counter + 1) % (5 * len(self.keyframes_walking))
+                        player_sprite = pygame.transform.scale(player_sprite, (50, 80))
 
                     player_sprite = pygame.transform.rotate(player_sprite, 90)
-                    player_sprite = pygame.transform.scale(player_sprite, (80, 50))
 
                 elif self.world.inventory.items[0].activated:
                     if not self.world.inventory.items[0].empty:
