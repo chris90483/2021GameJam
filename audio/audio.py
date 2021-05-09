@@ -16,7 +16,8 @@ class Songs(Enum):
 
 class SFX(Enum):
     SLOW_WALK = "walk_slow.wav",
-    FAST_WALK = "walk_fast.wav"
+    FAST_WALK = "walk_fast.wav",
+    DOG_GROWL = "dog_growl.wav"
 
 
 class SoundEmitter(ABC):
@@ -73,11 +74,13 @@ class AudioManager:
             thread = Thread(target=self.load_song, args=("pizzathemeloopver.wav",))
             thread.start()
 
-    def play_sfx(self, sfx):
+    def play_sfx(self, sfx, sound_factor=1):
         if sfx == SFX.FAST_WALK:
-            return self.load_sfx("walk_fast.wav")
+            return self.load_sfx("walk_fast.wav", sound_factor=1, loop=-1)
         if sfx == SFX.SLOW_WALK:
-            return self.load_sfx("walk_slow.wav")
+            return self.load_sfx("walk_slow.wav", sound_factor=1, loop=-1)
+        if sfx == SFX.DOG_GROWL:
+            return self.load_sfx("dog_growl.wav", sound_factor, loop=0)
 
     def load_song(self, song_str):
         # song_obj = pygame.mixer.Sound(self.MUSIC_PATH + song_str)
@@ -86,10 +89,10 @@ class AudioManager:
         pygame.mixer.music.play(loops=-1)
         pygame.mixer.music.set_volume(self.music_audio_level)
 
-    def load_sfx(self, sfx_str):
+    def load_sfx(self, sfx_str, sound_factor, loop):
         sound = pygame.mixer.Sound(self.SFX_PATH + sfx_str)
-        sound.set_volume(self.sfx_audio_level)
-        sound.play(-1)
+        sound.set_volume(self.sfx_audio_level * sound_factor)
+        sound.play(loop)
         return sound
 
     def unload_sfx(self, sound):
