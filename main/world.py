@@ -31,6 +31,8 @@ class World(object):
         self.inventory = Inventory(self)
         self.health_bar = HealthBar(self.player)
 
+        self.pizza = None
+
     def handle_input(self, event):
         self.player.handle_input(event)
 
@@ -41,6 +43,9 @@ class World(object):
         self.zombie_handler.step()
         self.dog_handler.step()
 
+        if self.pizza:
+            self.pizza.step()
+
     def draw(self, screen: Surface, camera: Camera):
         # Grid
         self.grid.draw(screen, camera)
@@ -48,6 +53,9 @@ class World(object):
 
         # Sound circle
         self.emitter_handler.draw(screen, camera)
+
+        if self.pizza:
+            self.pizza.draw(screen, camera)
 
         # Moving entites
         self.player.draw(screen, camera)
@@ -59,3 +67,4 @@ class World(object):
         self.delivery_status.draw(screen)
         self.inventory.draw(screen, camera)
         self.health_bar.draw(screen)
+

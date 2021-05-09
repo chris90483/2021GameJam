@@ -7,12 +7,13 @@ from math import atan2, pi, sqrt
 
 from audio.audio import SFX
 from audio.sound_emitter import Footstep
+from entities.pizza import Pizza
 from main.constants import Constant
 import pygame
 from pygame.event import EventType
 from main.grid import CellType
 from main.util import distance
-from main.inventory import InventoryItem
+from main.inventory import Inventory, InventoryItem
 
 
 class Player(object):
@@ -124,11 +125,24 @@ class Player(object):
         :param event: pygame event
         """
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if self.world.inventory.current_item == 0:
-                self.world.inventory.items[0].activated = True
+            if self.world.inventory.items[self.world.inventory.current_item]:
+                # Activate flamethrower
+                if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.FLAMETHROWER:
+                    self.world.inventory.items[self.world.inventory.current_item].activated = True
+
+                # Throw away pizza
+                if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.PIZZA:
+                    self.world.destination.set_mission_to_go_to_doominos()
+                    self.world.inventory.remove_item(InventoryItem.PIZZA)
+                    self.throw_pizza(pygame.mouse.get_pos())
+
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-            if self.world.inventory.current_item == 0:
-                self.world.inventory.items[0].activated = False
+            if self.world.inventory.items[self.world.inventory.current_item]:
+                # Deactivate flamethrower
+                if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.FLAMETHROWER:
+                    self.world.inventory.items[self.world.inventory.current_item].activated = False
+                if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.PIZZA:
+                    pass
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_f:
@@ -140,12 +154,17 @@ class Player(object):
             self.held_keys[event.key] = False
 
     def throw_pizza(self, location):
-        if self.world.destination.delivery_time is None:
-            print("You don't have a pizza, why tf you trynna throw one?")
-        else:
-            self.world.destination.delivery_time = None
-            self.world.destination = self.grid.doominos_location
-            self.world.destination_doominos = True
+        player_location_on_screen = Constant.SCREEN_WIDTH / 2, Constant.SCREEN_HEIGHT / 2
+        dist_player_to_mouse = distance(player_location_on_screen, location)
+
+        self.world.pizza = Pizza(self.x, self.y, dist_player_to_mouse, self.angle, self.world)
+
+        # if self.world.destination.delivery_time is None:
+        #     print("You don't have a pizza, why tf you trynna throw one?")
+        # else:
+        #     self.world.destination.delivery_time = None
+        #     self.world.destination = self.grid.doominos_location
+        #     self.world.destination_doominos = True
 
     def step(self):
         # Get mouse position
@@ -213,7 +232,7 @@ class Player(object):
     def draw(self, screen: pygame.Surface, camera):
         rotated = pygame.transform.rotate(self.gen_texture(), self.angle * (180.0 / pi))
         camera.blit_surface_to_screen(screen, rotated, self.x, self.y)
-        self.world.inventory.draw(screen, camera)
+        # self.world.inventory.draw(screen, camera)
 
     def take_damage(self, amount):
         self.is_taking_damage = True
