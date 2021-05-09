@@ -17,7 +17,8 @@ class Songs(Enum):
 class SFX(Enum):
     SLOW_WALK = "walk_slow.wav",
     FAST_WALK = "walk_fast.wav",
-    DOG_GROWL = "dog_growl.wav"
+    DOG_GROWL = "dog_growl.wav",
+    DOG_BARK = "dog_bark.wav",
 
 
 class SoundEmitter(ABC):
@@ -81,6 +82,8 @@ class AudioManager:
             return self.load_sfx("walk_slow.wav", sound_factor=1, loop=-1)
         if sfx == SFX.DOG_GROWL:
             return self.load_sfx("dog_growl.wav", sound_factor, loop=0)
+        if sfx == SFX.DOG_BARK:
+            return self.load_sfx("dog_bark.wav", sound_factor, loop=0)
 
     def load_song(self, song_str):
         # song_obj = pygame.mixer.Sound(self.MUSIC_PATH + song_str)
