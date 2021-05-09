@@ -30,6 +30,11 @@ class Destination:
         self.__generate_destination()
 
     def step(self):
+        if not self.destination_doominos and self.get_delivery_progress() == 0:
+            self.destination = self.grid.doominos_location
+            self.destination_doominos = True
+            self.delivery_time = None
+
         if self.__player_at_delivery_location():
             if self.finishing_delivery_time is None:
                 # Set the current time as the delivery start time and wait for Constant.DELIVERY_FINISHING_TIME seconds
