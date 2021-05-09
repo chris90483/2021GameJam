@@ -59,6 +59,7 @@ images = {
         0: pygame.image.load("./resources/png/tiles/doominos.png")
     }
 }
+images_converted = []
 
 
 def get_image(image, rotation=0):
@@ -73,6 +74,9 @@ def get_image(image, rotation=0):
     if image not in images:
         print(image, 'not found')
         return None
+    if image not in images_converted:
+        images[image][0] = images[image][0].convert()
+        images_converted.append(image)
     if rotation not in images[image]:
         images[image][rotation] = pygame.transform.rotate(images[image][0], rotation)
     return images[image][rotation]
