@@ -24,6 +24,8 @@ class Player(object):
         self.held_keys = defaultdict(lambda: False)
         self.keyframes_walking = []
         self.keyframes_walking_holding_knife = []
+        self.keyframes_knife_attacking = []
+        self.keyframes_knife_attacking_counter = 0
         self.keyframes_walking_animation_counter = 0
         self.moving = False
         self.moving_sound = None
@@ -34,6 +36,9 @@ class Player(object):
         for x in range(1, 6):
             self.keyframes_walking_holding_knife.append(
                 pygame.image.load('./resources/png/animations/player/player_walking_holding_knife_' + str(x) + '.png'))
+        for x in range(1, 7):
+            self.keyframes_knife_attacking.append(
+                pygame.image.load('./resources/png/animations/player/player_knife_attacking_' + str(x) + '.png'))
         self.set_start_location()
         self.world = world
         self.step_no = 0
@@ -72,9 +77,16 @@ class Player(object):
                     player_sprite = pygame.transform.scale(player_sprite, (50, 100))
                     player_sprite = pygame.transform.rotate(player_sprite, 90)
                 elif self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.KNIFE:
-                    player_sprite = self.keyframes_walking_holding_knife[self.keyframes_walking_animation_counter // 5]
-                    self.keyframes_walking_animation_counter = \
-                        (self.keyframes_walking_animation_counter + 1) % (5 * len(self.keyframes_walking))
+                    if self.world.inventory.items[self.world.inventory.current_item].activated:
+                        player_sprite = self.keyframes_knife_attacking[self.keyframes_knife_attacking_counter // 5]
+                        self.keyframes_knife_attacking_counter = \
+                            (self.keyframes_knife_attacking_counter + 1) % (5 * len(self.keyframes_knife_attacking))
+                        if self.keyframes_knife_attacking_counter == 0:
+                            self.world.inventory.items[self.world.inventory.current_item].activated = False
+                    else:
+                        player_sprite = self.keyframes_walking_holding_knife[self.keyframes_walking_animation_counter // 5]
+                        self.keyframes_walking_animation_counter = \
+                            (self.keyframes_walking_animation_counter + 1) % (5 * len(self.keyframes_walking))
 
                     player_sprite = pygame.transform.rotate(player_sprite, 90)
                     player_sprite = pygame.transform.scale(player_sprite, (80, 50))
@@ -158,6 +170,11 @@ class Player(object):
                     self.world.destination.set_mission_to_go_to_doominos()
                     self.world.inventory.remove_item(InventoryItem.PIZZA)
                     self.throw_pizza(pygame.mouse.get_pos())
+                    self.world.score.decrement_score(10)
+
+                # Knife
+                if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.KNIFE:
+                    self.world.inventory.items[self.world.inventory.current_item].activated = True
 
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             if self.world.inventory.items[self.world.inventory.current_item]:
@@ -194,7 +211,13 @@ class Player(object):
         mouse_x, mouse_y = pygame.mouse.get_pos()
         self.angle = atan2(- (Constant.SCREEN_HEIGHT // 2 - mouse_y), Constant.SCREEN_WIDTH // 2 - mouse_x)
 
-        speed = Constant.PLAYER_SPEED
+        if self.world.inventory.items[self.world.inventory.current_item]:
+            if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.SKATEBOARD:
+              speed = Constant.PLAYER_SPEED_SKATEBOARD
+            else:
+                speed = Constant.PLAYER_SPEED
+        else:
+            speed = Constant.PLAYER_SPEED
         player_pos = self.get_grid_position()
         if self.grid.grid[player_pos[0]][player_pos[1]].type == CellType.NATURE:
             speed *= Constant.PLAYER_SPEED_GRASS_MULTIPLIER
