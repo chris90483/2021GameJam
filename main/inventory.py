@@ -5,7 +5,7 @@ import pygame
 from entities.flamethrower import Flamethrower
 from entities.skateboard import Skateboard
 from main.constants import Constant
-from main.item import Pizza, Knife
+from main.item import Pizza, Knife, Klok
 
 
 class InventoryItem(Enum):
@@ -13,6 +13,7 @@ class InventoryItem(Enum):
     PIZZA = "pizza"
     SKATEBOARD = "skateboard"
     KNIFE = "knife"
+    KLOK = "Klok"
 
 
 class Inventory(object):
@@ -32,6 +33,7 @@ class Inventory(object):
         self.add_item(InventoryItem.PIZZA)
         self.add_item(InventoryItem.SKATEBOARD)
         self.add_item(InventoryItem.KNIFE)
+        self.add_item(InventoryItem.KLOK)
 
     def step(self):
         for item in self.items:
@@ -88,6 +90,9 @@ class Inventory(object):
                     return True
                 if item == InventoryItem.KNIFE:
                     self.items[i] = Knife(InventoryItem.KNIFE, "knife_inventory_icon.png", self.world.player)
+                    return True
+                if item == InventoryItem.KLOK:
+                    self.items[i] = Klok(InventoryItem.KLOK, "klok_inventory_icon.png")
                     return True
 
     def set_current_item(self, new_current_item):
