@@ -51,48 +51,78 @@ class Player(object):
                 break
 
     def gen_texture(self):
-        if self.moving and not self.world.inventory.items[0].activated and ( self.world.inventory.items[self.world.inventory.current_item] and not self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.SKATEBOARD):
-            player_sprite = self.keyframes_walking[self.keyframes_walking_animation_counter // 5]
-            self.keyframes_walking_animation_counter = \
-                (self.keyframes_walking_animation_counter + 1) % (5 * len(self.keyframes_walking))
+        player_sprite = pygame.image.load('./resources/png/player_standing.png')
 
-            player_sprite = pygame.transform.rotate(player_sprite, 90)
-            player_sprite = pygame.transform.scale(player_sprite, (50, 50))
+        player_sprite = pygame.transform.rotate(player_sprite, 90)
+        player_sprite = pygame.transform.scale(player_sprite, (50, 50))
 
-        elif self.world.inventory.current_item == 0 and not self.world.inventory.items[0].activated:
-            player_sprite = pygame.image.load('./resources/png/player_holding_flamethrower.png')
+        if self.moving:
+            if self.world.inventory.items[self.world.inventory.current_item]:
+                if not self.world.inventory.items[0].activated and not self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.SKATEBOARD:
+                    player_sprite = self.keyframes_walking[self.keyframes_walking_animation_counter // 5]
+                    self.keyframes_walking_animation_counter = \
+                        (self.keyframes_walking_animation_counter + 1) % (5 * len(self.keyframes_walking))
 
-            player_sprite = pygame.transform.rotate(player_sprite, 90)
-            player_sprite = pygame.transform.scale(player_sprite, (149, 50))
+                    player_sprite = pygame.transform.rotate(player_sprite, 90)
+                    player_sprite = pygame.transform.scale(player_sprite, (50, 50))
+                elif self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.SKATEBOARD:
+                    player_sprite = pygame.image.load('./resources/png/player_skateboarding.png')
+                    player_sprite = pygame.transform.scale(player_sprite, (50, 75))
+                    player_sprite = pygame.transform.rotate(player_sprite, 90)
 
-        elif self.world.inventory.items[0].activated:
-            if not self.world.inventory.items[0].empty:
-                player_sprite = self.world.inventory.items[0].keyframes_fire_spitting[
-                    self.world.inventory.items[0].keyframes_fire_spitting_counter // 5]
-                self.world.inventory.items[0].keyframes_fire_spitting_counter = \
-                    (self.world.inventory.items[0].keyframes_fire_spitting_counter + 1) \
-                    % (5 * len(self.world.inventory.items[0].keyframes_fire_spitting))
+                elif self.world.inventory.items[0].activated:
+                    if not self.world.inventory.items[0].empty:
+                        player_sprite = self.world.inventory.items[0].keyframes_fire_spitting[
+                            self.world.inventory.items[0].keyframes_fire_spitting_counter // 5]
+                        self.world.inventory.items[0].keyframes_fire_spitting_counter = \
+                            (self.world.inventory.items[0].keyframes_fire_spitting_counter + 1) \
+                            % (5 * len(self.world.inventory.items[0].keyframes_fire_spitting))
+                    else:
+                        player_sprite = self.world.inventory.items[0].keyframes_empty[
+                            self.world.inventory.items[0].keyframes_empty_counter // 5]
+                        self.world.inventory.items[0].keyframes_empty_counter = \
+                            (self.world.inventory.items[0].keyframes_empty_counter + 1) \
+                            % (5 * len(self.world.inventory.items[0].keyframes_empty))
+                    player_sprite = pygame.transform.rotate(player_sprite, 90)
+                    player_sprite = pygame.transform.scale(player_sprite, (450, 100))
             else:
-                player_sprite = self.world.inventory.items[0].keyframes_empty[
-                    self.world.inventory.items[0].keyframes_empty_counter // 5]
-                self.world.inventory.items[0].keyframes_empty_counter = \
-                    (self.world.inventory.items[0].keyframes_empty_counter + 1) \
-                    % (5 * len(self.world.inventory.items[0].keyframes_empty))
-            player_sprite = pygame.transform.rotate(player_sprite, 90)
-            player_sprite = pygame.transform.scale(player_sprite, (400, 100))
-        elif self.world.inventory.items[self.world.inventory.current_item]:
-            if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.SKATEBOARD:
-                player_sprite = pygame.image.load('./resources/png/player_skateboarding.png')
-            else:
-                player_sprite = pygame.image.load('./resources/png/player_standing.png')
+                player_sprite = self.keyframes_walking[self.keyframes_walking_animation_counter // 5]
+                self.keyframes_walking_animation_counter = \
+                    (self.keyframes_walking_animation_counter + 1) % (5 * len(self.keyframes_walking))
 
-            player_sprite = pygame.transform.rotate(player_sprite, 90)
-            player_sprite = pygame.transform.scale(player_sprite, (50, 50))
+                player_sprite = pygame.transform.rotate(player_sprite, 90)
+                player_sprite = pygame.transform.scale(player_sprite, (50, 50))
         else:
-            player_sprite = pygame.image.load('./resources/png/player_standing.png')
+            if self.world.inventory.current_item == 0 and not self.world.inventory.items[0].activated:
+                player_sprite = pygame.image.load('./resources/png/player_holding_flamethrower.png')
 
-            player_sprite = pygame.transform.rotate(player_sprite, 90)
-            player_sprite = pygame.transform.scale(player_sprite, (50, 50))
+                player_sprite = pygame.transform.rotate(player_sprite, 90)
+                player_sprite = pygame.transform.scale(player_sprite, (149, 50))
+
+            elif self.world.inventory.items[0].activated:
+                if not self.world.inventory.items[0].empty:
+                    player_sprite = self.world.inventory.items[0].keyframes_fire_spitting[
+                        self.world.inventory.items[0].keyframes_fire_spitting_counter // 5]
+                    self.world.inventory.items[0].keyframes_fire_spitting_counter = \
+                        (self.world.inventory.items[0].keyframes_fire_spitting_counter + 1) \
+                        % (5 * len(self.world.inventory.items[0].keyframes_fire_spitting))
+                else:
+                    player_sprite = self.world.inventory.items[0].keyframes_empty[
+                        self.world.inventory.items[0].keyframes_empty_counter // 5]
+                    self.world.inventory.items[0].keyframes_empty_counter = \
+                        (self.world.inventory.items[0].keyframes_empty_counter + 1) \
+                        % (5 * len(self.world.inventory.items[0].keyframes_empty))
+                player_sprite = pygame.transform.rotate(player_sprite, 90)
+                player_sprite = pygame.transform.scale(player_sprite, (450, 100))
+            elif self.world.inventory.items[self.world.inventory.current_item]:
+                if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.SKATEBOARD:
+                    player_sprite = pygame.image.load('./resources/png/player_skateboarding.png')
+                    player_sprite = pygame.transform.scale(player_sprite, (50, 75))
+                else:
+                    player_sprite = pygame.image.load('./resources/png/player_standing.png')
+                    player_sprite = pygame.transform.scale(player_sprite, (50, 50))
+
+                player_sprite = pygame.transform.rotate(player_sprite, 90)
 
         return player_sprite
 
