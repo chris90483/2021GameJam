@@ -10,6 +10,8 @@ from ui.game_over import GameOverMenu
 from ui.game_start import GameStartMenu
 from ui.pause import PauseMenu
 
+key_digit_events = [(pygame.K_1, 0), (pygame.K_2, 1), (pygame.K_3, 2), (pygame.K_4, 3), (pygame.K_5, 4), (pygame.K_6, 5), (pygame.K_7, 6), (pygame.K_8, 7), (pygame.K_9, 8), (pygame.K_0, 9)]
+
 
 class Main:
 
@@ -36,6 +38,12 @@ class Main:
         self.pause_menu.handle_input(event_key)
         self.game_over_menu.handle_input(event_key)
         self.game_start_menu.handle_input(event_key)
+
+        if event_key in [x for (x, y) in key_digit_events]:
+            if not self.pause_menu.paused:
+                for (x, y) in key_digit_events:
+                    if x == event_key:
+                        self.game.world.inventory.set_current_item(y)
 
     # Handle all pygame events
     def handle_events(self):
@@ -90,6 +98,7 @@ class Main:
 
         # Draw the state once before starting the game so that it is shown as the background of the start menu
         self.update_state()
+
 
 if __name__ == '__main__':
     main = Main()

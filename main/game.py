@@ -43,15 +43,16 @@ class Game(object):
         self.__game_started = True
 
     def __send_score(self, name, score):
-        if score <= 0 or name.strip() == '':
+        if name.strip() == '':
             return
+
+        score = str(round(score, 2))
 
         sha256 = hashlib.sha256()
         sha256.update((name + str(score) + "manySecureMuchSafeSalt").encode())
         hash = sha256.hexdigest()
 
         name = urllib.parse.quote(name)
-        score = int(score)
         hash = urllib.parse.quote(hash)
 
         try:
@@ -59,12 +60,12 @@ class Game(object):
                 Constant.SCORE_SUBMIT_URL + "?name={}&score={}&hash={}".format(name, score, hash),
                 timeout=4
             )
-            if resp.status != 200:
+            if resp.getcode() != 200:
                 print("Error submitting scores: %s" % resp)
             else:
                 print("Score successfully submitted to server")
-        except:
-            print("Score successfully submitted to server")
+        except Exception as e:
+            print("Error submitting scores: %s" % e)
 
     def is_game_over(self):
         return self.__game_over

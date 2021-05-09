@@ -15,6 +15,11 @@ from main.util import distance, convert_world_to_grid_position, can_move_to
 zombie_texture = pygame.image.load("./resources/png/zombie_standing.png")
 zombie_texture = pygame.transform.scale(zombie_texture, (50, 50))
 zombie_texture = pygame.transform.rotate(zombie_texture, -90)
+
+super_zombie_texture = pygame.image.load("./resources/png/blue_zombie_standing.png")
+super_zombie_texture = pygame.transform.scale(super_zombie_texture, (50, 50))
+super_zombie_texture = pygame.transform.rotate(super_zombie_texture, -90)
+
 pygame.font.init()
 state_indicator_font = pygame.font.SysFont("Arial", 35)
 marker_yellow = state_indicator_font.render('?', True, (200, 200, 0))
@@ -40,12 +45,16 @@ class ZombieState(Enum):
 class Zombie(object):
     VISION_RANGE = 150.0
 
-    def __init__(self, x, y, world):
+    def __init__(self, x, y, world, is_super_zombie=False):
+        self.is_super_zombie = is_super_zombie
+
         self.x = x
         self.y = y
         self.angle = random.random() * 2 * pi
         self.speed = 0.0
         self.max_speed = 0.5 + 0.5 * random.random() * Constant.MAX_ZOMBIE_SPEED
+        if is_super_zombie:
+            self.max_speed * 5
         self.target = None
         self.state = ZombieState.IDLE
         self.world = world
@@ -78,7 +87,10 @@ class Zombie(object):
         else:
             self.angle = atan2(self.target.y - self.y, self.target.x - self.x) + (
                     (random.random() - 0.5) * 0.05)
-            self.speed = self.max_speed * (1.0 + random.random() * 0.1)
+            if self.is_super_zombie:
+                self.speed = self.max_speed * (3.0 + random.random() * 0.1)
+            else:
+                self.speed = self.max_speed * (1.0 + random.random() * 0.1)
 
         dx = cos(self.angle) * self.speed
         dy = sin(self.angle) * self.speed
@@ -98,7 +110,11 @@ class Zombie(object):
         self.check_collision()
 
     def draw(self, screen: Surface, camera: Camera):
-        rotated = pygame.transform.rotate(zombie_texture, -self.angle * (180.0 / pi))
+        if self.is_super_zombie:
+            texture = super_zombie_texture
+        else:
+            texture = zombie_texture
+        rotated = pygame.transform.rotate(texture, -self.angle * (180.0 / pi))
         if self.is_colliding:
             rotated.fill((0, 0, 0))
         camera.blit_surface_to_screen(screen, rotated, self.x, self.y)

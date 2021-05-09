@@ -5,13 +5,14 @@ import pygame
 from entities.flamethrower import Flamethrower
 from entities.skateboard import Skateboard
 from main.constants import Constant
-from main.item import Pizza
+from main.item import Pizza, Knife
 
 
 class InventoryItem(Enum):
     FLAMETHROWER = "flamethrower"
     PIZZA = "pizza"
     SKATEBOARD = "skateboard"
+    KNIFE = "knife"
 
 
 class Inventory(object):
@@ -30,6 +31,7 @@ class Inventory(object):
         self.add_item(InventoryItem.FLAMETHROWER)
         self.add_item(InventoryItem.PIZZA)
         self.add_item(InventoryItem.SKATEBOARD)
+        self.add_item(InventoryItem.KNIFE)
 
     def step(self):
         for item in self.items:
@@ -84,6 +86,13 @@ class Inventory(object):
                 if item == InventoryItem.SKATEBOARD:
                     self.items[i] = Skateboard(InventoryItem.SKATEBOARD, inventory_icon_file_name="skateboard_inventory_icon.png")
                     return True
+                if item == InventoryItem.KNIFE:
+                    self.items[i] = Knife(InventoryItem.KNIFE, inventory_icon_file_name="knife_inventory_icon.png")
+                    return True
+
+    def set_current_item(self, new_current_item):
+        if new_current_item in range(0, self.N_slots):
+            self.current_item = new_current_item
 
     def remove_item(self, to_remove_item: InventoryItem):
         for i in range(len(self.items)):

@@ -19,6 +19,7 @@ from main.util import convert_world_to_grid_position
 class World(object):
     def __init__(self, amount_tiles_x, amount_tiles_y, audio_manager, score):
         self.audio_manager = audio_manager
+        self.score = score
         self.amount_tiles_x = amount_tiles_x
         self.amount_tiles_y = amount_tiles_y
         self.grid = Grid(self.amount_tiles_x, self.amount_tiles_y)
@@ -26,10 +27,10 @@ class World(object):
         self.zombie_handler = ZombieHandler(self)
         self.dog_handler = DogHandler(self)
         self.emitter_handler = EmitterHandler(self.zombie_handler)
-        self.destination = Destination(self, score)
+        self.destination = Destination(self)
         self.destination_flag = DestinationFlag(self)
         self.compass = Compass(self)
-        self.delivery_status = DeliveryStatus(self, score)
+        self.delivery_status = DeliveryStatus(self)
         self.inventory = Inventory(self)
         self.health_bar = HealthBar(self.player)
 
@@ -65,9 +66,9 @@ class World(object):
             self.pizza.draw(screen, camera)
 
         # Moving entites
+        self.dog_handler.draw(screen, camera)
         self.player.draw(screen, camera)
         self.zombie_handler.draw(screen, camera)
-        self.dog_handler.draw(screen, camera)
 
         # UI
         self.compass.draw(screen, camera)

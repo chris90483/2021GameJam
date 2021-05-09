@@ -32,7 +32,7 @@ class GameOverMenu:
         total_top_offset += textsurface.get_height()
 
         score_font = pygame.font.SysFont("Arial", 24)
-        score_textsurface = score_font.render('Final score: {}'.format(self.main.game.score.get_score()), False, (0, 0, 0))
+        score_textsurface = score_font.render('Final profit: € {:.2f}'.format(self.main.game.score.get_score()).replace('.', ','), False, (0, 0, 0))
 
         total_top_offset += score_textsurface.get_height()
 
