@@ -45,7 +45,7 @@ class Zombie(object):
         self.y = y
         self.angle = random.random() * 2 * pi
         self.speed = 0.0
-        self.max_speed = random.random() * Constant.MAX_ZOMBIE_SPEED
+        self.max_speed = 0.5 + 0.5 * random.random() * Constant.MAX_ZOMBIE_SPEED
         self.target = None
         self.state = ZombieState.IDLE
         self.world = world
