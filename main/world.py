@@ -53,8 +53,3 @@ class World(object):
         self.dog_handler.draw(screen, camera)
         self.inventory.draw(screen, camera)
         self.health_bar.draw(screen)
-
-    def reset(self):
-        self.player.reset()
-        self.destination.reset()
-        self.inventory.reset()

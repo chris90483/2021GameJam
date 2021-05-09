@@ -26,8 +26,8 @@ class Main:
         self.game = Game(Constant.GRID_WIDTH, Constant.GRID_HEIGHT, self.audio_manager)
 
         self.pause_menu = PauseMenu(self.audio_manager)
-        self.game_over_menu = GameOverMenu(self.game)
-        self.game_start_menu = GameStartMenu(self.game)
+        self.game_over_menu = GameOverMenu(self)
+        self.game_start_menu = GameStartMenu(self)
 
         self.audio_manager.play_song(song=Songs.ENERGIEK)
 
@@ -84,6 +84,12 @@ class Main:
                 time.sleep((1 / Constant.FRAME_RATE) - running_time)
 
             pygame.display.update()
+
+    def reset(self):
+        self.game = Game(Constant.GRID_WIDTH, Constant.GRID_HEIGHT, self.audio_manager)
+
+        # Draw the state once before starting the game so that it is shown as the background of the start menu
+        self.update_state()
 
 if __name__ == '__main__':
     main = Main()
