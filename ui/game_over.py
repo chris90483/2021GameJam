@@ -51,8 +51,14 @@ class GameOverMenu:
         restart_font = pygame.font.SysFont("Arial", 24)
         restart_textsurface = restart_font.render('Press enter to restart', False, (0, 0, 0))
 
+
         total_top_offset += restart_textsurface.get_height() + 15
 
         window.blit(restart_textsurface,
                          (Constant.SCREEN_WIDTH / 2 - restart_textsurface.get_width() / 2,
                           Constant.SCREEN_HEIGHT / 4 + total_top_offset))
+
+        url_font = pygame.font.SysFont("Arial", 40)
+        url_font_surface = url_font.render('Check out http://gerben-meijer.nl/index2021.php !', False, (255, 255, 255))
+
+        window.blit(url_font_surface, (200, Constant.SCREEN_HEIGHT - 200, 200, 20))
