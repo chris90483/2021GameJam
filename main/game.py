@@ -34,13 +34,6 @@ class Game(object):
     def draw(self, screen: Surface):
         self.world.draw(screen, self.camera)
 
-    def reset(self):
-        # TODO Check if this indeed resets everything
-        self.__game_over = False
-        self.__game_started = False
-        self.score.reset_score()
-        self.world.reset()
-
     def set_game_over(self):
         self.__game_over = True
 

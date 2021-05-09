@@ -4,22 +4,22 @@ from main.constants import Constant
 
 
 class GameStartMenu:
-    def __init__(self, game):
-        self.game = game
+    def __init__(self, main):
+        self.main = main
         self.name = ''
 
     def draw(self, window):
-        if not self.game.is_game_started():
+        if not self.main.game.is_game_started():
             self.render_game_start_screen(window)
             return True
         else:
             return False
 
     def handle_input(self, event_key):
-        if not self.game.is_game_started():
+        if not self.main.game.is_game_started():
             if event_key == pygame.K_RETURN:
-                self.game.player_name = self.name
-                self.game.start_game()
+                self.main.game.player_name = self.name
+                self.main.game.start_game()
             elif pygame.K_a <= event_key <= pygame.K_z:
                 self.add_to_name(pygame.key.name(event_key))
             elif event_key == pygame.K_SPACE:
