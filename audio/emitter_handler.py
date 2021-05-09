@@ -56,10 +56,10 @@ class EmitterHandler(object):
         for emitter in self.current_emitters:
             self.emitter_surface.fill((0, 0, 0, 0))
             emitter.draw(self.emitter_surface, camera)
-        screen.blit(self.emitter_surface, (0, 0))
+            screen.blit(self.emitter_surface, (0, 0))
         self.lock.release()
 
-    def __del__(self):
+    def quit_thread(self):
         # Stop thread on delete
         self.running = False
         self.thread.join()

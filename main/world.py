@@ -26,7 +26,7 @@ class World(object):
         self.score = score
         self.amount_tiles_x = amount_tiles_x
         self.amount_tiles_y = amount_tiles_y
-        self.grid = Grid(self.amount_tiles_x, self.amount_tiles_y)
+        self.grid = Grid(self.amount_tiles_x, self.amount_tiles_y, self)
         self.player = Player(self, audio_manager)
         self.zombie_handler = ZombieHandler(self)
         self.dog_handler = DogHandler(self)
