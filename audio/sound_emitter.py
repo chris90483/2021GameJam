@@ -19,4 +19,4 @@ class DogBark(SoundEmitter):
         return None
 
     def get_loudness(self):
-        return 100
+        return 1500

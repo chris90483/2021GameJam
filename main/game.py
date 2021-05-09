@@ -4,6 +4,7 @@
 from pygame.surface import Surface
 
 from main.camera import Camera
+from main.inventory import Inventory
 from main.world import World
 from main.score import Score
 

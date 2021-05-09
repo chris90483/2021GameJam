@@ -2,8 +2,11 @@ from random import choice
 from math import hypot
 from main.grid import CellType
 from main.constants import Constant
+from main.inventory import InventoryItem
+
 
 class Destination:
+
     destination = None
     destination_doominos = False  # Is the current destination to the Doomino's
     delivery_time = 0  # Time that the delivery started in general
@@ -13,10 +16,11 @@ class Destination:
 
     steps = 0
 
-    def __init__(self, grid, player, score):
+    def __init__(self, grid, player, score, world):
         self.grid = grid
         self.player = player
         self.score = score
+        self.world = world
 
         self.__generate_destination()
 
@@ -34,7 +38,9 @@ class Destination:
                     self.total_deliveries += 1
                     self.score.increment_score(int(self.get_delivery_progress() * Constant.DELIVERY_SCORE_INCREASE))
                     self.delivery_time = None
+                    self.world.inventory.remove_item(InventoryItem.PIZZA)
                 else:
+                    self.world.inventory.add_item(InventoryItem.PIZZA)
                     self.__generate_destination()
                     self.delivery_time = self.steps
                     self.destination_doominos = False
