@@ -17,20 +17,6 @@ class ZombieHandler(object):
         self.world = world
         self.to_delete = set()
 
-        for grid_x in range(Constant.GRID_WIDTH):
-            for grid_y in range(Constant.GRID_HEIGHT):
-                if world.grid.grid[grid_x][grid_y].type == CellType.NATURE:
-                    for _ in range(1):
-                        world_x, world_y = grid_x * Constant.TILE_SIZE, grid_y * Constant.TILE_SIZE
-                        world_x += int(random.random() * Constant.TILE_SIZE)
-                        world_y += int(random.random() * Constant.TILE_SIZE)
-                        if random.random() < self.CHANCE_FOR_SUPER_ZOMBIE:
-                            self.add_zombie(Zombie(world_x, world_y, world, is_super_zombie=True))
-                        else:
-                            self.add_zombie(Zombie(world_x, world_y, world, is_super_zombie=False))
-
-        print("N zombies: ", len(self.zombies))
-
     def get_zombies(self):
         return self.zombies.copy()
 

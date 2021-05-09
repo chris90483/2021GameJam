@@ -5,8 +5,8 @@ class Constant:
 
     TILE_SIZE = 256
 
-    GRID_WIDTH = 32
-    GRID_HEIGHT = 32
+    GRID_WIDTH = 80
+    GRID_HEIGHT = 80
 
     DELIVERY_TIME = 60
     DELIVERY_FINISHING_TIME = 5
@@ -29,5 +29,12 @@ class Constant:
 
     FLAMETHROWER_FUEL = 1000
 
+    # ============= SPAWNING ======================
     # Indicates the range of tiles around the player where zombies etc are spawned
     GRID_SPAWN_RANGE = 6
+
+    # ==== Spawn rates ===
+    # Amount of zombies in a tile will be chosen between 0 and AVG_ZOMBIES_PER_TILE_DISTANCE_FROM_CENTER * tiles_from_center
+    AVG_ZOMBIES_PER_TILE_DISTANCE_FROM_CENTER = 0.25
+    BLUE_ZOMBIE_PROB_INCREASE_PER_TILE_DISTANCE_FROM_CENTER = 0.001
+    DOG_PROB_INCREASE_PER_TILE_DISTANCE_FROM_CENTER = 0.0005

@@ -7,7 +7,8 @@ from pygame.surface import Surface
 from audio.audio import SoundEmitter
 from audio.sound_emitter import DogBark
 from main.camera import Camera
-from main.util import distance, can_move_to
+from main.constants import Constant
+from main.util import distance, can_move_to, convert_world_to_grid_position
 
 dog_texture = pygame.image.load("./resources/png/dog.png")
 dog_texture = pygame.transform.scale(dog_texture, (50, 50))
@@ -56,6 +57,12 @@ class Dog(object):
                 self.following_pizza = True
                 self.following_player = False
 
+        # De-spawn the dog when out of range
+        gx, gy = convert_world_to_grid_position(self.x, self.y)
+        pgx, pgy = convert_world_to_grid_position(self.player.x, self.player.y)
+        if abs(gx - pgx) > Constant.GRID_SPAWN_RANGE or abs(gy - pgy) > Constant.GRID_SPAWN_RANGE:
+            self.world.dog_handler.delete_dog(self)
+
         dx = 0
         dy = 0
         # TODO: Bark every 2-6 seconds?
@@ -96,7 +103,7 @@ class Dog(object):
 
             # print("moving", dx, dy)
 
-        if self.following_pizza:
+        if self.following_pizza and self.world.pizza:
             self.angle = atan2(self.world.pizza.y - self.y, self.world.pizza.x - self.x) + (
                     (random.random() - 0.5) * 0.05)
             self.speed = self.SPEED * (1.0 + random.random() * 0.1)
