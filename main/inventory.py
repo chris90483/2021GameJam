@@ -87,7 +87,7 @@ class Inventory(object):
                     self.items[i] = Skateboard(InventoryItem.SKATEBOARD, inventory_icon_file_name="skateboard_inventory_icon.png")
                     return True
                 if item == InventoryItem.KNIFE:
-                    self.items[i] = Knife(InventoryItem.KNIFE, inventory_icon_file_name="knife_inventory_icon.png")
+                    self.items[i] = Knife(InventoryItem.KNIFE, "knife_inventory_icon.png", self.world.player)
                     return True
 
     def set_current_item(self, new_current_item):

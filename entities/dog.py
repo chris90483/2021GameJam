@@ -4,7 +4,7 @@ from math import pi, atan2, cos, sin
 import pygame
 from pygame.surface import Surface
 
-from audio.audio import SoundEmitter
+from audio.audio import SoundEmitter, SFX
 from audio.sound_emitter import DogBark
 from main.camera import Camera
 from main.constants import Constant
@@ -23,6 +23,8 @@ class Dog(object):
     PIZZA_EATING_RANGE = 5.0
     VISION_RANGE = 500.0
     FOLLOW_RANGE = 250.0
+    GROWL_RANGE = 2000.0
+
     SPEED = 7.5
 
     def __init__(self, x, y, player, world):
@@ -41,7 +43,9 @@ class Dog(object):
 
         self.keyframes_counter = 0
         self.bark_delay_counter = 0
+        self.growl_delay_counter = 0
         self.current_bark_delay = random.randint(200, 300)
+        self.current_growl_delay = random.randint(200, 300)
 
     def step(self):
         # print(self.world.pizza)
@@ -57,6 +61,18 @@ class Dog(object):
                 self.following_pizza = True
                 self.following_player = False
 
+        if not self.following_player and distance((self.x, self.y), (self.player.x, self.player.y)) < self.GROWL_RANGE:
+            self.growl_delay_counter += 1
+            if self.growl_delay_counter % self.current_growl_delay == 0:
+                player_distance = distance((self.x, self.y), (self.player.x, self.player.y))
+                magic_number = 1000
+                sound_factor = magic_number/player_distance
+                if sound_factor > 2:
+                    sound_factor = 2
+                self.world.audio_manager.play_sfx(SFX.DOG_GROWL, sound_factor=sound_factor)
+                self.current_growl_delay = random.randint(200, 300)
+                self.growl_delay_counter = 0
+
         # De-spawn the dog when out of range
         gx, gy = convert_world_to_grid_position(self.x, self.y)
         pgx, pgy = convert_world_to_grid_position(self.player.x, self.player.y)
@@ -69,6 +85,8 @@ class Dog(object):
         if self.following_player:
             self.bark_delay_counter += 1
             if self.bark_delay_counter % self.current_bark_delay == 0:
+                # TODO: Play bark sound
+                self.world.audio_manager.play_sfx(SFX.DOG_BARK)
                 self.world.emitter_handler.add_emitter(DogBark(self.x, self.y))
                 self.current_bark_delay = random.randint(200, 300)
 

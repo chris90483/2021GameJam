@@ -24,6 +24,8 @@ class Player(object):
         self.held_keys = defaultdict(lambda: False)
         self.keyframes_walking = []
         self.keyframes_walking_holding_knife = []
+        self.keyframes_knife_attacking = []
+        self.keyframes_knife_attacking_counter = 0
         self.keyframes_walking_animation_counter = 0
         self.moving = False
         self.moving_sound = None
@@ -34,6 +36,9 @@ class Player(object):
         for x in range(1, 6):
             self.keyframes_walking_holding_knife.append(
                 pygame.image.load('./resources/png/animations/player/player_walking_holding_knife_' + str(x) + '.png'))
+        for x in range(1, 7):
+            self.keyframes_knife_attacking.append(
+                pygame.image.load('./resources/png/animations/player/player_knife_attacking_' + str(x) + '.png'))
         self.set_start_location()
         self.world = world
         self.step_no = 0
@@ -72,12 +77,20 @@ class Player(object):
                     player_sprite = pygame.transform.scale(player_sprite, (50, 100))
                     player_sprite = pygame.transform.rotate(player_sprite, 90)
                 elif self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.KNIFE:
-                    player_sprite = self.keyframes_walking_holding_knife[self.keyframes_walking_animation_counter // 5]
-                    self.keyframes_walking_animation_counter = \
-                        (self.keyframes_walking_animation_counter + 1) % (5 * len(self.keyframes_walking))
+                    if self.world.inventory.items[self.world.inventory.current_item].activated:
+                        player_sprite = self.keyframes_knife_attacking[self.keyframes_knife_attacking_counter // 3]
+                        self.keyframes_knife_attacking_counter = \
+                            (self.keyframes_knife_attacking_counter + 1) % (3 * len(self.keyframes_knife_attacking))
+                        if self.keyframes_knife_attacking_counter == 0:
+                            self.world.inventory.items[self.world.inventory.current_item].activated = False
+                        player_sprite = pygame.transform.scale(player_sprite, (50, 100))
+                    else:
+                        player_sprite = self.keyframes_walking_holding_knife[self.keyframes_walking_animation_counter // 5]
+                        self.keyframes_walking_animation_counter = \
+                            (self.keyframes_walking_animation_counter + 1) % (5 * len(self.keyframes_walking))
+                        player_sprite = pygame.transform.scale(player_sprite, (50, 80))
 
                     player_sprite = pygame.transform.rotate(player_sprite, 90)
-                    player_sprite = pygame.transform.scale(player_sprite, (80, 50))
 
                 elif self.world.inventory.items[0].activated:
                     if not self.world.inventory.items[0].empty:
@@ -130,10 +143,20 @@ class Player(object):
                 elif self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.PIZZA:
                     player_sprite = pygame.image.load('./resources/png/player_holding_pizza.png')
                     player_sprite = pygame.transform.scale(player_sprite, (50, 100))
-                elif self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.KNIFE:
-                    player_sprite = pygame.image.load('./resources/png/player_holding_knife.png')
-                    player_sprite = pygame.transform.scale(player_sprite, (50, 100))
 
+                elif self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.KNIFE:
+                    if self.world.inventory.items[self.world.inventory.current_item].activated:
+                        player_sprite = self.keyframes_knife_attacking[self.keyframes_knife_attacking_counter // 3]
+                        self.keyframes_knife_attacking_counter = \
+                            (self.keyframes_knife_attacking_counter + 1) % (3 * len(self.keyframes_knife_attacking))
+                        if self.keyframes_knife_attacking_counter == 0:
+                            self.world.inventory.items[self.world.inventory.current_item].activated = False
+                        player_sprite = pygame.transform.scale(player_sprite, (50, 100))
+                    else:
+                        player_sprite = pygame.image.load('./resources/png/player_holding_knife.png')
+                        player_sprite = pygame.transform.scale(player_sprite, (50, 100))
+
+                    player_sprite = pygame.transform.rotate(player_sprite, 90)
                 else:
                     player_sprite = pygame.image.load('./resources/png/player_standing.png')
                     player_sprite = pygame.transform.scale(player_sprite, (50, 50))
@@ -159,6 +182,10 @@ class Player(object):
                     self.world.inventory.remove_item(InventoryItem.PIZZA)
                     self.throw_pizza(pygame.mouse.get_pos())
                     self.world.score.decrement_score(10)
+
+                # Knife
+                if self.world.inventory.items[self.world.inventory.current_item] and self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.KNIFE:
+                    self.world.inventory.items[self.world.inventory.current_item].activated = True
 
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             if self.world.inventory.items[self.world.inventory.current_item]:
