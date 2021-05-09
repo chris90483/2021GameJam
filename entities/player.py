@@ -226,20 +226,18 @@ class Player(object):
         mouse_x, mouse_y = pygame.mouse.get_pos()
         self.angle = atan2(- (Constant.SCREEN_HEIGHT // 2 - mouse_y), Constant.SCREEN_WIDTH // 2 - mouse_x)
 
+        speed = Constant.PLAYER_SPEED
+        self.current_movement_type = "legs"
         old_movement_type = self.current_movement_type
 
         if self.world.inventory.items[self.world.inventory.current_item]:
             if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.SKATEBOARD:
                 self.current_movement_type = "skateboard"
                 speed = Constant.PLAYER_SPEED_SKATEBOARD
-            else:
-                self.current_movement_type = "legs"
-                speed = Constant.PLAYER_SPEED
-        else:
-            speed = Constant.PLAYER_SPEED
         player_pos = self.get_grid_position()
         if self.grid.grid[player_pos[0]][player_pos[1]].type == CellType.NATURE:
-            speed *= Constant.PLAYER_SPEED_GRASS_MULTIPLIER
+            # If we are on grass we are always slow, also with a skateboard
+            speed = Constant.PLAYER_SPEED * Constant.PLAYER_SPEED_GRASS_MULTIPLIER
 
         if self.held_keys[pygame.K_LSHIFT]:
             speed *= Constant.PLAYER_SPEED_SLOW_WALKING_MULTIPLIER

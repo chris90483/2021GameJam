@@ -45,7 +45,7 @@
                     <?php foreach ($scores as $score): ?>
                         <tr>
                             <td><?= strip_tags($score['name']) ?></td>
-                            <td><?= strip_tags($score['score']) ?></td>
+                            <td>&euro; <?= number_format(strip_tags($score['score']), 2, ',', '.') ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
