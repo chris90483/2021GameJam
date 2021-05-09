@@ -27,6 +27,7 @@ class Flamethrower(Item):
 
     def step(self):
         if self.activated and not self.empty:
+            # print("Using fuel")
             self.fuel_left -= 1
             if self.fuel_left < 1:
                 self.empty = True

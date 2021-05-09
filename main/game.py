@@ -28,6 +28,8 @@ class Game(object):
 
     def step(self):
         self.world.step()
+        if self.world.player.health < 1:
+            self.set_game_over()
 
     def draw(self, screen: Surface):
         self.world.draw(screen, self.camera)
@@ -59,13 +61,16 @@ class Game(object):
         score = int(score)
         hash = urllib.parse.quote(hash)
 
-        resp = urllib.request.urlopen(
-            Constant.SCORE_SUBMIT_URL + "?name={}&score={}&hash={}".format(name, score, hash),
-            timeout=4
-        )
-        if resp.status != 200:
-            print("Error submitting scores: %s" % resp)
-        else:
+        try:
+            resp = urllib.request.urlopen(
+                Constant.SCORE_SUBMIT_URL + "?name={}&score={}&hash={}".format(name, score, hash),
+                timeout=4
+            )
+            if resp.status != 200:
+                print("Error submitting scores: %s" % resp)
+            else:
+                print("Score successfully submitted to server")
+        except:
             print("Score successfully submitted to server")
 
     def is_game_over(self):

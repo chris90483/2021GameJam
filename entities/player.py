@@ -39,6 +39,7 @@ class Player(object):
         self.moving = False
         self.step_no = 0
         self.set_start_location()
+        self.health = 1000
 
     def set_start_location(self):
         for delta_x, delta_y in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
@@ -57,20 +58,26 @@ class Player(object):
 
             player_sprite = pygame.transform.rotate(player_sprite, 90)
             player_sprite = pygame.transform.scale(player_sprite, (50, 50))
-        elif self.world.inventory.items[0].activated:
 
+        elif self.world.inventory.current_item == 0 and not self.world.inventory.items[0].activated:
+            player_sprite = pygame.image.load('./resources/png/player_holding_flamethrower.png')
+
+            player_sprite = pygame.transform.rotate(player_sprite, 90)
+            player_sprite = pygame.transform.scale(player_sprite, (149, 50))
+
+        elif self.world.inventory.items[0].activated:
             if not self.world.inventory.items[0].empty:
                 player_sprite = self.world.inventory.items[0].keyframes_fire_spitting[
                     self.world.inventory.items[0].keyframes_fire_spitting_counter // 5]
                 self.world.inventory.items[0].keyframes_fire_spitting_counter = \
                     (self.world.inventory.items[0].keyframes_fire_spitting_counter + 1) \
-                    % len(self.world.inventory.items[0].keyframes_fire_spitting)
+                    % (5 * len(self.world.inventory.items[0].keyframes_fire_spitting))
             else:
                 player_sprite = self.world.inventory.items[0].keyframes_empty[
                     self.world.inventory.items[0].keyframes_empty_counter // 5]
                 self.world.inventory.items[0].keyframes_empty_counter = \
                     (self.world.inventory.items[0].keyframes_empty_counter + 1) \
-                    % len(self.world.inventory.items[0].keyframes_empty)
+                    % (5 * len(self.world.inventory.items[0].keyframes_empty))
             player_sprite = pygame.transform.rotate(player_sprite, 90)
             player_sprite = pygame.transform.scale(player_sprite, (400, 100))
         else:
@@ -89,6 +96,13 @@ class Player(object):
         Handles a single pygame event. Is used for detecting WASD input
         :param event: pygame event
         """
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if self.world.inventory.current_item == 0:
+                self.world.inventory.items[0].activated = True
+        if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            if self.world.inventory.current_item == 0:
+                self.world.inventory.items[0].activated = False
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_f:
                 self.world.inventory.items[0].toggle()
@@ -177,9 +191,6 @@ class Player(object):
     def take_damage(self, amount):
         self.is_taking_damage = True
         self.health -= 1
-        if self.health < 1:
-            print("You are dead. Not big surprise.")
-            # todo: call to game.game_over something like that
 
     def get_grid_position(self, as_int=True):
         """

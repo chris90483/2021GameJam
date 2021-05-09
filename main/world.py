@@ -11,6 +11,7 @@ from main.camera import Camera
 from main.destination import Destination
 from main.grid import Grid
 from main.inventory import Inventory
+from entities.health_bar import HealthBar
 
 
 class World(object):
@@ -28,6 +29,7 @@ class World(object):
         self.compass = Compass(self)
         self.delivery_status = DeliveryStatus(self, score)
         self.inventory = Inventory(self)
+        self.health_bar = HealthBar(self.player)
 
     def handle_input(self, event):
         self.player.handle_input(event)
@@ -50,6 +52,7 @@ class World(object):
         self.zombie_handler.draw(screen, camera)
         self.dog_handler.draw(screen, camera)
         self.inventory.draw(screen, camera)
+        self.health_bar.draw(screen)
 
     def reset(self):
         self.player.reset()
