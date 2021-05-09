@@ -20,6 +20,14 @@ class GameOverMenu:
                 self.main.reset()
 
     def render_game_over_screen(self, window):
+        if self.main.game.world.inventory.items[0].flamethrower_sound:
+            self.main.game.world.inventory.items[0].flamethrower_sound.stop()
+            self.main.game.world.inventory.items[0].flamethrower_sound = None
+
+        if self.main.game.world.player.moving_sound:
+            self.main.game.world.player.moving_sound.stop()
+            self.main.game.world.player.moving_sound = None
+
         pygame.draw.rect(window, (255, 255, 255), pygame.Rect(Constant.SCREEN_WIDTH / 2 - 400 / 2, Constant.SCREEN_HEIGHT / 4, 400, 250))
 
         total_top_offset = 40
