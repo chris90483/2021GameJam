@@ -6,6 +6,7 @@ import pygame
 from audio.audio import AudioManager, Songs
 from main.constants import Constant
 from main.game import Game
+from main.start_screen import StartScreen
 from ui.game_over import GameOverMenu
 from ui.game_start import GameStartMenu
 from ui.pause import PauseMenu
@@ -30,6 +31,7 @@ class Main:
         self.pause_menu = PauseMenu(self.audio_manager)
         self.game_over_menu = GameOverMenu(self)
         self.game_start_menu = GameStartMenu(self)
+        self.start_screen = StartScreen(self.window)
 
         self.audio_manager.play_song(song=Songs.ENERGIEK)
 
@@ -74,6 +76,9 @@ class Main:
         self.game.draw(self.window)
 
     def run(self):
+        # show a start screen
+        self.start_screen.go()
+
         # Draw the state once before starting the game so that it is shown as the background of the start menu
         self.update_state()
 
