@@ -40,6 +40,7 @@ class Knife(Item):
         super().__init__(item_type, inventory_icon_file_name)
         self.item_type = item_type
         self.inventory_icon_file_name = inventory_icon_file_name
+        self.activated = False
 
     def step(self):
         pass
