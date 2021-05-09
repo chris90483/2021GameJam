@@ -83,7 +83,7 @@ class Player(object):
                             (self.keyframes_knife_attacking_counter + 1) % (3 * len(self.keyframes_knife_attacking))
                         if self.keyframes_knife_attacking_counter == 0:
                             self.world.inventory.items[self.world.inventory.current_item].activated = False
-                            player_sprite = pygame.transform.scale(player_sprite, (100, 50))
+                        player_sprite = pygame.transform.scale(player_sprite, (50, 100))
                     else:
                         player_sprite = self.keyframes_walking_holding_knife[self.keyframes_walking_animation_counter // 5]
                         self.keyframes_walking_animation_counter = \
