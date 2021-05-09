@@ -15,6 +15,11 @@ from main.util import distance, convert_world_to_grid_position, can_move_to
 zombie_texture = pygame.image.load("./resources/png/zombie_standing.png")
 zombie_texture = pygame.transform.scale(zombie_texture, (50, 50))
 zombie_texture = pygame.transform.rotate(zombie_texture, -90)
+
+super_zombie_texture = pygame.image.load("./resources/png/blue_zombie_standing.png")
+super_zombie_texture = pygame.transform.scale(super_zombie_texture, (50, 50))
+super_zombie_texture = pygame.transform.rotate(super_zombie_texture, -90)
+
 pygame.font.init()
 state_indicator_font = pygame.font.SysFont("Arial", 35)
 marker_yellow = state_indicator_font.render('?', True, (200, 200, 0))
@@ -105,7 +110,11 @@ class Zombie(object):
         self.check_collision()
 
     def draw(self, screen: Surface, camera: Camera):
-        rotated = pygame.transform.rotate(zombie_texture, -self.angle * (180.0 / pi))
+        if self.is_super_zombie:
+            texture = super_zombie_texture
+        else:
+            texture = zombie_texture
+        rotated = pygame.transform.rotate(texture, -self.angle * (180.0 / pi))
         if self.is_colliding:
             rotated.fill((0, 0, 0))
         camera.blit_surface_to_screen(screen, rotated, self.x, self.y)

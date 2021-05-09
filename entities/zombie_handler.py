@@ -30,8 +30,6 @@ class ZombieHandler(object):
 
         print("N zombies: ", len(self.zombies))
 
-
-
     def get_zombies(self):
         return self.zombies[:]
 
