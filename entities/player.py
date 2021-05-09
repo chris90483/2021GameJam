@@ -155,8 +155,6 @@ class Player(object):
                     else:
                         player_sprite = pygame.image.load('./resources/png/player_holding_knife.png')
                         player_sprite = pygame.transform.scale(player_sprite, (50, 100))
-
-                    player_sprite = pygame.transform.rotate(player_sprite, 90)
                 else:
                     player_sprite = pygame.image.load('./resources/png/player_standing.png')
                     player_sprite = pygame.transform.scale(player_sprite, (50, 50))
