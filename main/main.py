@@ -85,6 +85,7 @@ class Main:
 
             pygame.display.update()
 
+
 if __name__ == '__main__':
     main = Main()
     main.run()
