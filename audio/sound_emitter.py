@@ -10,7 +10,7 @@ class PlayerSoundEmitter(SoundEmitter, ABC):
 class Footstep(PlayerSoundEmitter):
     def __init__(self, x, y, speed):
         super().__init__(x, y)
-        self.loudness = speed * 100.0
+        self.loudness = speed * 70.0
 
     def get_soundfile(self):
         return None
@@ -25,7 +25,7 @@ class DogBark(SoundEmitter):
         return None
 
     def get_loudness(self):
-        return 1500
+        return 1000
 
 
 class FlamethrowerEmitter(PlayerSoundEmitter):
@@ -34,4 +34,4 @@ class FlamethrowerEmitter(PlayerSoundEmitter):
         return None
 
     def get_loudness(self):
-        return 650
+        return 500
