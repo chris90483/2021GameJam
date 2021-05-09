@@ -68,7 +68,6 @@ class Dog(object):
                 sound_factor = magic_number/player_distance
                 if sound_factor > 2:
                     sound_factor = 2
-                print(sound_factor)
                 self.world.audio_manager.play_sfx(SFX.DOG_GROWL, sound_factor=sound_factor)
                 self.current_growl_delay = random.randint(200, 300)
                 self.growl_delay_counter = 0
@@ -80,6 +79,7 @@ class Dog(object):
             self.bark_delay_counter += 1
             if self.bark_delay_counter % self.current_bark_delay == 0:
                 # TODO: Play bark sound
+                self.world.audio_manager.play_sfx(SFX.DOG_BARK)
                 self.world.emitter_handler.add_emitter(DogBark(self.x, self.y))
                 self.current_bark_delay = random.randint(200, 300)
 
