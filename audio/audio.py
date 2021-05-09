@@ -1,3 +1,4 @@
+import time
 from abc import ABC, abstractmethod
 from enum import Enum
 from threading import Thread
@@ -24,6 +25,7 @@ class SoundEmitter(ABC):
         self.x = x
         self.y = y
         self.step_v = 0
+        self.timestamp = time.time()
 
     @abstractmethod
     def get_loudness(self):
