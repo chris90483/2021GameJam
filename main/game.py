@@ -43,7 +43,7 @@ class Game(object):
         self.__game_started = True
 
     def __send_score(self, name, score):
-        if name.strip() == '':
+        if score <= 0 or name.strip() == '':
             return
 
         score = str(round(score, 2))
