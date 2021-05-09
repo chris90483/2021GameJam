@@ -40,6 +40,7 @@ class World(object):
 
         self.pizza = None
         self.populated_tiles = [[False for _ in range(Constant.GRID_HEIGHT)] for _ in range(Constant.GRID_WIDTH)]
+        self._update_spawn_regions(convert_world_to_grid_position(self.player.x, self.player.y))
 
     def handle_input(self, event):
         self.player.handle_input(event)
