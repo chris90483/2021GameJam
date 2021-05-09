@@ -1,6 +1,7 @@
 """
     Defines all code for the player object
 """
+import sys
 from collections import defaultdict
 from math import atan2, pi, sqrt
 
@@ -15,19 +16,31 @@ from main.inventory import Inventory
 
 
 class Player(object):
-    def __init__(self, grid, world, audio_manager):
+    def __init__(self, world, audio_manager):
         self.audio_manager = audio_manager
-        self.grid = grid
+        self.grid = world.grid
         self.angle = 0
         self.held_keys = defaultdict(lambda: False)
         self.keyframes_walking = []
         self.keyframes_walking_animation_counter = 0
         self.moving = False
         self.moving_sound = None
+        self.health = 1000
         for x in range(1, 6):
             self.keyframes_walking.append(
                 pygame.image.load('./resources/png/animations/player/player_walking_' + str(x) + '.png'))
+        self.set_start_location()
+        self.world = world
+        self.step_no = 0
 
+    def reset(self):
+        self.angle = 0
+        self.held_keys = defaultdict(lambda: False)
+        self.moving = False
+        self.step_no = 0
+        self.set_start_location()
+
+    def set_start_location(self):
         for delta_x, delta_y in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
             x = self.grid.doominos_location[0] + delta_x
             y = self.grid.doominos_location[1] + delta_y
@@ -35,8 +48,6 @@ class Player(object):
                 self.x = x * Constant.TILE_SIZE + Constant.TILE_SIZE//2
                 self.y = y * Constant.TILE_SIZE + Constant.TILE_SIZE//2
                 break
-        self.world = world
-        self.step_no = 0
 
     def gen_texture(self):
         if self.moving and not self.world.inventory.items[0].activated:
@@ -162,6 +173,13 @@ class Player(object):
         rotated = pygame.transform.rotate(self.gen_texture(), self.angle * (180.0 / pi))
         camera.blit_surface_to_screen(screen, rotated, self.x, self.y)
         self.world.inventory.draw(screen, camera)
+
+    def take_damage(self, amount):
+        self.is_taking_damage = True
+        self.health -= 1
+        if self.health < 1:
+            print("You are dead. Not big surprise.")
+            # todo: call to game.game_over something like that
 
     def get_grid_position(self, as_int=True):
         """

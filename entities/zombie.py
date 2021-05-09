@@ -81,3 +81,5 @@ class Zombie(object):
 
     def check_collision(self):
         self.is_colliding = distance((self.world.player.x, self.world.player.y), (self.x, self.y)) <= 50
+        if self.is_colliding:
+            self.world.player.take_damage(1)
