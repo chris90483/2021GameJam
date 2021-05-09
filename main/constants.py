@@ -26,3 +26,6 @@ class Constant:
     SLOT_HEIGHT = 50
 
     FLAMETHROWER_FUEL = 1000
+
+    # Indicates the range of tiles around the player where zombies etc are spawned
+    GRID_SPAWN_RANGE = 6
