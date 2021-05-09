@@ -3,13 +3,15 @@ from enum import Enum
 import pygame
 
 from entities.flamethrower import Flamethrower
+from entities.skateboard import Skateboard
 from main.constants import Constant
 from main.item import Pizza
 
 
 class InventoryItem(Enum):
-    FLAMETHROWER = "flamethrower",
+    FLAMETHROWER = "flamethrower"
     PIZZA = "pizza"
+    SKATEBOARD = "skateboard"
 
 
 class Inventory(object):
@@ -29,11 +31,18 @@ class Inventory(object):
 
         self.add_item(InventoryItem.FLAMETHROWER)
         self.add_item(InventoryItem.PIZZA)
+        self.add_item(InventoryItem.SKATEBOARD)
 
     def step(self):
         for item in self.items:
             if item:
                 item.step()
+
+    def get_item(self, item_type: InventoryItem):
+        for x in range(0, len(self.items)):
+            if not self.items[x] is None:
+                if self.items[x].item_type == item_type:
+                    return self.items[x]
 
     def draw(self, window: pygame.Surface, camera):
         pygame.draw.rect(window, (123, 123, 123), pygame.Rect(Constant.SCREEN_WIDTH / 2 - self.SLOT_WIDTH / 2 - int(self.N_slots / 2) * (self.SLOT_WIDTH + self.SLOT_MARGIN) - self.SLOT_MARGIN,
@@ -73,6 +82,9 @@ class Inventory(object):
                     return True
                 if item == InventoryItem.PIZZA:
                     self.items[i] = Pizza(InventoryItem.PIZZA, inventory_icon_file_name="pizza_inventory_icon.png")
+                    return True
+                if item == InventoryItem.SKATEBOARD:
+                    self.items[i] = Skateboard(InventoryItem.SKATEBOARD, inventory_icon_file_name="skateboard_inventory_icon.png")
                     return True
 
     def remove_item(self, to_remove_item: InventoryItem):
