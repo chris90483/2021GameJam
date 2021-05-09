@@ -43,7 +43,7 @@ class Knife(Item):
         self.inventory_icon_file_name = inventory_icon_file_name
         self.activated = False
         self.player = player
-        self.knife_range = pi/4
+        self.knife_range = pi/2
 
     def step(self):
         if self.activated:
@@ -56,7 +56,7 @@ class Knife(Item):
                 zombie_angle_min = zombie_angle - self.knife_range
                 zombie_angle_max = zombie_angle + self.knife_range
 
-                if distance((self.player.x, self.player.y), (zombie.x, zombie.y)) < 50.0 \
+                if distance((self.player.x, self.player.y), (zombie.x, zombie.y)) < 25.0 \
                         and zombie_angle_min < player_angle < zombie_angle_max:
                     self.player.world.zombie_handler.delete_zombie(zombie)
 

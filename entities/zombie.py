@@ -6,7 +6,7 @@ import pygame
 from pygame.surface import Surface
 
 from audio.audio import SoundEmitter
-from audio.sound_emitter import Footstep
+from audio.sound_emitter import Footstep, PlayerSoundEmitter
 from main import constants
 from main.camera import Camera
 from main.constants import Constant
@@ -16,9 +16,19 @@ zombie_texture = pygame.image.load("./resources/png/zombie_standing.png")
 zombie_texture = pygame.transform.scale(zombie_texture, (50, 50))
 zombie_texture = pygame.transform.rotate(zombie_texture, -90)
 
+zombie_attacking_keyframes_counter = 0
+zombie_attacking_keyframes = []
+for x in range(1, 6):
+    zombie_attacking_keyframes.append(
+        pygame.image.load('./resources/png/animations/zombie/zombie_attacking_' + str(x) + ".png"))
 super_zombie_texture = pygame.image.load("./resources/png/blue_zombie_standing.png")
 super_zombie_texture = pygame.transform.scale(super_zombie_texture, (50, 50))
 super_zombie_texture = pygame.transform.rotate(super_zombie_texture, -90)
+
+super_zombie_attacking_keyframes = []
+for x in range(1, 6):
+    super_zombie_attacking_keyframes.append(
+        pygame.image.load('./resources/png/animations/zombie/blue_zombie_attacking_' + str(x) + ".png"))
 
 pygame.font.init()
 state_indicator_font = pygame.font.SysFont("Arial", 35)
@@ -116,13 +126,19 @@ class Zombie(object):
         self.check_collision()
 
     def draw(self, screen: Surface, camera: Camera):
+        global zombie_attacking_keyframes, zombie_attacking_keyframes_counter
         if self.is_super_zombie:
             texture = super_zombie_texture
         else:
             texture = zombie_texture
-        rotated = pygame.transform.rotate(texture, -self.angle * (180.0 / pi))
         if self.is_colliding:
-            rotated.fill((0, 0, 0))
+            if self.is_super_zombie:
+                texture = super_zombie_attacking_keyframes[zombie_attacking_keyframes_counter // 4]
+            else:
+                texture = zombie_attacking_keyframes[zombie_attacking_keyframes_counter // 4]
+            zombie_attacking_keyframes_counter = (zombie_attacking_keyframes_counter + 1) % (4 * len(zombie_attacking_keyframes))
+            texture = pygame.transform.rotate(pygame.transform.scale(texture, (50, 60)), -90)
+        rotated = pygame.transform.rotate(texture, -self.angle * (180.0 / pi))
         camera.blit_surface_to_screen(screen, rotated, self.x, self.y)
         if self.state == ZombieState.REACTING_TO_NOISE:
             camera.blit_surface_to_screen(screen, marker_yellow, self.x, self.y - 30.0)
@@ -135,7 +151,7 @@ class Zombie(object):
                 if self.state == ZombieState.IDLE \
                         or not isinstance(self.target, SoundEmitter) \
                         or self.target.timestamp < emitter.timestamp \
-                        or (isinstance(emitter, Footstep) and not isinstance(self.target, Footstep)):
+                        or (isinstance(emitter, PlayerSoundEmitter) and not isinstance(self.target, PlayerSoundEmitter)):
                     self.target = emitter
                     self.state = ZombieState.REACTING_TO_NOISE
 
