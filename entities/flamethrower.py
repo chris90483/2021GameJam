@@ -1,3 +1,6 @@
+import math
+from math import atan2
+
 import pygame
 
 from main.constants import Constant
@@ -23,6 +26,8 @@ class Flamethrower(Item):
         for x in range(1, 7):
             self.keyframes_empty.append(pygame.image.load("./resources/png/animations/flamethrower/empty_" + str(x) + ".png"))
 
+        self.flamethrower_thickness = math.pi/16
+
     def toggle(self):
         self.activated = not self.activated
 
@@ -39,9 +44,12 @@ class Flamethrower(Item):
 
                 for i in range(len(zombies)):
                     player_angle = self.player.angle
-                    zombie_angle = zombies[i]
+                    zombie_angle = atan2(zombies[i].y - self.player.y, self.player.x - zombies[i].x)
+                    zombie_angle_min = zombie_angle - self.flamethrower_thickness
+                    zombie_angle_max = zombie_angle + self.flamethrower_thickness
 
-                    if distance((self.player.x, self.player.y), (zombies[i].x, zombies[i].y)) < 250.0:
+                    if distance((self.player.x, self.player.y), (zombies[i].x, zombies[i].y)) < 250.0 \
+                            and zombie_angle_min < player_angle < zombie_angle_max:
                         # TODO: delete zombie
                         print("kill zombie", i)
 
