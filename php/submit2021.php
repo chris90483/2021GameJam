@@ -19,11 +19,13 @@
         die("Hash mismatch! STOP CHEATING NOOB!");
     }
 
-    $conn->query('CREATE TABLE IF NOT EXISTS scores2021 (id INT PRIMARY KEY AUTO_INCREMENT, name TEXT, score FLOAT)');
-    $stmt = $conn->prepare("INSERT INTO scores2021 (name, score) VALUES (?, ?)");
-    $stmt->bind_param("sd", $name, $score);
+    $conn->query('CREATE TABLE IF NOT EXISTS scores2021 (id INT PRIMARY KEY AUTO_INCREMENT, name TEXT, score FLOAT, pizzas_delivered INT, zombies_killed INT)');
+    $stmt = $conn->prepare("INSERT INTO scores2021 (name, score, pizzas_delivered, zombies_killed) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("sdii", $name, $score, $pizzas_delivered, $zombies_killed);
     $name = $_GET["name"];
     $score = $_GET["score"];
+    $pizzas_delivered = $_GET["pizzas_delivered"];
+    $zombies_killed = $_GET["zombies_killed"];
     $stmt->execute();
     error_log('Score saved');
 

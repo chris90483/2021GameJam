@@ -17,6 +17,8 @@ class ZombieHandler(object):
         self.world = world
         self.to_delete = set()
 
+        self.killed_zombies = 0
+
     def get_zombies(self):
         return self.zombies.copy()
 
@@ -37,3 +39,4 @@ class ZombieHandler(object):
 
     def delete_zombie(self, zombie: Zombie):
         self.to_delete.add(zombie)
+        self.killed_zombies += 1

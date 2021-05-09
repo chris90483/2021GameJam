@@ -57,7 +57,7 @@ class Game(object):
 
         try:
             resp = urllib.request.urlopen(
-                Constant.SCORE_SUBMIT_URL + "?name={}&score={}&hash={}".format(name, score, hash),
+                Constant.SCORE_SUBMIT_URL + "?name={}&score={}&zombies_killed={}&pizzas_delivered={}&hash={}".format(name, score, self.world.zombie_handler.killed_zombies, self.world.destination.total_deliveries, hash),
                 timeout=4
             )
             if resp.getcode() != 200:

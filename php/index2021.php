@@ -9,8 +9,8 @@
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $conn->query('CREATE TABLE IF NOT EXISTS scores2021 (id INT PRIMARY KEY AUTO_INCREMENT, name TEXT, score FLOAT)');
-    $sql = "SELECT name, score FROM scores2021 ORDER BY score DESC";
+    $conn->query('CREATE TABLE IF NOT EXISTS scores2021 (id INT PRIMARY KEY AUTO_INCREMENT, name TEXT, score FLOAT, pizzas_delivered INT, zombies_killed INT)');
+    $sql = "SELECT * FROM scores2021 ORDER BY score DESC";
     $result = $conn->query($sql);
     $scores = [];
     while ($result && $row = $result->fetch_assoc()) {
@@ -39,6 +39,8 @@
                     <tr>
                         <th>Name</th>
                         <th>Score</th>
+                        <th>Pizzas Delivered</th>
+                        <th>Zombies Killed</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,6 +48,8 @@
                         <tr>
                             <td><?= strip_tags($score['name']) ?></td>
                             <td>&euro; <?= number_format(strip_tags($score['score']), 2, ',', '.') ?></td>
+                            <td><?= strip_tags($score['pizzas_delivered']) ?></td>
+                            <td><?= strip_tags($score['zombies_killed']) ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
