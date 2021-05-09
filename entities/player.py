@@ -226,9 +226,9 @@ class Player(object):
         mouse_x, mouse_y = pygame.mouse.get_pos()
         self.angle = atan2(- (Constant.SCREEN_HEIGHT // 2 - mouse_y), Constant.SCREEN_WIDTH // 2 - mouse_x)
 
+        old_movement_type = self.current_movement_type
         speed = Constant.PLAYER_SPEED
         self.current_movement_type = "legs"
-        old_movement_type = self.current_movement_type
 
         if self.world.inventory.items[self.world.inventory.current_item]:
             if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.SKATEBOARD:
