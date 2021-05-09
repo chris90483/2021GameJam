@@ -13,6 +13,7 @@ dog_texture = pygame.image.load("./resources/png/dog.png")
 dog_texture = pygame.transform.scale(dog_texture, (50, 50))
 dog_texture = pygame.transform.rotate(dog_texture, -90)
 
+dog_keyframes = [pygame.image.load("./resources/png/animations/dog/dog_" + str(x) + ".png") for x in range(1, 3)]
 
 class Dog(object):
     VISION_RANGE = 500.0
@@ -30,6 +31,7 @@ class Dog(object):
         self.following_player = False
         self.eating_pizza = False
 
+        self.keyframes_counter = 0
         self.bark_delay_counter = 0
         self.current_bark_delay = random.randint(200, 300)
 
@@ -56,8 +58,14 @@ class Dog(object):
             self.y += sin(self.angle) * self.speed
 
     def draw(self, screen: Surface, camera: Camera):
-        rotated = pygame.transform.rotate(dog_texture, -self.angle * (180.0 / pi))
-        camera.blit_surface_to_screen(screen, rotated, self.x, self.y)
+        if self.speed > 0.0:
+
+            rotated = pygame.transform.rotate(dog_keyframes[self.keyframes_counter // 5], -self.angle * (180.0 / pi))
+            self.keyframes_counter = (self.keyframes_counter + 1) % (5 * len(dog_keyframes))
+            camera.blit_surface_to_screen(screen, rotated, self.x, self.y)
+        else:
+            rotated = pygame.transform.rotate(dog_texture, -self.angle * (180.0 / pi))
+            camera.blit_surface_to_screen(screen, rotated, self.x, self.y)
 
     def hear(self, emitter: SoundEmitter):
         # TODO: Make this depend on loudness :)
