@@ -58,8 +58,14 @@ class Player(object):
 
             player_sprite = pygame.transform.rotate(player_sprite, 90)
             player_sprite = pygame.transform.scale(player_sprite, (50, 50))
-        elif self.world.inventory.items[0].activated:
 
+        elif self.world.inventory.current_item == 0 and not self.world.inventory.items[0].activated:
+            player_sprite = pygame.image.load('./resources/png/player_holding_flamethrower.png')
+
+            player_sprite = pygame.transform.rotate(player_sprite, 90)
+            player_sprite = pygame.transform.scale(player_sprite, (149, 50))
+
+        elif self.world.inventory.items[0].activated:
             if not self.world.inventory.items[0].empty:
                 player_sprite = self.world.inventory.items[0].keyframes_fire_spitting[
                     self.world.inventory.items[0].keyframes_fire_spitting_counter // 5]
@@ -90,6 +96,13 @@ class Player(object):
         Handles a single pygame event. Is used for detecting WASD input
         :param event: pygame event
         """
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if self.world.inventory.current_item == 0:
+                self.world.inventory.items[0].activated = True
+        if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            if self.world.inventory.current_item == 0:
+                self.world.inventory.items[0].activated = False
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_f:
                 self.world.inventory.items[0].toggle()

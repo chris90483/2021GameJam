@@ -48,7 +48,6 @@ class Main:
                 self.handle_key_press(event.key)
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
-                print(pos)
             if event.type == pygame.MOUSEWHEEL:
                 if not self.pause_menu.paused:
                     if event.y == -1:
