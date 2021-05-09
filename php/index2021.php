@@ -9,7 +9,7 @@
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $conn->query('CREATE TABLE IF NOT EXISTS scores2021 (id INT PRIMARY KEY AUTO_INCREMENT, name TEXT, score INT)');
+    $conn->query('CREATE TABLE IF NOT EXISTS scores2021 (id INT PRIMARY KEY AUTO_INCREMENT, name TEXT, score FLOAT)');
     $sql = "SELECT name, score FROM scores2021 ORDER BY score DESC";
     $result = $conn->query($sql);
     $scores = [];
@@ -26,6 +26,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>GameJam 2021 Highscores</title>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
 </head>
@@ -43,8 +44,8 @@
                 <tbody>
                     <?php foreach ($scores as $score): ?>
                         <tr>
-                            <td><?= $score['name'] ?></td>
-                            <td><?= $score['score'] ?></td>
+                            <td><?= strip_tags($score['name']) ?></td>
+                            <td><?= strip_tags($score['score']) ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
