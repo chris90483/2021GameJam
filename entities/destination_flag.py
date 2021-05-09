@@ -4,9 +4,9 @@ from main.destination import Destination
 from main.constants import Constant
 
 class DestinationFlag(object):
-    def __init__(self, destination, player):
-        self.destination = destination
-        self.player = player
+    def __init__(self, world):
+        self.destination = world.destination
+        self.player = world.player
         self.compass_image = pygame.image.load('./resources/png/compass.png')
         self.compass_image = pygame.transform.scale(self.compass_image, (50, 50))
         self.animation_counter = 0

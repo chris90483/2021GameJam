@@ -6,10 +6,10 @@ from math import atan2, pi
 
 
 class Compass(object):
-    def __init__(self, destination, player, destination_flag):
-        self.destination = destination
-        self.destination_flag = destination_flag
-        self.player = player
+    def __init__(self, world):
+        self.destination = world.destination
+        self.destination_flag = world.destination_flag
+        self.player = world.player
         self.compass_image = pygame.image.load('./resources/png/compass.png')
         self.compass_image = pygame.transform.scale(self.compass_image, (50, 50))
 

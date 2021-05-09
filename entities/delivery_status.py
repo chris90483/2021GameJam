@@ -4,8 +4,8 @@ from main.constants import Constant
 
 
 class DeliveryStatus(object):
-    def __init__(self, destination, score):
-        self.destination = destination
+    def __init__(self, world, score):
+        self.destination = world.destination
         self.score = score
         self.font = pygame.font.SysFont("Arial", 20)
 
