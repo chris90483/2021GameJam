@@ -143,10 +143,20 @@ class Player(object):
                 elif self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.PIZZA:
                     player_sprite = pygame.image.load('./resources/png/player_holding_pizza.png')
                     player_sprite = pygame.transform.scale(player_sprite, (50, 100))
-                elif self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.KNIFE:
-                    player_sprite = pygame.image.load('./resources/png/player_holding_knife.png')
-                    player_sprite = pygame.transform.scale(player_sprite, (50, 100))
 
+                elif self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.KNIFE:
+                    if self.world.inventory.items[self.world.inventory.current_item].activated:
+                        player_sprite = self.keyframes_knife_attacking[self.keyframes_knife_attacking_counter // 3]
+                        self.keyframes_knife_attacking_counter = \
+                            (self.keyframes_knife_attacking_counter + 1) % (3 * len(self.keyframes_knife_attacking))
+                        if self.keyframes_knife_attacking_counter == 0:
+                            self.world.inventory.items[self.world.inventory.current_item].activated = False
+                        player_sprite = pygame.transform.scale(player_sprite, (50, 100))
+                    else:
+                        player_sprite = pygame.image.load('./resources/png/player_holding_knife.png')
+                        player_sprite = pygame.transform.scale(player_sprite, (50, 100))
+
+                    player_sprite = pygame.transform.rotate(player_sprite, 90)
                 else:
                     player_sprite = pygame.image.load('./resources/png/player_standing.png')
                     player_sprite = pygame.transform.scale(player_sprite, (50, 50))
@@ -174,7 +184,7 @@ class Player(object):
                     self.world.score.decrement_score(10)
 
                 # Knife
-                if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.KNIFE:
+                if self.world.inventory.items[self.world.inventory.current_item] and self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.KNIFE:
                     self.world.inventory.items[self.world.inventory.current_item].activated = True
 
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
