@@ -7,12 +7,13 @@ from math import atan2, pi, sqrt
 
 from audio.audio import SFX
 from audio.sound_emitter import Footstep
+from entities.pizza import Pizza
 from main.constants import Constant
 import pygame
 from pygame.event import EventType
 from main.grid import CellType
 from main.util import distance
-from main.inventory import Inventory
+from main.inventory import Inventory, InventoryItem
 
 
 class Player(object):
@@ -33,14 +34,6 @@ class Player(object):
         self.world = world
         self.step_no = 0
 
-    def reset(self):
-        self.angle = 0
-        self.held_keys = defaultdict(lambda: False)
-        self.moving = False
-        self.step_no = 0
-        self.set_start_location()
-        self.health = 1000
-
     def set_start_location(self):
         for delta_x, delta_y in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
             x = self.grid.doominos_location[0] + delta_x
@@ -51,45 +44,80 @@ class Player(object):
                 break
 
     def gen_texture(self):
-        if self.moving and not self.world.inventory.items[0].activated:
-            player_sprite = self.keyframes_walking[self.keyframes_walking_animation_counter // 5]
-            self.keyframes_walking_animation_counter = \
-                (self.keyframes_walking_animation_counter + 1) % (5 * len(self.keyframes_walking))
+        player_sprite = pygame.image.load('./resources/png/player_standing.png')
 
-            player_sprite = pygame.transform.rotate(player_sprite, 90)
-            player_sprite = pygame.transform.scale(player_sprite, (50, 50))
+        player_sprite = pygame.transform.rotate(player_sprite, 90)
+        player_sprite = pygame.transform.scale(player_sprite, (50, 50))
 
-        elif self.world.inventory.current_item == 0 and not self.world.inventory.items[0].activated:
-            player_sprite = pygame.image.load('./resources/png/player_holding_flamethrower.png')
+        if self.moving:
+            if self.world.inventory.items[self.world.inventory.current_item]:
+                if not self.world.inventory.items[0].activated and not self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.SKATEBOARD:
+                    player_sprite = self.keyframes_walking[self.keyframes_walking_animation_counter // 5]
+                    self.keyframes_walking_animation_counter = \
+                        (self.keyframes_walking_animation_counter + 1) % (5 * len(self.keyframes_walking))
 
-            player_sprite = pygame.transform.rotate(player_sprite, 90)
-            player_sprite = pygame.transform.scale(player_sprite, (149, 50))
+                    player_sprite = pygame.transform.rotate(player_sprite, 90)
+                    player_sprite = pygame.transform.scale(player_sprite, (50, 50))
+                elif self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.SKATEBOARD:
+                    player_sprite = pygame.image.load('./resources/png/player_skateboarding.png')
+                    player_sprite = pygame.transform.scale(player_sprite, (50, 75))
+                    player_sprite = pygame.transform.rotate(player_sprite, 90)
 
-        elif self.world.inventory.items[0].activated:
-            if not self.world.inventory.items[0].empty:
-                player_sprite = self.world.inventory.items[0].keyframes_fire_spitting[
-                    self.world.inventory.items[0].keyframes_fire_spitting_counter // 5]
-                self.world.inventory.items[0].keyframes_fire_spitting_counter = \
-                    (self.world.inventory.items[0].keyframes_fire_spitting_counter + 1) \
-                    % (5 * len(self.world.inventory.items[0].keyframes_fire_spitting))
+                elif self.world.inventory.items[0].activated:
+                    if not self.world.inventory.items[0].empty:
+                        player_sprite = self.world.inventory.items[0].keyframes_fire_spitting[
+                            self.world.inventory.items[0].keyframes_fire_spitting_counter // 5]
+                        self.world.inventory.items[0].keyframes_fire_spitting_counter = \
+                            (self.world.inventory.items[0].keyframes_fire_spitting_counter + 1) \
+                            % (5 * len(self.world.inventory.items[0].keyframes_fire_spitting))
+                    else:
+                        player_sprite = self.world.inventory.items[0].keyframes_empty[
+                            self.world.inventory.items[0].keyframes_empty_counter // 5]
+                        self.world.inventory.items[0].keyframes_empty_counter = \
+                            (self.world.inventory.items[0].keyframes_empty_counter + 1) \
+                            % (5 * len(self.world.inventory.items[0].keyframes_empty))
+                    player_sprite = pygame.transform.rotate(player_sprite, 90)
+                    player_sprite = pygame.transform.scale(player_sprite, (450, 100))
             else:
-                player_sprite = self.world.inventory.items[0].keyframes_empty[
-                    self.world.inventory.items[0].keyframes_empty_counter // 5]
-                self.world.inventory.items[0].keyframes_empty_counter = \
-                    (self.world.inventory.items[0].keyframes_empty_counter + 1) \
-                    % (5 * len(self.world.inventory.items[0].keyframes_empty))
-            player_sprite = pygame.transform.rotate(player_sprite, 90)
-            player_sprite = pygame.transform.scale(player_sprite, (400, 100))
-        else:
-            player_sprite = pygame.image.load('./resources/png/player_standing.png')
+                player_sprite = self.keyframes_walking[self.keyframes_walking_animation_counter // 5]
+                self.keyframes_walking_animation_counter = \
+                    (self.keyframes_walking_animation_counter + 1) % (5 * len(self.keyframes_walking))
 
-            player_sprite = pygame.transform.rotate(player_sprite, 90)
-            player_sprite = pygame.transform.scale(player_sprite, (50, 50))
+                player_sprite = pygame.transform.rotate(player_sprite, 90)
+                player_sprite = pygame.transform.scale(player_sprite, (50, 50))
+        else:
+            if self.world.inventory.current_item == 0 and not self.world.inventory.items[0].activated:
+                player_sprite = pygame.image.load('./resources/png/player_holding_flamethrower.png')
+
+                player_sprite = pygame.transform.rotate(player_sprite, 90)
+                player_sprite = pygame.transform.scale(player_sprite, (149, 50))
+
+            elif self.world.inventory.items[0].activated:
+                if not self.world.inventory.items[0].empty:
+                    player_sprite = self.world.inventory.items[0].keyframes_fire_spitting[
+                        self.world.inventory.items[0].keyframes_fire_spitting_counter // 5]
+                    self.world.inventory.items[0].keyframes_fire_spitting_counter = \
+                        (self.world.inventory.items[0].keyframes_fire_spitting_counter + 1) \
+                        % (5 * len(self.world.inventory.items[0].keyframes_fire_spitting))
+                else:
+                    player_sprite = self.world.inventory.items[0].keyframes_empty[
+                        self.world.inventory.items[0].keyframes_empty_counter // 5]
+                    self.world.inventory.items[0].keyframes_empty_counter = \
+                        (self.world.inventory.items[0].keyframes_empty_counter + 1) \
+                        % (5 * len(self.world.inventory.items[0].keyframes_empty))
+                player_sprite = pygame.transform.rotate(player_sprite, 90)
+                player_sprite = pygame.transform.scale(player_sprite, (450, 100))
+            elif self.world.inventory.items[self.world.inventory.current_item]:
+                if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.SKATEBOARD:
+                    player_sprite = pygame.image.load('./resources/png/player_skateboarding.png')
+                    player_sprite = pygame.transform.scale(player_sprite, (50, 75))
+                else:
+                    player_sprite = pygame.image.load('./resources/png/player_standing.png')
+                    player_sprite = pygame.transform.scale(player_sprite, (50, 50))
+
+                player_sprite = pygame.transform.rotate(player_sprite, 90)
 
         return player_sprite
-        # texture = pygame.Surface((40, 40))
-        # texture.fill((246, 1, 1), rect=(10, 10, 20, 20))
-        # return texture
 
     def handle_input(self, event: EventType):
         """
@@ -97,11 +125,24 @@ class Player(object):
         :param event: pygame event
         """
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if self.world.inventory.current_item == 0:
-                self.world.inventory.items[0].activated = True
+            if self.world.inventory.items[self.world.inventory.current_item]:
+                # Activate flamethrower
+                if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.FLAMETHROWER:
+                    self.world.inventory.items[self.world.inventory.current_item].activated = True
+
+                # Throw away pizza
+                if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.PIZZA:
+                    self.world.destination.set_mission_to_go_to_doominos()
+                    self.world.inventory.remove_item(InventoryItem.PIZZA)
+                    self.throw_pizza(pygame.mouse.get_pos())
+
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-            if self.world.inventory.current_item == 0:
-                self.world.inventory.items[0].activated = False
+            if self.world.inventory.items[self.world.inventory.current_item]:
+                # Deactivate flamethrower
+                if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.FLAMETHROWER:
+                    self.world.inventory.items[self.world.inventory.current_item].activated = False
+                if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.PIZZA:
+                    pass
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_f:
@@ -113,12 +154,17 @@ class Player(object):
             self.held_keys[event.key] = False
 
     def throw_pizza(self, location):
-        if self.world.destination.delivery_time is None:
-            print("You don't have a pizza, why tf you trynna throw one?")
-        else:
-            self.world.destination.delivery_time = None
-            self.world.destination = self.grid.doominos_location
-            self.world.destination_doominos = True
+        player_location_on_screen = Constant.SCREEN_WIDTH / 2, Constant.SCREEN_HEIGHT / 2
+        dist_player_to_mouse = distance(player_location_on_screen, location)
+
+        self.world.pizza = Pizza(self.x, self.y, dist_player_to_mouse, self.angle, self.world)
+
+        # if self.world.destination.delivery_time is None:
+        #     print("You don't have a pizza, why tf you trynna throw one?")
+        # else:
+        #     self.world.destination.delivery_time = None
+        #     self.world.destination = self.grid.doominos_location
+        #     self.world.destination_doominos = True
 
     def step(self):
         # Get mouse position
@@ -186,11 +232,11 @@ class Player(object):
     def draw(self, screen: pygame.Surface, camera):
         rotated = pygame.transform.rotate(self.gen_texture(), self.angle * (180.0 / pi))
         camera.blit_surface_to_screen(screen, rotated, self.x, self.y)
-        self.world.inventory.draw(screen, camera)
+        # self.world.inventory.draw(screen, camera)
 
     def take_damage(self, amount):
         self.is_taking_damage = True
-        self.health -= 1
+        self.health = max(0, self.health - 1)
 
     def get_grid_position(self, as_int=True):
         """
