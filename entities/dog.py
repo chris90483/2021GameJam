@@ -15,7 +15,11 @@ dog_texture = pygame.transform.rotate(dog_texture, -90)
 
 dog_keyframes = [pygame.image.load("./resources/png/animations/dog/dog_" + str(x) + ".png") for x in range(1, 3)]
 
+
 class Dog(object):
+
+    PIZZA_VISION_RANGE = 1000.0
+    PIZZA_EATING_RANGE = 100.0
     VISION_RANGE = 500.0
     FOLLOW_RANGE = 250.0
     SPEED = 7.5
@@ -30,13 +34,27 @@ class Dog(object):
         self.target_pos = (self.player.x, self.player.y)
         self.following_player = False
         self.eating_pizza = False
+        self.following_pizza = False
+
+        self.pizza_health = 100
 
         self.keyframes_counter = 0
         self.bark_delay_counter = 0
         self.current_bark_delay = random.randint(200, 300)
 
     def step(self):
-        self.target_pos = (self.player.x, self.player.y)
+        # print(self.world.pizza)
+        # print("Follow player ", self.following_player)
+        # print("Follow pizza ", self.following_pizza)
+        # print("Eating pizza ", self.eating_pizza)
+        if not self.eating_pizza and not self.following_pizza:
+            self.target_pos = (self.player.x, self.player.y)
+
+        if self.world.pizza:
+            if distance((self.x, self.y), (self.world.pizza.x, self.world.pizza.y)) < self.PIZZA_VISION_RANGE:
+                self.target_pos = (self.world.pizza.x, self.world.pizza.y)
+                self.following_pizza = True
+                self.following_player = False
 
         dx = 0
         dy = 0
@@ -47,12 +65,38 @@ class Dog(object):
                 self.world.emitter_handler.add_emitter(DogBark(self.x, self.y))
                 self.current_bark_delay = random.randint(200, 300)
 
-        if distance((self.x, self.y), self.target_pos) < self.FOLLOW_RANGE:
+        if not self.following_pizza and distance((self.x, self.y), self.target_pos) < self.FOLLOW_RANGE:
             return
 
-        if distance((self.x, self.y), self.target_pos) < self.VISION_RANGE:
+        if self.following_pizza and distance((self.x, self.y), self.target_pos) < self.PIZZA_EATING_RANGE:
+            self.eating_pizza = True
+
+        if self.eating_pizza:
+            self.pizza_health -= 1
+            if self.pizza_health < 0:
+                self.world.pizza = None
+                self.eating_pizza = False
+                self.following_pizza = False
+                self.pizza_health = 20
+                self.target_pos = (self.player.x, self.player.y)
+            else:
+                return
+
+        # print(not self.following_pizza, not self.eating_pizza, distance((self.x, self.y), self.target_pos) < self.VISION_RANGE)
+
+        if not self.following_pizza and not self.eating_pizza and distance((self.x, self.y), self.target_pos) < self.VISION_RANGE:
             self.following_player = True
             self.angle = atan2(self.target_pos[1] - self.y, self.target_pos[0] - self.x) + (
+                    (random.random() - 0.5) * 0.05)
+            self.speed = self.SPEED * (1.0 + random.random() * 0.1)
+
+            dx = cos(self.angle) * self.speed
+            dy = sin(self.angle) * self.speed
+
+            # print("moving", dx, dy)
+
+        if self.following_pizza:
+            self.angle = atan2(self.world.pizza.y - self.y, self.world.pizza.x - self.x) + (
                     (random.random() - 0.5) * 0.05)
             self.speed = self.SPEED * (1.0 + random.random() * 0.1)
 
