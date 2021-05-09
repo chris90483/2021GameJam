@@ -51,7 +51,7 @@ class Player(object):
 
         if self.moving:
             if self.world.inventory.items[self.world.inventory.current_item]:
-                if not self.world.inventory.items[0].activated and not self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.SKATEBOARD:
+                if not self.world.inventory.items[0].activated and not self.world.inventory.items[self.world.inventory.current_item].item_type in [InventoryItem.SKATEBOARD, InventoryItem.PIZZA]:
                     player_sprite = self.keyframes_walking[self.keyframes_walking_animation_counter // 5]
                     self.keyframes_walking_animation_counter = \
                         (self.keyframes_walking_animation_counter + 1) % (5 * len(self.keyframes_walking))
@@ -63,6 +63,10 @@ class Player(object):
                     player_sprite = pygame.transform.scale(player_sprite, (50, 75))
                     player_sprite = pygame.transform.rotate(player_sprite, 90)
 
+                elif self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.PIZZA:
+                    player_sprite = pygame.image.load('./resources/png/player_holding_pizza.png')
+                    player_sprite = pygame.transform.scale(player_sprite, (50, 100))
+                    player_sprite = pygame.transform.rotate(player_sprite, 90)
                 elif self.world.inventory.items[0].activated:
                     if not self.world.inventory.items[0].empty:
                         player_sprite = self.world.inventory.items[0].keyframes_fire_spitting[
@@ -85,7 +89,7 @@ class Player(object):
 
                 player_sprite = pygame.transform.rotate(player_sprite, 90)
                 player_sprite = pygame.transform.scale(player_sprite, (50, 50))
-        else:
+        else: # not self.moving
             if self.world.inventory.current_item == 0 and not self.world.inventory.items[0].activated:
                 player_sprite = pygame.image.load('./resources/png/player_holding_flamethrower.png')
 
@@ -111,6 +115,9 @@ class Player(object):
                 if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.SKATEBOARD:
                     player_sprite = pygame.image.load('./resources/png/player_skateboarding.png')
                     player_sprite = pygame.transform.scale(player_sprite, (50, 75))
+                elif self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.PIZZA:
+                    player_sprite = pygame.image.load('./resources/png/player_holding_pizza.png')
+                    player_sprite = pygame.transform.scale(player_sprite, (50, 100))
                 else:
                     player_sprite = pygame.image.load('./resources/png/player_standing.png')
                     player_sprite = pygame.transform.scale(player_sprite, (50, 50))
