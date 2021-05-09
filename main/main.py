@@ -23,7 +23,7 @@ class Main:
         pygame.font.init()
         self.font = pygame.font.SysFont("Arial", 20)
         self.audio_manager = AudioManager()
-        self.game = Game('<username>', Constant.GRID_WIDTH, Constant.GRID_HEIGHT, self.audio_manager)
+        self.game = Game(Constant.GRID_WIDTH, Constant.GRID_HEIGHT, self.audio_manager)
 
         self.pause_menu = PauseMenu(self.audio_manager)
         self.game_over_menu = GameOverMenu(self.game)
@@ -48,7 +48,6 @@ class Main:
                 self.handle_key_press(event.key)
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
-                print(pos)
             if event.type == pygame.MOUSEWHEEL:
                 if not self.pause_menu.paused:
                     if event.y == -1:
