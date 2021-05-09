@@ -23,8 +23,6 @@ class Game(object):
         self.world = World(amount_tiles_x, amount_tiles_y, audio_manager, self.score)
         self.camera = Camera(self.world.player)
 
-        self.set_game_over() # TODO Remove
-
     def handle_input(self, event):
         self.world.handle_input(event)
 
@@ -45,7 +43,6 @@ class Game(object):
         self.__game_started = True
 
     def __send_score(self, name, score):
-        name = 'Test' # TODO Remove
         if name.strip() == '':
             return
 
