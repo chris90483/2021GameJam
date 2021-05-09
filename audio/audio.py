@@ -82,7 +82,7 @@ class AudioManager:
             return self.load_sfx("walk_slow.wav", sound_factor=1, loop=-1)
         if sfx == SFX.DOG_GROWL:
             return self.load_sfx("dog_growl.wav", sound_factor, loop=0)
-        if sfx == SFX.DOG_DOG:
+        if sfx == SFX.DOG_BARK:
             return self.load_sfx("dog_bark.wav", sound_factor, loop=0)
 
     def load_song(self, song_str):

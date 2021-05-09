@@ -174,7 +174,7 @@ class Player(object):
                     self.world.score.decrement_score(10)
 
                 # Knife
-                if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.KNIFE:
+                if self.world.inventory.items[self.world.inventory.current_item] and self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.KNIFE:
                     self.world.inventory.items[self.world.inventory.current_item].activated = True
 
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
