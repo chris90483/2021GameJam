@@ -40,12 +40,16 @@ class ZombieState(Enum):
 class Zombie(object):
     VISION_RANGE = 150.0
 
-    def __init__(self, x, y, world):
+    def __init__(self, x, y, world, is_super_zombie=False):
+        self.is_super_zombie = is_super_zombie
+
         self.x = x
         self.y = y
         self.angle = random.random() * 2 * pi
         self.speed = 0.0
         self.max_speed = 0.5 + 0.5 * random.random() * Constant.MAX_ZOMBIE_SPEED
+        if is_super_zombie:
+            self.max_speed * 5
         self.target = None
         self.state = ZombieState.IDLE
         self.world = world
@@ -78,7 +82,10 @@ class Zombie(object):
         else:
             self.angle = atan2(self.target.y - self.y, self.target.x - self.x) + (
                     (random.random() - 0.5) * 0.05)
-            self.speed = self.max_speed * (1.0 + random.random() * 0.1)
+            if self.is_super_zombie:
+                self.speed = self.max_speed * (3.0 + random.random() * 0.1)
+            else:
+                self.speed = self.max_speed * (1.0 + random.random() * 0.1)
 
         dx = cos(self.angle) * self.speed
         dy = sin(self.angle) * self.speed

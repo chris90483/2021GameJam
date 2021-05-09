@@ -91,6 +91,7 @@ class Main:
         # Draw the state once before starting the game so that it is shown as the background of the start menu
         self.update_state()
 
+
 if __name__ == '__main__':
     main = Main()
     main.run()
