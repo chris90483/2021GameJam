@@ -39,6 +39,7 @@ class Player(object):
         self.moving = False
         self.step_no = 0
         self.set_start_location()
+        self.health = 1000
 
     def set_start_location(self):
         for delta_x, delta_y in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
@@ -177,9 +178,6 @@ class Player(object):
     def take_damage(self, amount):
         self.is_taking_damage = True
         self.health -= 1
-        if self.health < 1:
-            print("You are dead. Not big surprise.")
-            # todo: call to game.game_over something like that
 
     def get_grid_position(self, as_int=True):
         """

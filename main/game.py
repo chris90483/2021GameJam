@@ -7,7 +7,7 @@ from main.camera import Camera
 from main.constants import Constant
 from main.world import World
 from main.score import Score
-import hashlib, requests
+import hashlib
 from threading import Thread
 
 
@@ -27,6 +27,8 @@ class Game(object):
 
     def step(self):
         self.world.step()
+        if self.world.player.health < 1:
+            self.set_game_over()
 
     def draw(self, screen: Surface):
         self.world.draw(screen, self.camera)
@@ -47,17 +49,7 @@ class Game(object):
         self.__game_started = True
 
     def __send_score(self, name, score):
-        sha256 = hashlib.sha256()
-        sha256.update((name + str(score) + "manySecureMuchSafeSalt").encode())
-        hash = sha256.hexdigest()
-        resp = requests.get(
-            Constant.SCORE_SUBMIT_URL + "?name={}&score={}&hash={}".format(name, score, hash),
-            timeout=4
-        )
-        if resp.status_code != 200:
-            print("Error submitting scores: %s" % resp)
-        else:
-            print("Score successfully submitted to server")
+        pass
 
     def is_game_over(self):
         return self.__game_over
