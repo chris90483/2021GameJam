@@ -42,16 +42,16 @@ class Flamethrower(Item):
                 zombies = self.player.world.zombie_handler.zombies
                 zombies_to_delete = []
 
-                for i in range(len(zombies)):
+                for zombie in zombies:
                     player_angle = self.player.angle
-                    zombie_angle = atan2(zombies[i].y - self.player.y, self.player.x - zombies[i].x)
+                    zombie_angle = atan2(zombie.y - self.player.y, self.player.x - zombie.x)
                     zombie_angle_min = zombie_angle - self.flamethrower_thickness
                     zombie_angle_max = zombie_angle + self.flamethrower_thickness
 
-                    if distance((self.player.x, self.player.y), (zombies[i].x, zombies[i].y)) < 250.0 \
+                    if distance((self.player.x, self.player.y), (zombie.x, zombie.y)) < 250.0 \
                             and zombie_angle_min < player_angle < zombie_angle_max:
-                        # TODO: delete zombie
-                        print("kill zombie", i)
+                        self.player.world.zombie_handler.delete_zombie(zombie)
+                        # print("kill zombie", i)
 
     def draw_inventory_slot(self, window, camera, x, y):
         super().draw_inventory_slot(window, camera, x, y)
