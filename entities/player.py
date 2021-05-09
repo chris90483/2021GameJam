@@ -194,7 +194,13 @@ class Player(object):
         mouse_x, mouse_y = pygame.mouse.get_pos()
         self.angle = atan2(- (Constant.SCREEN_HEIGHT // 2 - mouse_y), Constant.SCREEN_WIDTH // 2 - mouse_x)
 
-        speed = Constant.PLAYER_SPEED
+        if self.world.inventory.items[self.world.inventory.current_item]:
+            if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.SKATEBOARD:
+              speed = Constant.PLAYER_SPEED_SKATEBOARD
+            else:
+                speed = Constant.PLAYER_SPEED
+        else:
+            speed = Constant.PLAYER_SPEED
         player_pos = self.get_grid_position()
         if self.grid.grid[player_pos[0]][player_pos[1]].type == CellType.NATURE:
             speed *= Constant.PLAYER_SPEED_GRASS_MULTIPLIER
