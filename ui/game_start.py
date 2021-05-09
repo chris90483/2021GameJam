@@ -41,7 +41,7 @@ class GameStartMenu:
         total_top_offset = 20
 
         game_over_font = pygame.font.SysFont("Arial", 50)
-        textsurface = game_over_font.render('Welcome!', False, (0, 0, 0))
+        textsurface = game_over_font.render('Welcome, new deliverer!', False, (0, 0, 0))
         window.blit(textsurface,
                          (Constant.SCREEN_WIDTH / 2 - textsurface.get_width() / 2, Constant.SCREEN_HEIGHT / 4 + total_top_offset))
 

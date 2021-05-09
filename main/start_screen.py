@@ -30,3 +30,19 @@ class StartScreen(object):
         go_to_next = False
         while not go_to_next:
             go_to_next = self.handle_events()
+
+        self.window.fill((0, 0, 0))
+        self.window.blit(pygame.image.load("./resources/png/startscreen/screen3.png"), (0, 0))
+
+        pygame.display.update()
+        go_to_next = False
+        while not go_to_next:
+            go_to_next = self.handle_events()
+
+        self.window.fill((0, 0, 0))
+        self.window.blit(pygame.image.load("./resources/png/startscreen/screen4.png"), (0, 0))
+
+        pygame.display.update()
+        go_to_next = False
+        while not go_to_next:
+            go_to_next = self.handle_events()
