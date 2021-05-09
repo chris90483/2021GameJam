@@ -20,14 +20,14 @@ class World(object):
         self.amount_tiles_x = amount_tiles_x
         self.amount_tiles_y = amount_tiles_y
         self.grid = Grid(self.amount_tiles_x, self.amount_tiles_y)
-        self.player = Player(self.grid, self, audio_manager)
+        self.player = Player(self, audio_manager)
         self.zombie_handler = ZombieHandler(self)
-        self.dog_handler = DogHandler(self.player, self)
+        self.dog_handler = DogHandler(self)
         self.emitter_handler = EmitterHandler(self.zombie_handler)
-        self.destination = Destination(self.grid, self.player, score, self)
-        self.destination_flag = DestinationFlag(self.destination, self.player)
-        self.compass = Compass(self.destination, self.player, self.destination_flag)
-        self.delivery_status = DeliveryStatus(self.destination, score)
+        self.destination = Destination(self, score)
+        self.destination_flag = DestinationFlag(self)
+        self.compass = Compass(self)
+        self.delivery_status = DeliveryStatus(self, score)
         self.inventory = Inventory(self)
         self.health_bar = HealthBar(self.player)
 
@@ -51,6 +51,10 @@ class World(object):
 
         self.zombie_handler.draw(screen, camera)
         self.dog_handler.draw(screen, camera)
-
         self.inventory.draw(screen, camera)
         self.health_bar.draw(screen)
+
+    def reset(self):
+        self.player.reset()
+        self.destination.reset()
+        self.inventory.reset()

@@ -17,4 +17,7 @@ class Constant:
     PLAYER_SPEED_GRASS_MULTIPLIER = 0.6
     PLAYER_SPEED_SLOW_WALKING_MULTIPLIER = 0.3
 
+    ZOMBIE_SPEED = 2
     MAX_ZOMBIE_SPEED = 3
+
+    SCORE_SUBMIT_URL = 'http://gamejam2021.nl/submit2021.php'

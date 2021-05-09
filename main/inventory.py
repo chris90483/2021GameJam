@@ -87,3 +87,10 @@ class Inventory(object):
         else:
             self.current_item = (self.current_item + 1) % self.N_slots
 
+    def reset(self):
+        self.current_item = 0
+
+        self.items = [None] * self.N_slots
+
+        self.add_item(InventoryItem.FLAMETHROWER)
+        self.add_item(InventoryItem.PIZZA)
