@@ -7,7 +7,8 @@ from main.camera import Camera
 from main.constants import Constant
 from main.world import World
 from main.score import Score
-import hashlib, requests
+import hashlib
+import urllib.request, urllib.parse
 from threading import Thread
 
 
@@ -15,8 +16,8 @@ class Game(object):
     __game_over = False
     __game_started = False
 
-    def __init__(self, player_name, amount_tiles_x, amount_tiles_y, audio_manager):
-        self.player_name = player_name
+    def __init__(self, amount_tiles_x, amount_tiles_y, audio_manager):
+        self.player_name = ''
         self.audio_manager = audio_manager
         self.score = Score()
         self.world = World(amount_tiles_x, amount_tiles_y, audio_manager, self.score)
@@ -47,14 +48,22 @@ class Game(object):
         self.__game_started = True
 
     def __send_score(self, name, score):
+        if score <= 0 or name.strip() == '':
+            return
+
         sha256 = hashlib.sha256()
         sha256.update((name + str(score) + "manySecureMuchSafeSalt").encode())
         hash = sha256.hexdigest()
-        resp = requests.get(
+
+        name = urllib.parse.quote(name)
+        score = int(score)
+        hash = urllib.parse.quote(hash)
+
+        resp = urllib.request.urlopen(
             Constant.SCORE_SUBMIT_URL + "?name={}&score={}&hash={}".format(name, score, hash),
             timeout=4
         )
-        if resp.status_code != 200:
+        if resp.status != 200:
             print("Error submitting scores: %s" % resp)
         else:
             print("Score successfully submitted to server")
