@@ -91,7 +91,7 @@ class Inventory(object):
                     return True
 
     def set_current_item(self, new_current_item):
-        if self.items[self.current_item].item_type in [InventoryItem.FLAMETHROWER, InventoryItem.KNIFE] and self.items[self.current_item].activated:
+        if self.items[self.current_item] and self.items[self.current_item].item_type in [InventoryItem.FLAMETHROWER, InventoryItem.KNIFE] and self.items[self.current_item].activated:
             self.items[self.current_item].activated = False
         if new_current_item in range(0, self.N_slots):
             self.current_item = new_current_item
@@ -103,7 +103,7 @@ class Inventory(object):
                     self.items[i] = None
 
     def change_current_selected_item(self, direction):
-        if self.items[self.current_item].item_type in [InventoryItem.FLAMETHROWER, InventoryItem.KNIFE] and self.items[self.current_item].activated:
+        if self.items[self.current_item] and self.items[self.current_item].item_type in [InventoryItem.FLAMETHROWER, InventoryItem.KNIFE] and self.items[self.current_item].activated:
             self.items[self.current_item].activated = False
         if direction == "left":
             self.current_item = (self.current_item - 1) % self.N_slots
