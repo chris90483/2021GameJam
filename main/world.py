@@ -59,9 +59,9 @@ class World(object):
             self.pizza.draw(screen, camera)
 
         # Moving entites
+        self.dog_handler.draw(screen, camera)
         self.player.draw(screen, camera)
         self.zombie_handler.draw(screen, camera)
-        self.dog_handler.draw(screen, camera)
 
         # UI
         self.compass.draw(screen, camera)

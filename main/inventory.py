@@ -90,6 +90,10 @@ class Inventory(object):
                     self.items[i] = Knife(InventoryItem.KNIFE, inventory_icon_file_name="knife_inventory_icon.png")
                     return True
 
+    def set_current_item(self, new_current_item):
+        if new_current_item in range(0, self.N_slots):
+            self.current_item = new_current_item
+
     def remove_item(self, to_remove_item: InventoryItem):
         for i in range(len(self.items)):
             if self.items[i]:
