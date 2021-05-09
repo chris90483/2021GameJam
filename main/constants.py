@@ -14,20 +14,21 @@ class Constant:
     DELIVERY_PROFIT = 10
     DELIVERY_TIP = 10
 
-    PLAYER_SPEED = 4
-    PLAYER_SPEED_SKATEBOARD = 8
+    PLAYER_HEALTH = 100
+    PLAYER_SPEED = 3
+    PLAYER_SPEED_SKATEBOARD = 6
     PLAYER_SPEED_GRASS_MULTIPLIER = 0.6
     PLAYER_SPEED_SLOW_WALKING_MULTIPLIER = 0.3
 
     ZOMBIE_SPEED = 2
     MAX_ZOMBIE_SPEED = 3
 
-    SCORE_SUBMIT_URL = 'http://gamejam2021.nl/submit2021.php'
+    SCORE_SUBMIT_URL = 'http://gerben-meijer.nl/submit2021.php'
 
     SLOT_WIDTH = 50
     SLOT_HEIGHT = 50
 
-    FLAMETHROWER_FUEL = 1000
+    FLAMETHROWER_FUEL = 2 * FRAME_RATE
 
     # ============= SPAWNING ======================
     # Indicates the range of tiles around the player where zombies etc are spawned

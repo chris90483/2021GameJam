@@ -69,8 +69,8 @@ class Destination:
         """
         houses = self.grid.get_grid_cells_of_type(CellType.BUILDING)
         player_pos = self.player.get_grid_position()
-        min_range = 10 + self.total_deliveries * 4
-        max_range = 15 + self.total_deliveries * 8
+        min_range = 8 + self.total_deliveries * 4
+        max_range = 12 + self.total_deliveries * 8
         houses_in_range = []
         while len(houses_in_range) == 0:
             houses_in_range = [house for house in houses if min_range <= hypot(player_pos[0] - house.x, player_pos[1] - house.y) <= max_range]

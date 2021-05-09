@@ -29,7 +29,7 @@ class Player(object):
         self.keyframes_walking_animation_counter = 0
         self.moving = False
         self.moving_sound = None
-        self.health = 1000
+        self.health = Constant.PLAYER_HEALTH
         for x in range(1, 6):
             self.keyframes_walking.append(
                 pygame.image.load('./resources/png/animations/player/player_walking_' + str(x) + '.png'))
