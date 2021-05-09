@@ -184,7 +184,7 @@ class Player(object):
                     self.world.score.decrement_score(10)
 
                 # Drink a Klok
-                if self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.KLOK:
+                if self.world.inventory.items[self.world.inventory.current_item] and self.world.inventory.items[self.world.inventory.current_item].item_type == InventoryItem.KLOK:
                     self.health = Constant.PLAYER_HEALTH
                     self.world.inventory.remove_item(InventoryItem.KLOK)
                     #print(self.world.inventory.items)
