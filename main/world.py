@@ -42,14 +42,20 @@ class World(object):
         self.dog_handler.step()
 
     def draw(self, screen: Surface, camera: Camera):
+        # Grid
         self.grid.draw(screen, camera)
-        self.emitter_handler.draw(screen, camera)
-        self.player.draw(screen, camera)
         self.destination_flag.draw(screen, camera)
-        self.compass.draw(screen, camera)
-        self.delivery_status.draw(screen)
 
+        # Sound circle
+        self.emitter_handler.draw(screen, camera)
+
+        # Moving entites
+        self.player.draw(screen, camera)
         self.zombie_handler.draw(screen, camera)
         self.dog_handler.draw(screen, camera)
+
+        # UI
+        self.compass.draw(screen, camera)
+        self.delivery_status.draw(screen)
         self.inventory.draw(screen, camera)
         self.health_bar.draw(screen)
