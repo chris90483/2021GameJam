@@ -21,6 +21,9 @@ images = {
     'GRASS5': {
         0: pygame.image.load("./resources/png/tiles/grass_5.png")
     },
+    'GRASS6': {
+        0: pygame.image.load("./resources/png/tiles/playground.png")
+    },
     'HOUSE1': {
         0: pygame.image.load("./resources/png/tiles/house_1.png")
     },
@@ -59,7 +62,7 @@ images = {
 
 def get_image(image, rotation=0):
     if image == 'GRASS':
-        image += str(randint(1, 5))
+        image += str(randint(1, 6))
     elif image == 'HOUSE':
         image += str(randint(1, 4))
     elif image == 'STRAIGHT':

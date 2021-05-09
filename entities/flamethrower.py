@@ -3,6 +3,7 @@ from math import atan2
 
 import pygame
 
+from audio.audio import SFX
 from main.constants import Constant
 from main.item import Item
 from main.util import distance
@@ -28,19 +29,52 @@ class Flamethrower(Item):
 
         self.flamethrower_thickness = math.pi/16
 
+        self.playing_fire_sfx = False
+        self.playing_empty_sfx = False
+
+        self.flamethrower_sound = None
+
     def toggle(self):
         self.activated = not self.activated
 
     def step(self):
+        currently_playing_fire_sfx = self.playing_fire_sfx
+        currently_playing_empty_sfx = self.playing_empty_sfx
+
+        if (self.playing_fire_sfx or self.playing_empty_sfx) and not self.activated and self.flamethrower_sound:
+            self.player.world.audio_manager.unload_sfx(self.flamethrower_sound)
+            self.flamethrower_sound = None
+            self.playing_fire_sfx = False
+            self.playing_empty_sfx = False
+
+        if self.activated and self.empty:
+            self.playing_empty_sfx = True
+            if currently_playing_empty_sfx != self.playing_empty_sfx:
+                self.flamethrower_sound = self.player.world.audio_manager.play_sfx(SFX.FLAMETHROWER_EMPTY)
+
+            self.empty = True
+
         if self.activated and not self.empty:
-            # print("Using fuel")
+
+            self.playing_fire_sfx = True
+            if currently_playing_fire_sfx != self.playing_fire_sfx:
+                self.flamethrower_sound = self.player.world.audio_manager.play_sfx(SFX.FLAMETHROWER_FIRE)
+
             self.fuel_left -= 1
             if self.fuel_left < 1:
+
+                if self.playing_fire_sfx:
+                    self.player.world.audio_manager.unload_sfx(self.flamethrower_sound)
+                    self.playing_fire_sfx = False
+
+                self.playing_empty_sfx = True
+                if currently_playing_empty_sfx != self.playing_empty_sfx:
+                    self.flamethrower_sound = self.player.world.audio_manager.play_sfx(SFX.FLAMETHROWER_EMPTY)
+
                 self.empty = True
 
             if not self.empty:
                 zombies = self.player.world.zombie_handler.zombies
-                zombies_to_delete = []
 
                 for zombie in zombies:
                     player_angle = self.player.angle

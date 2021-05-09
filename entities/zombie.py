@@ -117,6 +117,12 @@ class Zombie(object):
         if self.state == ZombieState.IDLE and not can_move_to(self.x + dx, self.y + dy, self.world.grid):
             self.angle = random.random() * 2 * pi
 
+        # De-spawn the zombie when out of range
+        gx, gy = convert_world_to_grid_position(self.x, self.y)
+        pgx, pgy = convert_world_to_grid_position(self.world.player.x, self.world.player.y)
+        if abs(gx - pgx) > Constant.GRID_SPAWN_RANGE or abs(gy - pgy) > Constant.GRID_SPAWN_RANGE:
+            self.world.zombie_handler.delete_zombie(self)
+
         self.check_collision()
 
     def draw(self, screen: Surface, camera: Camera):

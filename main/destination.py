@@ -75,6 +75,7 @@ class Destination:
         while len(houses_in_range) == 0:
             houses_in_range = [house for house in houses if min_range <= hypot(player_pos[0] - house.x, player_pos[1] - house.y) <= max_range]
             max_range += 5
+            min_range = max(0, min_range - 5)
         destination_house = choice(houses_in_range)
         self.destination = (destination_house.x, destination_house.y)
 
