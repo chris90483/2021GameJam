@@ -6,8 +6,8 @@ from main.constants import Constant
 
 
 class DogHandler(object):
-    def __init__(self, player, world):
-        self.player = player
+    def __init__(self, world):
+        self.player = world.player
         self.world = world
         self.dogs = []
 

@@ -13,6 +13,7 @@ from threading import Thread
 
 class Game(object):
     __game_over = False
+    __game_started = False
 
     def __init__(self, player_name, amount_tiles_x, amount_tiles_y, audio_manager):
         self.player_name = player_name
@@ -33,6 +34,7 @@ class Game(object):
     def reset(self):
         # TODO Check if this indeed resets everything
         self.__game_over = False
+        self.__game_started = False
         self.score.reset_score()
         self.world.reset()
 
@@ -40,6 +42,9 @@ class Game(object):
         self.__game_over = True
 
         Thread(target=self.__send_score, args=(self.player_name, self.score.get_score())).start()
+
+    def start_game(self):
+        self.__game_started = True
 
     def __send_score(self, name, score):
         sha256 = hashlib.sha256()
@@ -56,4 +61,7 @@ class Game(object):
 
     def is_game_over(self):
         return self.__game_over
+
+    def is_game_started(self):
+        return self.__game_started
 

@@ -15,9 +15,9 @@ from main.inventory import Inventory
 
 
 class Player(object):
-    def __init__(self, grid, world, audio_manager):
+    def __init__(self, world, audio_manager):
         self.audio_manager = audio_manager
-        self.grid = grid
+        self.grid = world.grid
         self.angle = 0
         self.held_keys = defaultdict(lambda: False)
         self.keyframes_walking = []

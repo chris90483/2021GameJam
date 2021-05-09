@@ -16,9 +16,9 @@ class Destination:
 
     steps = 0
 
-    def __init__(self, grid, player, score, world):
-        self.grid = grid
-        self.player = player
+    def __init__(self, world, score):
+        self.grid = world.grid
+        self.player = world.player
         self.score = score
         self.world = world
 
@@ -38,6 +38,7 @@ class Destination:
             self.destination = self.grid.doominos_location
             self.destination_doominos = True
             self.delivery_time = None
+            self.world.inventory.remove_item(InventoryItem.PIZZA)
 
         if self.__player_at_delivery_location():
             if self.finishing_delivery_time is None:
