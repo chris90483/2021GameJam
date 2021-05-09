@@ -59,7 +59,7 @@ class EmitterHandler(object):
             screen.blit(self.emitter_surface, (0, 0))
         self.lock.release()
 
-    def __del__(self):
+    def quit_thread(self):
         # Stop thread on delete
         self.running = False
         self.thread.join()

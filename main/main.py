@@ -52,6 +52,7 @@ class Main:
         for event in pygame.event.get():
             self.game.handle_input(event)
             if event.type == pygame.QUIT:
+                self.game.world.emitter_handler.quit_thread()
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN:
